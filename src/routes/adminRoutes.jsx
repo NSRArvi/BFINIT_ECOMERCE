@@ -105,7 +105,6 @@ export const adminRoutes = {
       element: <BankPayment />,
     },
     {
-<<<<<<< HEAD
       path: "/payments/manage-bank",
       element: <ManageBank />,
     },
@@ -114,12 +113,8 @@ export const adminRoutes = {
       element: <UpdateBank />,
     },
     {
-      path: "/support/help-center",
-      element: <HelpCenterForm />,
-=======
       path: "/support/customer-support",
       element: <CustomerSupport />,
->>>>>>> origin/dev
     },
     {
       path: "/legal/return-policy",
