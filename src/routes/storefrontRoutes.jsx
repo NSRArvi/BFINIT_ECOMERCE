@@ -17,7 +17,7 @@ import Orders from "@/pages/storefront/Orders";
 import Blogs from "@/pages/storefront/Blogs";
 import BlogDetails from "@/pages/storefront/BlogDetails";
 import CountryProvider from "@/providers/CountryProvider";
-import TestHome from "@/pages/storefront/TestHome";
+import Template1 from "@/templates/Template1";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -40,10 +40,6 @@ export const storeFrontRoutes = {
     {
       index: true,
       element: <Home />,
-    },
-    {
-      path: "testHome",
-      element: <TestHome />,
     },
     {
       path: "shop",
@@ -135,6 +131,11 @@ export const storeFrontRoutes = {
           <Orders />
         </PrivateRoute>
       ),
+    },
+
+    {
+      path: "template1",
+      element: <Template1 />,
     },
   ],
 };

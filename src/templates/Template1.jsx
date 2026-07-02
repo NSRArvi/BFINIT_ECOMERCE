@@ -14,7 +14,7 @@ import Blogs from "@/components/storefront/testHome/blogs/Blogs";
 import MarqueeScrollSection from "@/components/storefront/testHome/marquee-scroll-section/MarqueeScrollSection";
 import SpringItem from "@/components/storefront/testHome/spring-item/SpringItem";
 
-const TestHome = () => {
+const Template1 = () => {
   return (
     <>
       <TestNavigation />
@@ -35,4 +35,4 @@ const TestHome = () => {
   );
 };
 
-export default TestHome;
+export default Template1;
