@@ -67,7 +67,7 @@ export default function DashboardSidebar({
 
   return (
     <aside
-      className={`custom-scrollbar-hide fixed top-[55px] left-0 z-10 flex h-[calc(100dvh-55px)] flex-col gap-4 overflow-y-auto bg-white p-2 text-sm transition-all duration-300 ease-in-out lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${
+      className={`custom-scrollbar-hide bg-background fixed top-[55px] left-0 z-10 flex h-[calc(100dvh-55px)] flex-col gap-4 overflow-y-auto p-2 text-sm transition-all duration-300 ease-in-out lg:static lg:w-1/6 lg:min-w-[231px] lg:translate-x-0 ${
         showSideNav ? "w-4/5 translate-x-0 md:w-1/3" : "-translate-x-full"
       }`}
     >
@@ -231,7 +231,7 @@ export default function DashboardSidebar({
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex flex-1 flex-col gap-1.5">
+      <nav className="custom-scrollbar-hide flex flex-1 flex-col gap-1.5 overflow-y-auto">
         {navGroups.map((group, groupIndex) => (
           <div key={groupIndex}>
             <p className="my-2.5 px-4 text-[10px] font-medium tracking-wider text-[#9CA3AF] uppercase">

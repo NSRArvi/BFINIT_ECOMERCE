@@ -74,7 +74,7 @@ export default function Subcategories() {
         title="No subcategories yet"
         description="Organize your products by adding subcategories under your categories"
         actionText="Add Subcategory"
-        onAction={() => console.log("open subcategory modal")}
+        onAction={() => setDialogOpen(true)}
       />
     );
   }

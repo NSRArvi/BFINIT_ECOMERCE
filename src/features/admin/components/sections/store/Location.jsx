@@ -1,6 +1,7 @@
 import { Globe, Plus, X } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { FieldDescription, FieldLegend } from "@/components/ui/field";
 import {
   FormControl,
   FormField,
@@ -14,7 +15,6 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/components/ui/select";
-import SectionHeader from "../add-product/SectionHeader";
 
 export default function Location({ form, countries = [], isLoading = false }) {
   const selectedCountries = form.watch("countries");
@@ -58,10 +58,10 @@ export default function Location({ form, countries = [], isLoading = false }) {
 
   return (
     <div className="bg-card rounded-lg p-5">
-      <SectionHeader
-        title="Location"
-        description="Select countries where you operate and provide your business address"
-      />
+      <FieldLegend>Location</FieldLegend>
+      <FieldDescription>
+        Select countries where you operate and provide your business address
+      </FieldDescription>
 
       <div className="mt-4 space-y-4 md:mt-6">
         {/* selected countries */}

@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import { Image, X } from "lucide-react";
 import toast from "react-hot-toast";
+import { FieldDescription, FieldLegend } from "@/components/ui/field";
 import {
   FormControl,
   FormField,
@@ -8,7 +9,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import SectionHeader from "../add-product/SectionHeader";
 import { getImgUrl } from "@/utils/getImgUrl";
 
 export default function Branding({ form }) {
@@ -77,10 +77,10 @@ export default function Branding({ form }) {
 
   return (
     <div className="bg-card rounded-lg p-5">
-      <SectionHeader
-        title="Branding"
-        description="Upload your logo and favicon to establish your store's visual identity"
-      />
+      <FieldLegend>Branding</FieldLegend>
+      <FieldDescription>
+        Upload your logo and favicon to establish your store's visual identity
+      </FieldDescription>
 
       <div className="mt-4 space-y-4 md:mt-6 md:space-y-6">
         {/* Logo */}

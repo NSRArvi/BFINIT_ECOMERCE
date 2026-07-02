@@ -12,6 +12,8 @@ const alertVariants = cva(
         destructive:
           "text-destructive bg-card [&>svg]:text-current *:data-[slot=alert-description]:text-destructive/90",
         info: "text-info bg-info/10 border-info/30 [&>svg]:text-current *:data-[slot=alert-description]:text-info/90",
+        warning:
+          "text-warning bg-warning/10 border-warning/30 [&>svg]:text-current *:data-[slot=alert-description]:text-warning/90",
       },
     },
     defaultVariants: {
@@ -36,7 +38,7 @@ function AlertTitle({ className, ...props }) {
     <div
       data-slot="alert-title"
       className={cn(
-        "col-start-2 line-clamp-1 min-h-4 font-medium tracking-tight",
+        "col-start-2 line-clamp-1 min-h-4 text-xs font-medium tracking-tight",
         className,
       )}
       {...props}
@@ -49,7 +51,7 @@ function AlertDescription({ className, ...props }) {
     <div
       data-slot="alert-description"
       className={cn(
-        "text-muted-foreground col-start-2 grid justify-items-start gap-1 text-sm [&_p]:leading-relaxed",
+        "text-muted-foreground col-start-2 grid justify-items-start gap-1 text-xs [&_p]:leading-relaxed",
         className,
       )}
       {...props}

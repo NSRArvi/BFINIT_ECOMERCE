@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { BookOpen, X } from "lucide-react";
+import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import useAuth from "@/hooks/auth/useAuth";
@@ -25,30 +25,27 @@ export default function GuidePrompt() {
   if (!showGuide) return null;
 
   return (
-    <Card className="border-border bg-card relative">
-      {/* Icon Badge */}
-      <div className="bg-primary absolute -top-4 left-1/2 flex size-8 -translate-x-1/2 items-center justify-center rounded-full">
-        <BookOpen className="text-primary-foreground size-4" />
-      </div>
-
+    <Card className="bg-muted/50 relative shrink-0 overflow-hidden">
       {/* Close Button */}
       <button
         onClick={handleGuideClose}
-        className="bg-background hover:bg-muted focus:ring-ring absolute -top-1.5 -right-1.5 flex size-5 items-center justify-center rounded-full shadow-md transition-colors hover:cursor-pointer focus:ring-2 focus:outline-none"
+        className="bg-background hover:text-foreground text-muted-foreground absolute top-2 right-2 flex size-5 items-center justify-center rounded-full border transition-all hover:cursor-pointer"
         aria-label="Close guide"
       >
-        <X className="text-muted-foreground size-3.5" />
+        <X className="size-3" />
       </button>
 
-      <CardContent className="space-y-2.5 py-2">
-        <div className="space-y-1 text-center">
-          <h3 className="text-xs font-semibold">BFINIT Guide</h3>
+      <CardContent className="space-y-2.5">
+        <div className="space-y-1">
+          <h3 className="text-foreground text-xs font-semibold">
+            New to BFINIT?
+          </h3>
           <p className="text-muted-foreground text-[11px] leading-tight">
-            How our ecommerce platform works
+            Download the guide to set up your store step by step.
           </p>
         </div>
 
-        <Button asChild className="h-7 w-full text-xs" size="sm">
+        <Button asChild size="sm" className="h-7 w-full">
           <a
             href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
             download

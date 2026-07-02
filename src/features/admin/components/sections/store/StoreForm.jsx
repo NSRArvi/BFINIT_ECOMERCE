@@ -5,18 +5,17 @@ import toast from "react-hot-toast";
 import Branding from "./Branding";
 import Location from "./Location";
 import StoreInfo from "./StoreInfo";
-import Social from "./Social";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { Spinner } from "@/components/ui/spinner";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
-import usePostMutation from "@/hooks-v2/api/usePostMutation";
-import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
-import { createStorePayload } from "@/features/admin/utils/storeHelpers";
 import useAuth from "@/hooks/auth/useAuth";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
+import { createStorePayload } from "@/features/admin/utils/storeHelpers";
 
 export default function StoreForm() {
   const { id } = useParams();
@@ -110,6 +109,7 @@ export default function StoreForm() {
   return (
     <section className="space-y-6">
       <DynamicBreadcrumb items={breadcrubms.createStore} />
+
       <PageHeader
         icon={Store}
         title="Create New Store"
@@ -129,7 +129,6 @@ export default function StoreForm() {
               countries={countries}
               isLoading={isCountriesLoading}
             />
-            {/* <Social form={form} /> */}
           </fieldset>
 
           {/* submit buttons */}

@@ -23,7 +23,7 @@ const badgeVariants = cva(
           "gap-1.5 rounded-md border px-2.5 py-0.5 text-xs font-medium border-warning/20 bg-warning/10 text-warning dark:border-warning/30 dark:bg-warning/20",
         info: "gap-1.5 rounded-md border px-2.5 py-0.5 text-xs font-medium border-info/20 bg-info/10 text-info dark:border-info/30 dark:bg-info/20",
         neutral:
-          "gap-1.5 rounded-md border px-2.5 py-0.5 text-xs font-medium border-border/50 bg-muted text-muted-foreground",
+          "rounded-md border border-border/70 bg-muted/40 px-2.5 py-0.5 text-xs font-medium text-muted-foreground gap-1.5",
       },
     },
     defaultVariants: {
