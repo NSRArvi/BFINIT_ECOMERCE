@@ -54,11 +54,6 @@ export const adminNavGroups = [
             icon: CornerDownRight,
           },
           {
-            name: "Add Product",
-            url: "/products/inventory/add",
-            icon: CornerDownRight,
-          },
-          {
             name: "Inventory",
             url: "/products/inventory",
             icon: CornerDownRight,

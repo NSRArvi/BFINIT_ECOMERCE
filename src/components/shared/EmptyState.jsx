@@ -7,7 +7,7 @@ export default function EmptyState({
   icon: Icon = Store,
   title,
   description,
-  actionText,
+  actionText = "Create Store",
   actionPath,
   onAction,
   className,

@@ -80,11 +80,8 @@ export default function ProductForm() {
   if (!activeStore) {
     return (
       <EmptyState
-        icon={Store}
         title="No Store Selected"
         description="You need an active store to add and manage products"
-        actionText="Create Store"
-        actionPath="/stores/create"
       />
     );
   }

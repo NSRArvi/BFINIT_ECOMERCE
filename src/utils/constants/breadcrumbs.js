@@ -2,19 +2,6 @@ export const breadcrubms = {
   createStore: [{ label: "Home", href: "/" }, { label: "Create Store" }],
   Update_Store: [{ label: "Home", href: "/" }, { label: "Edit Store" }],
   Stores: [{ label: "Home", href: "/" }, { label: "Stores" }],
-  Inventory: [
-    { label: "Home", href: "/" },
-    {
-      label: "Products",
-      dropdown: [
-        { label: "Category", href: "/products/category" },
-        { label: "Sub Category", href: "/products/sub-category" },
-        { label: "Brands", href: "/products/brands" },
-        { label: "Add Product", href: "/products/add-product" },
-      ],
-    },
-    { label: "Inventory" },
-  ],
 
   Update_Product: [
     { label: "Home", href: "/" },
