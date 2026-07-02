@@ -69,7 +69,7 @@ export default function BlogTableRow({ blog }) {
           </div>
         </TableCell>
 
-        <TableCell className="border border-r-0 text-right">
+        <TableCell className="border text-right">
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">

@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
+  DialogTitle,
 } from "@/components/ui/dialog";
 import {
   Form,
@@ -126,7 +127,7 @@ export default function AddSubcategoryModal({ dialogOpen, setDialogOpen }) {
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <h2 className="text-sm font-semibold">Add Subcategory</h2>
+          <DialogTitle>Add Subcategory</DialogTitle>
           <DialogDescription className="text-xs">
             Select a parent category and define sub-items
           </DialogDescription>

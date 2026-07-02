@@ -23,6 +23,5 @@ dist-ssr
 *.sln
 *.sw?
 
-
-# Custom md files
-folder-architecture.md
+# AI Configuration
+opencode.json
