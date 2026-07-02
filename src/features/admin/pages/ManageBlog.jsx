@@ -31,7 +31,7 @@ export default function ManageBlog() {
   const debouncedSearch = useDebounce(search);
 
   const { data, isLoading } = useGetQuery({
-    endpoint: `/api/v1/general/blog/store/${activeStore?.id}?page=${page}&limit=`,
+    endpoint: `/api/v1/general/blog/store/${activeStore?.id}?page=${page}`,
     enabled: true,
     isTokenRequired: true,
     queryKey: ["blogs", activeStore?.id, page],

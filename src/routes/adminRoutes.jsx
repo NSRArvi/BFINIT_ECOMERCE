@@ -10,7 +10,6 @@ import Inventory from "@/features/admin/pages/Inventory";
 import Orders from "@/features/admin/pages/Orders";
 import OrderDetails from "@/features/admin/pages/OrderDetails";
 import SeoForm from "@/features/admin/pages/SeoForm";
-import AddBlog from "@/features/admin/pages/AddBlog";
 import ManageBlog from "@/features/admin/pages/ManageBlog";
 import Domains from "@/features/admin/pages/Domains";
 import StripePayments from "@/features/admin/pages/StripePayments";
@@ -26,8 +25,8 @@ import BankPayment from "@/features/admin/pages/BankPayment";
 import PrivacyPolicy from "@/features/admin/pages/PrivacyPolicy";
 import OrdersManagement from "@/Test";
 import Customers from "@/features/admin/pages/Customers";
-import UpdateBlog from "@/features/admin/pages/UpdateBlog";
 import StoreForm from "@/features/admin/components/sections/store/StoreForm";
+import BlogForm from "@/features/admin/pages/BlogForm";
 
 export const adminRoutes = {
   path: "/",
@@ -83,11 +82,11 @@ export const adminRoutes = {
     },
     {
       path: "/blogs/add",
-      element: <AddBlog />,
+      element: <BlogForm />,
     },
     {
       path: "/blogs/edit/:id",
-      element: <UpdateBlog />,
+      element: <BlogForm />,
     },
     {
       path: "/blogs/manage",
