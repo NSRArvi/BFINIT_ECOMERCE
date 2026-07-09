@@ -1,44 +1,59 @@
-import { Dialog, DialogContent } from "@/components/ui/dialog";
-import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
-import { useEffect, useState, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import useCountry from "@/hooks/useCountry";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
-export default function CountrySelectModal() {
+export default function CountrySelectModal({ isEditing = false }) {
   const { storeId } = useParams();
+  const { selectedCountry, saveCountry, setSelectedCountry } = useCountry();
+
   const [isOpen, setIsOpen] = useState(true);
-  const { selectedCountry, saveCountry } = useCountry();
-  const { data: storePreference, isLoading } = useGetStorePreference(storeId);
 
-  const countries = useMemo(
-    () => storePreference?.countries || [],
-    [storePreference?.countries],
-  );
+  const { data: storeData, isLoading } = useGetQuery({
+    endpoint: `/api/v1/stores/${storeId}/info`,
+    enabled: !!storeId,
+    queryKey: ["store", storeId],
+  });
 
-  const storeName = storePreference?.storeName || "STORE";
+  const countries = storeData?.data?.countries || [];
 
   useEffect(() => {
-    const savedCountry = localStorage.getItem(`store_${storeId}_country`);
-    if (savedCountry) {
-      setIsOpen(false);
-      saveCountry(JSON.parse(savedCountry));
-      return;
+    if (!isEditing) {
+      const savedCountry = localStorage.getItem(`store_${storeId}_country`);
+      if (savedCountry) {
+        setIsOpen(false);
+        saveCountry(JSON.parse(savedCountry));
+        return;
+      }
+      if (countries.length === 1) {
+        setIsOpen(false);
+        const country = countries[0];
+        saveCountry(country);
+        localStorage.setItem(
+          `store_${storeId}_country`,
+          JSON.stringify(country),
+        );
+        return;
+      }
+      if (countries.length > 1) {
+        setIsOpen(true);
+      }
     }
-    if (countries.length === 1) {
-      setIsOpen(false);
+
+    if (isEditing && countries.length === 1) {
       const country = countries[0];
-      saveCountry(country);
-      localStorage.setItem(`store_${storeId}_country`, JSON.stringify(country));
-      return;
+      setSelectedCountry(country);
+      setIsOpen(false);
     }
-    if (countries.length > 1) {
-      setIsOpen(true);
-    }
-  }, [countries, storeId]);
+  }, [isEditing, countries, storeId]);
 
   const handleCountrySelect = (country) => {
-    saveCountry(country);
-    localStorage.setItem(`store_${storeId}_country`, JSON.stringify(country));
+    if (!isEditing) {
+      saveCountry(country);
+    } else {
+      setSelectedCountry(country);
+    }
     setIsOpen(false);
   };
 
@@ -55,35 +70,37 @@ export default function CountrySelectModal() {
         onOpenAutoFocus={(e) => e.preventDefault()}
         className="bg-foreground/50 flex h-screen max-h-screen w-screen max-w-full! items-center justify-center rounded-none border-0 p-0 shadow-none backdrop-blur-sm [&>button]:hidden"
       >
-        {/* Modal Card */}
         <div className="bg-background relative flex max-h-[90svh] w-full max-w-xl flex-col shadow-2xl">
           {/* Fixed header */}
-          <div className="px-8 pt-8 pb-6 sm:px-10 sm:pt-10">
-            <div className="mb-7">
-              <h1 className="text-foreground text-xl font-light tracking-widest uppercase">
-                {storeName}
-              </h1>
-            </div>
-            <div className="border-border mb-6 border-t" />
-            <p className="text-muted-foreground text-xs tracking-widest uppercase">
-              Please select your location
+          <div className="px-8 pt-8 pb-7 sm:px-10 sm:pt-10">
+            <h1 className="text-foreground mb-6 text-lg font-medium tracking-widest uppercase">
+              {storeData?.data?.name}
+            </h1>
+            <div className="border-border/80 mb-7 border-t" />
+            <p className="text-muted-foreground mb-3 text-[11px] font-medium tracking-widest uppercase">
+              Select a country to preview pricing
+            </p>
+            <p className="text-muted-foreground text-[13px] leading-6">
+              Your store's theme applies to all countries. This selection only
+              affects which country's product prices appear in the preview.
             </p>
           </div>
 
           {/* Scrollable country list */}
-          <div className="overflow-y-auto px-8 pb-8 sm:px-10 sm:pb-10">
-            <div className="grid grid-cols-1 gap-x-6 gap-y-2 sm:grid-cols-2 sm:gap-x-10">
-              {countries.map((country) => (
+          <div className="custom-scrollbar overflow-y-auto px-8 pb-8 sm:px-10 sm:pb-10">
+            <div>
+              {storeData?.data?.countries?.map((country) => (
                 <button
-                  key={country._id}
+                  key={country.id}
                   onClick={() => handleCountrySelect(country)}
-                  className="group hover:bg-muted active:bg-muted/70 flex cursor-pointer items-center justify-between rounded border-b px-2 py-3 text-left transition-colors duration-150 last:border-b-0 nth-last-2:border-b-0"
+                  className="group border-border/50 hover:bg-muted/30 flex w-full items-center justify-between border-b p-3 transition-colors last:border-0"
                 >
-                  <span className="text-muted-foreground group-hover:text-foreground text-xs tracking-widest uppercase transition-colors duration-150">
-                    {country.country_name}
-                  </span>
-                  <span className="text-muted-foreground/0 group-hover:text-muted-foreground ml-2 shrink-0 text-xs transition-colors duration-150">
-                    {country.currency_symbol}
+                  <div className="flex items-center space-x-1.5">
+                    <span>{country.flag_emoji}</span>
+                    <span className="text-[13px]">{country.name}</span>
+                  </div>
+                  <span className="text-muted-foreground text-[11px]">
+                    {country.currency_code}
                   </span>
                 </button>
               ))}

@@ -1,10 +1,10 @@
 import { useParams } from "react-router";
 import ProductCard from "../../cards/products/ProductCard";
-import useGetQuery from "@/hooks/api/useGetQuery";
-import { cn } from "@/lib/utils";
-import { dummyProducts } from "@/features/themes/utils/contstants";
-import useTheme from "@/hooks/useTheme";
+import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 import useCountry from "@/hooks/useCountry";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { cn } from "@/lib/utils";
+import { dummyProducts } from "@/features/admin/theme-editor/utils/contstants";
 
 const gridColsMap = {
   2: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2",
@@ -14,44 +14,21 @@ const gridColsMap = {
 
 export default function ProductGrid({ content }) {
   const { storeId } = useParams();
-  const { isEditorMode } = useTheme();
-  const { selectedCountry, isLoading } = useCountry();
+  const { isEditorMode } = useThemeEditor();
+  const { selectedCountry } = useCountry();
 
-  const countryName = selectedCountry?.country_name;
+  const limit = content?.productsToShow || 8;
 
-  const isManualProduct = content?.productSource?.type === "manual";
-  const manualProductIds = isManualProduct ? content?.productSource?.value : [];
-  const hasManualProducts = manualProductIds && manualProductIds.length > 0;
-  const idsQuery = hasManualProducts ? manualProductIds.join(",") : "";
-
-  // TODO: need to fix product object structure as same as allProducts
-  const { data: manualProducts } = useGetQuery({
-    endpoint: `/product/store/batches?ids=${idsQuery}&limit=${
-      content?.productsToShow || 8
-    }&countryName=${countryName}`,
-    queryKey: ["manual-products", idsQuery, countryName],
-    enabled:
-      !!idsQuery &&
-      !!content?.productsToShow &&
-      !!countryName &&
-      hasManualProducts &&
-      !isLoading,
+  const { data } = useGetQuery({
+    endpoint: `/api/v1/stores/products/${selectedCountry?.id}/${storeId}?limit=${limit}`,
+    enabled: !!selectedCountry?.id && !!storeId,
+    queryKey: ["products", selectedCountry?.id, storeId, limit],
   });
 
-  const { data: allProducts } = useGetQuery({
-    endpoint: `/product/store?storeId=${storeId}&countryName=${countryName}`,
-    queryKey: ["products", "list", storeId, countryName],
-    enabled: !!storeId && !isManualProduct && !!countryName && !isLoading,
-  });
+  const products =
+    data?.data?.products?.length > 0 ? data?.data?.products : dummyProducts;
 
-  const mainProducts = isManualProduct
-    ? manualProducts?.data || []
-    : allProducts?.data || [];
-
-  const displayProducts =
-    mainProducts.length > 0 ? mainProducts : dummyProducts;
-
-  if (!isEditorMode && mainProducts?.length === 0) {
+  if (!isEditorMode && products?.length === 0) {
     return null;
   }
 
@@ -69,11 +46,9 @@ export default function ProductGrid({ content }) {
             gridColsMap[content?.columns],
           )}
         >
-          {displayProducts
-            ?.slice(0, parseInt(content?.productsToShow))
-            ?.map((product) => (
-              <ProductCard key={product?._id} product={product} />
-            ))}
+          {products?.slice(0, parseInt(limit))?.map((product) => (
+            <ProductCard key={product?._id} product={product} />
+          ))}
         </div>
       </div>
     </div>

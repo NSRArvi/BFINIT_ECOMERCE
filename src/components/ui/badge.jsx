@@ -50,7 +50,7 @@ function Badge({
       {showDot && (
         <span
           className={cn(
-            "h-1.5 w-1.5 shrink-0 rounded-full",
+            "h-1 w-1 shrink-0 rounded-full",
             variant === "success" && "bg-success",
             variant === "neutral" && "bg-muted-foreground",
             variant === "info" && "bg-info",

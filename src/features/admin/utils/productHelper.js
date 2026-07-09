@@ -36,6 +36,7 @@ const transformPricing = (pricing, startIndex) => {
     return {
       ...rest,
       discount_value: discount_value || 0,
+      is_discount: parseFloat(discount_value) > 0,
       variants: transformedVariants,
     };
   });

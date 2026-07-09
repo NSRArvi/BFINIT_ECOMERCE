@@ -2,11 +2,11 @@ export const getDiscountPercent = (price, discount) => {
   const priceNum = Number(price);
   const discountNum = Number(discount);
 
-  if (!priceNum || !discountNum || priceNum > discountNum) {
+  if (!priceNum || !discountNum || discountNum >= priceNum) {
     return null;
   }
 
-  const percent = ((discountNum - priceNum) / discountNum) * 100;
+  const percent = ((priceNum - discountNum) / priceNum) * 100;
 
   return Math.round(percent);
 };

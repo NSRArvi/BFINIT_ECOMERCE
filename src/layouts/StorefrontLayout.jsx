@@ -7,10 +7,11 @@ import useGetStoreMeta from "@/hooks/useGetStoreMeta";
 import useTheme from "@/hooks/useTheme";
 import { updateStoreMeta } from "@/utils/meta";
 import CountrySelectModal from "@/components/storefront/modals/CountrySelectModal";
+import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 
 export default function StorefrontLayout() {
   const { storeId } = useParams();
-  const { isLoading: isThemeLoading } = useTheme();
+  const { isLoading: isThemeLoading } = useThemeEditor();
   const { data: storeMeta, isLoading: isMetaLoading } =
     useGetStoreMeta(storeId);
 

@@ -1,4 +1,5 @@
-import { Globe, Plus, X } from "lucide-react";
+import { useState } from "react";
+import { Globe, X, ChevronsUpDown, SearchX } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { FieldDescription, FieldLegend } from "@/components/ui/field";
@@ -10,13 +11,23 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function Location({ form, countries = [], isLoading = false }) {
+  const [open, setOpen] = useState(false);
+
   const selectedCountries = form.watch("countries");
   const defaultCountryId = form.watch("default_country_id");
 
@@ -40,6 +51,8 @@ export default function Location({ form, countries = [], isLoading = false }) {
     if (updated.length === 1) {
       form.setValue("default_country_id", country.id);
     }
+
+    setOpen(false);
   };
 
   const handleRemoveCountry = (countryId) => {
@@ -60,29 +73,95 @@ export default function Location({ form, countries = [], isLoading = false }) {
     <div className="bg-card rounded-lg p-5">
       <FieldLegend>Location</FieldLegend>
       <FieldDescription>
-        Select countries where you operate and provide your business address
+        Select the countries where your store operates and set your primary
+        country.
       </FieldDescription>
 
       <div className="mt-4 space-y-4 md:mt-6">
-        {/* selected countries */}
+        <FormField
+          control={form.control}
+          name="countries"
+          rules={{
+            validate: (value) =>
+              value?.length > 0 || "Please add at least one country",
+          }}
+          render={() => (
+            <FormItem>
+              <FormLabel>
+                Countries <span className="text-destructive">*</span>
+              </FormLabel>
+              <FormControl>
+                <Popover open={open} onOpenChange={setOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      role="combobox"
+                      disabled={isLoading}
+                      className="w-full justify-between font-normal"
+                    >
+                      <span className="text-muted-foreground text-sm">
+                        {isLoading
+                          ? "Loading countries..."
+                          : "Search countries"}
+                      </span>
+                      <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent
+                    className="w-[--radix-popover-trigger-width] min-w-[--radix-popover-trigger-width] p-0"
+                    align="start"
+                  >
+                    <Command>
+                      <CommandInput placeholder="Search countries..." />
+                      <CommandList>
+                        <CommandEmpty>
+                          <SearchX className="text-muted-foreground mx-auto mb-2 size-4" />
+                          <p className="text-muted-foreground text-xs">
+                            No countries found
+                          </p>
+                        </CommandEmpty>
+                        <CommandGroup>
+                          {availableCountries?.map((country) => (
+                            <CommandItem
+                              key={country?.id}
+                              value={country?.name}
+                              onSelect={() => handleAddCountry(country?.id)}
+                            >
+                              <span>{country?.flag_emoji}</span>
+                              <span>{country?.name}</span>
+                              <span className="text-muted-foreground ml-auto text-[11px]">
+                                {country?.currency_code}
+                              </span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
         {selectedCountries.length > 0 && (
           <div>
-            <p className="text-muted-foreground mb-2 text-xs">
-              Selected Countries
-            </p>
+            <p className="text-muted-foreground mb-2 text-xs">Countries</p>
             <div className="flex flex-wrap gap-2">
               {selectedCountries.map((country) => (
                 <div
                   key={country.id}
                   className="flex items-center gap-1.5 rounded-md border px-2 py-1 text-xs"
                 >
-                  <Globe className="text-muted-foreground size-3" />
-                  <span>{country.name}</span>
-                  <span className="text-muted-foreground">
-                    {country.abbreviation}
+                  <span>
+                    {country?.flag_emoji} {country.name}
                   </span>
                   {defaultCountryId === country.id ? (
-                    <Badge className="text-[10px]">Default</Badge>
+                    <Badge variant="secondary" className="text-[10px]">
+                      Primary
+                    </Badge>
                   ) : (
                     <Button
                       onClick={() => handleSetDefault(country.id)}
@@ -90,7 +169,7 @@ export default function Location({ form, countries = [], isLoading = false }) {
                       variant="link"
                       className="text-muted-foreground h-auto p-0 text-[10px]"
                     >
-                      Set Default
+                      Set as primary
                     </Button>
                   )}
                   <Button
@@ -108,45 +187,25 @@ export default function Location({ form, countries = [], isLoading = false }) {
           </div>
         )}
 
-        {/* Add Country Select */}
         <FormField
           control={form.control}
-          name="countries"
+          name="default_country_address"
           rules={{
-            validate: (value) =>
-              value?.length > 0 || "Please add at least one country",
+            required: "Please enter your primary business address",
           }}
-          render={() => (
+          render={({ field }) => (
             <FormItem>
-              <FormLabel>
-                Add Country <span className="text-destructive">*</span>
+              <FormLabel className="text-xs">
+                Business Address <span className="text-destructive">*</span>
               </FormLabel>
               <FormControl>
-                <Select
-                  onValueChange={handleAddCountry}
-                  disabled={isLoading}
-                  value={null}
-                >
-                  <SelectTrigger className="w-full">
-                    <div className="flex items-center gap-2">
-                      <Plus size={16} className="shrink-0" />
-                      <span className="text-muted-foreground text-sm">
-                        {isLoading
-                          ? "Loading countries..."
-                          : "Select a country to add"}
-                      </span>
-                    </div>
-                  </SelectTrigger>
-                  <SelectContent>
-                    {availableCountries?.map((country) => (
-                      <SelectItem key={country?.id} value={country?.id}>
-                        {country?.name} {country?.abbreviation}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <Textarea
+                  placeholder="Enter your business address"
+                  {...field}
+                  className="resize-none"
+                />
               </FormControl>
-              <FormMessage />
+              <FormMessage className="text-xs" />
             </FormItem>
           )}
         />

@@ -2,13 +2,13 @@ import { useState, useMemo, useEffect } from "react";
 import { Columns2, Columns3, SlidersHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import useGetQuery from "@/hooks/api/useGetQuery";
-import { dummyProducts } from "@/features/themes/utils/contstants";
 import ProductCard from "../../components/storefront/cards/products/ProductCard";
 import { useParams, useSearchParams } from "react-router";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import useGetCategories from "@/features/admin/hooks/category/useGetCategories";
 import useGetBrands from "@/features/admin/hooks/brands/useGetBrands";
 import useCountry from "@/hooks/useCountry";
+import { dummyProducts } from "@/features/admin/theme-editor/utils/contstants";
 
 const gridLayoutMap = {
   2: "grid-cols-1 md:grid-cols-2 lg:grid-cols-2",

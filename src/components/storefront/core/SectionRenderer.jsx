@@ -1,12 +1,10 @@
 import { Pencil } from "lucide-react";
-import useTheme from "@/hooks/useTheme";
-import { componentMap } from "@/features/themes/config/componentMap";
+import { componentMap } from "@/components/theme-renderer/componentMap";
+import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 
-export default function SectionRenderer({
-  sections = [],
-  activeSection = null,
-}) {
-  const { setActiveSection, isPreviewMode, isEditorMode } = useTheme();
+export default function SectionRenderer({ sections = [] }) {
+  const { activeSection, setActiveSection, isPreviewMode, isEditing } =
+    useThemeEditor();
 
   const renderSection = (section, index) => {
     if (!section.visible) return null;
@@ -33,7 +31,7 @@ export default function SectionRenderer({
         className="group/section relative"
       >
         {/* section hover effect */}
-        {isEditorMode && !isPreviewMode && !isActive && (
+        {isEditing && !isPreviewMode && !isActive && (
           <>
             <div className="border-muted-foreground/40 pointer-events-none absolute inset-0 z-100 border border-dashed opacity-0 transition-opacity group-hover/section:opacity-100" />
 
@@ -44,7 +42,7 @@ export default function SectionRenderer({
         )}
 
         {/* section editing active style */}
-        {isEditorMode && !isPreviewMode && isActive && (
+        {isEditing && !isPreviewMode && isActive && (
           <>
             <div className="border-primary pointer-events-none absolute inset-0 z-100 border border-dashed" />
 
@@ -54,7 +52,7 @@ export default function SectionRenderer({
           </>
         )}
 
-        <Component content={section.content} />
+        <Component content={section.content} isEditing />
       </div>
     );
   };

@@ -11,7 +11,11 @@ export const patchApi = async ({ endpoint, payload, token }) => {
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     method: "PATCH",
     headers,
-    body: isFormData ? payload : JSON.stringify(payload),
+    body: payload
+      ? isFormData
+        ? payload
+        : JSON.stringify(payload)
+      : undefined,
   });
 
   const data = await res.json();

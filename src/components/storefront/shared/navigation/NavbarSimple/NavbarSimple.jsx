@@ -19,6 +19,9 @@ import useCountry from "@/hooks/useCountry";
 import { getDefaultCountry } from "@/utils/currencyHelpers";
 import { useMemo } from "react";
 import CountrySwitcher from "./CountrySwitcher";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { getImgUrl } from "@/utils/getImgUrl";
+import { editorLinkClick } from "@/utils/themeEditor";
 
 const navLinks = [
   { name: "Home", href: "" },
@@ -27,12 +30,18 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ];
 
-export default function NavbarSimple({ content }) {
+export default function NavbarSimple({ content, isEditing }) {
   const { storeId } = useParams();
   const basePath = useBasePath();
   const { totalItems } = useCart();
   const { selectedCountry, saveCountry } = useCountry();
   const { customer, handleLogout } = useStorefrontAuth();
+
+  const { data: storeData, isLoading: isStoreLoading } = useGetQuery({
+    endpoint: `/api/v1/stores/${storeId}/info`,
+    enabled: !!storeId,
+    queryKey: ["store", storeId],
+  });
 
   const { data } = useGetStorePreference(storeId);
 
@@ -72,6 +81,63 @@ export default function NavbarSimple({ content }) {
     saveCountry(country);
   };
 
+  let logoContent = null;
+
+  if (content.logoType === "auto") {
+    if (storeData?.data?.logo) {
+      logoContent = (
+        <div className="h-8 max-w-40">
+          <img
+            src={getImgUrl(storeData?.data?.logo)}
+            alt={`logo of ${storeData?.data?.name}`}
+            className="h-full w-auto object-contain object-left"
+          />
+        </div>
+      );
+    } else {
+      logoContent = (
+        <Link to={basePath} className="text-sm font-semibold">
+          {storeData?.data?.name}
+        </Link>
+      );
+    }
+  }
+
+  if (content.logoType === "logo") {
+    logoContent = (
+      <div className="h-8 max-w-40">
+        <img
+          src={getImgUrl(storeData?.data?.logo)}
+          alt={`logo of ${storeData?.data?.name}`}
+          className="h-full w-auto object-contain object-left"
+        />
+      </div>
+    );
+  }
+
+  if (content.logoType === "text") {
+    logoContent = (
+      <Link to={basePath} className="text-sm font-semibold">
+        {storeData?.data?.name}
+      </Link>
+    );
+  }
+
+  if (content.logoType === "both") {
+    logoContent = (
+      <Link to={basePath} className="flex items-center gap-2">
+        <div className="h-8 max-w-32">
+          <img
+            src={getImgUrl(storeData?.data?.logo)}
+            alt={`logo of ${storeData?.data?.name}`}
+            className="h-full w-auto object-contain object-left"
+          />
+        </div>
+        <span className="text-sm font-semibold">{storeData?.data?.name}</span>
+      </Link>
+    );
+  }
+
   return (
     <>
       <nav className="bg-background border-border sticky top-0 z-50 border-b">
@@ -91,9 +157,7 @@ export default function NavbarSimple({ content }) {
 
             {/* Logo - Centered on mobile, left on desktop */}
             <div className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0">
-              <Link to={basePath} className="text-xl font-bold sm:text-2xl">
-                {data?.storeName}
-              </Link>
+              {logoContent}
             </div>
 
             {/* Desktop Navigation Links */}
@@ -101,8 +165,9 @@ export default function NavbarSimple({ content }) {
               {navLinks.map((link) => (
                 <Link
                   key={link.name}
+                  onClick={isEditing ? editorLinkClick : undefined}
                   to={`${basePath}${link.href}`}
-                  className="hover:text-primary text-sm font-medium transition-colors duration-200"
+                  className="hover:text-primary text-sm transition-colors duration-200"
                 >
                   {link.name}
                 </Link>
@@ -124,7 +189,9 @@ export default function NavbarSimple({ content }) {
               <Button
                 variant="ghost"
                 size="icon"
-                onClick={() => setSearchOpen(true)}
+                onClick={
+                  isEditing ? editorLinkClick : () => setSearchOpen(true)
+                }
                 aria-label="Search"
                 className="h-9 w-9"
               >
@@ -138,6 +205,7 @@ export default function NavbarSimple({ content }) {
               >
                 <PopoverTrigger asChild className="hidden lg:flex">
                   <Button
+                    onClick={isEditing ? editorLinkClick : undefined}
                     variant="ghost"
                     size="icon"
                     aria-label="Account"
@@ -202,7 +270,11 @@ export default function NavbarSimple({ content }) {
                 asChild
                 className="relative h-9 w-9"
               >
-                <Link to={`${basePath}/cart`} aria-label="Shopping cart">
+                <Link
+                  onClick={isEditing ? editorLinkClick : undefined}
+                  to={`${basePath}/cart`}
+                  aria-label="Shopping cart"
+                >
                   <ShoppingCart size={18} />
                   {totalItems > 0 && (
                     <Badge

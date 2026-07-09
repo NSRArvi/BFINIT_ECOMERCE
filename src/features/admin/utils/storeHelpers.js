@@ -24,12 +24,15 @@ export const createStorePayload = (data) => {
   const formData = new FormData();
 
   formData.append("name", data.name);
-  formData.append("publicSubdomain", generatePublicSubdomain(data.name)); // TODO: generate via backend
-  formData.append("storeCode", generateStoreCode(data.name)); // TODO: generate via backend
-  formData.append("defaultCountryId", data.default_country_id);
+  formData.append("public_subdomain", generatePublicSubdomain(data.name)); // TODO: generate via backend
+  formData.append("store_code", generateStoreCode(data.name)); // TODO: generate via backend
+  formData.append("default_country_id", data.default_country_id);
+  formData.append("contact_email", data.email);
+  formData.append("contact_phone", data.mobile);
+  formData.append("default_country_address", data.default_country_address);
 
   data.countries.forEach((country) => {
-    formData.append("countryIds", country.id);
+    formData.append("country_ids", country.id);
   });
 
   if (data?.logo?.file) {
@@ -40,7 +43,25 @@ export const createStorePayload = (data) => {
     formData.append("favicon", data.favicon.file);
   }
 
-  formData.append("isActive", data.is_active);
+  if (data?.telephone) {
+    formData.append("contact_telephone", data.telephone);
+  }
+
+  formData.append("is_active", data.is_active);
 
   return formData;
+};
+
+export const createSocialMediaPayload = (data, storeId) => {
+  const { facebook, instagram, x, youtube, tiktok, pinterest } = data;
+
+  return {
+    store_id: storeId,
+    facebook,
+    instagram,
+    x,
+    youtube,
+    tiktok,
+    pinterest,
+  };
 };

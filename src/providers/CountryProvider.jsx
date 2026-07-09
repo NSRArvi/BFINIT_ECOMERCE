@@ -38,6 +38,7 @@ export default function CountryProvider({ children }) {
     saveCountry,
     clearCountry,
     isLoading,
+    setSelectedCountry,
   };
 
   return (

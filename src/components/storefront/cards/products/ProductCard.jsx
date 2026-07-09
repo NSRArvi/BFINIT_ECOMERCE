@@ -1,51 +1,36 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ShoppingCart, Eye, Star, Image, Settings2 } from "lucide-react";
+import { ShoppingCart, Eye, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import useBasePath from "@/hooks/useBasePath";
-import { formatPrice } from "@/utils/formatPrice";
-import { getDiscountPercent } from "@/utils/products";
-import useCart from "@/hooks/useCart";
 import VariantSelectorModal from "../../modals/VariantSelectorModal";
-import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
-import useCountry from "@/hooks/useCountry";
+import useBasePath from "@/hooks/useBasePath";
+import useCart from "@/hooks/useCart";
+import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
+import { getImgUrl } from "@/utils/getImgUrl";
+import { getDiscountPercent } from "@/utils/products";
+import { formatPrice } from "@/utils/formatPrice";
+import { editorLinkClick } from "@/utils/themeEditor";
 
 export default function ProductCard({ product }) {
+  const { isEditing } = useThemeEditor();
+  const { addToCart } = useCart();
+  const basePath = useBasePath();
+
   const {
-    productId,
-    productName,
-    productPrice,
-    productDiscount,
-    thumbnailImage,
-    productShortDescription,
-    rating = 0,
-    featured,
-    new_arrival,
-    best_seller,
-    hot_deal,
-    flash_sale,
-    limited_stock,
+    id,
+    name,
+    countryPricing,
+    image,
+    short_description,
     variants,
     pricing,
   } = product || {};
 
-  const { selectedCountry } = useCountry();
-  const { data: storePreference } = useGetStorePreference();
-
-  const { addToCart } = useCart();
-  const basePath = useBasePath();
+  const { price, discount_value, is_discount, country } = countryPricing || {};
 
   const [showVariantModal, setShowVariantModal] = useState(false);
 
-  const currencySymbol =
-    selectedCountry?.currency_symbol || storePreference?.data?.currencySymbol;
-  const originalPrice = productPrice?.$numberDecimal
-    ? productPrice?.$numberDecimal
-    : productPrice || pricing?.productPrice;
-
-  const originalDiscount = productDiscount?.$numberDecimal
-    ? productDiscount?.$numberDecimal
-    : productDiscount || pricing?.discountPrice;
+  const currencySymbol = country?.abbreviation;
 
   const hasVariants =
     (pricing?.variants?.enabled && pricing?.variants?.attributes?.length > 0) ||
@@ -57,33 +42,7 @@ export default function ProductCard({ product }) {
     (hasVariants &&
       variants?.attributes.some((attr) => attr.required === true));
 
-  const discountPercent = getDiscountPercent(originalPrice, originalDiscount);
-
-  const badge = flash_sale
-    ? {
-        text: "Flash Sale",
-        color: "bg-destructive text-destructive-foreground",
-      }
-    : hot_deal
-      ? { text: "Hot Deal", color: "bg-warning text-warning-foreground" }
-      : limited_stock
-        ? {
-            text: "Limited",
-            color: "bg-destructive text-destructive-foreground",
-          }
-        : new_arrival
-          ? { text: "New", color: "bg-info text-info-foreground" }
-          : best_seller
-            ? {
-                text: "Bestseller",
-                color: "bg-success text-success-foreground",
-              }
-            : featured
-              ? {
-                  text: "Featured",
-                  color: "bg-primary text-primary-foreground",
-                }
-              : null;
+  const discountPercent = getDiscountPercent(price, discount_value);
 
   const handleAddToCart = () => {
     if (hasRequiredVariants) {
@@ -96,16 +55,16 @@ export default function ProductCard({ product }) {
   return (
     <>
       <div className="group bg-card border-border hover:border-primary/50 relative flex flex-col overflow-hidden rounded-lg border transition-all duration-300">
-        {/* Image Container */}
         <div className="bg-muted relative aspect-square overflow-hidden">
-          {thumbnailImage ? (
+          {image ? (
             <Link
-              to={`${basePath}/shop/${productId}`}
+              onClick={isEditing ? editorLinkClick : undefined}
+              to={`${basePath}/shop/${id}`}
               className="h-full w-full"
             >
               <img
-                src={`https://ecomback.bfinit.com${thumbnailImage}`}
-                alt={productName}
+                src={getImgUrl(image)}
+                alt={name}
                 className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
               />
             </Link>
@@ -124,17 +83,7 @@ export default function ProductCard({ product }) {
             </div>
           )}
 
-          {/* Badges */}
-          {badge && (
-            <div
-              className={`absolute top-3 left-3 rounded-md px-2.5 py-1 text-xs font-semibold ${badge.color}`}
-            >
-              {badge.text}
-            </div>
-          )}
-
-          {/* Discount Badge */}
-          {discountPercent > 0 && (
+          {is_discount && (
             <div className="bg-destructive text-destructive-foreground absolute top-3 right-3 rounded-md px-2.5 py-1 text-xs font-semibold">
               -{discountPercent}%
             </div>
@@ -147,66 +96,43 @@ export default function ProductCard({ product }) {
               variant="secondary"
               className="bg-background/95 hover:bg-primary hover:text-primary-foreground h-9 w-9 rounded-full backdrop-blur-sm"
             >
-              <Link to={`${basePath}/shop/${productId}`}>
+              <Link
+                onClick={isEditing ? editorLinkClick : undefined}
+                to={`${basePath}/shop/${id}`}
+              >
                 <Eye />
               </Link>
             </Button>
-            {/* <Button
-              size="icon"
-              variant="secondary"
-              className="bg-background/95 hover:bg-primary hover:text-primary-foreground h-9 w-9 rounded-full backdrop-blur-sm"
-            >
-              <Heart className="h-4 w-4" />
-            </Button> */}
           </div>
         </div>
 
-        {/* Content */}
         <div className="flex flex-1 flex-col p-4">
-          {/* Rating */}
-          {rating > 0 && (
-            <div className="mb-2 flex items-center gap-1">
-              {[...Array(5)].map((_, i) => (
-                <Star
-                  key={i}
-                  className={`h-3.5 w-3.5 ${
-                    i < Math.floor(rating)
-                      ? "fill-warning text-warning"
-                      : "text-muted-foreground/30"
-                  }`}
-                />
-              ))}
-              <span className="text-muted-foreground ml-1 text-xs">
-                ({rating})
-              </span>
-            </div>
-          )}
-
-          {/* Product Name */}
           <Link
-            to={`${basePath}/shop/${productId}`}
+            onClick={isEditing ? editorLinkClick : undefined}
+            to={`${basePath}/shop/${id}`}
             className="group-hover:text-primary mb-2 line-clamp-2 text-sm leading-snug font-semibold transition-colors"
           >
-            {productName}
+            {name}
           </Link>
 
-          {/* Description */}
-          {productShortDescription && (
+          {short_description && (
             <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">
-              {productShortDescription}
+              {short_description}
             </p>
           )}
 
-          {/* Price & Add to Cart */}
           <div className="mt-auto flex items-center justify-between gap-2">
             <div className="flex flex-col">
               <div className="flex items-baseline gap-2">
                 <span className="text-lg font-bold">
-                  {formatPrice(originalPrice, currencySymbol)}
+                  {formatPrice(
+                    is_discount ? discount_value : price,
+                    currencySymbol,
+                  )}
                 </span>
-                {originalDiscount > 0 && (
+                {is_discount && (
                   <span className="text-muted-foreground text-xs line-through">
-                    {formatPrice(originalDiscount, currencySymbol)}
+                    {formatPrice(price, currencySymbol)}
                   </span>
                 )}
               </div>
@@ -214,7 +140,7 @@ export default function ProductCard({ product }) {
             <Button
               size="sm"
               variant="outline"
-              onClick={handleAddToCart}
+              onClick={isEditing ? editorLinkClick : handleAddToCart}
               className="hover:bg-primary hover:text-primary-foreground hover:border-primary h-9 gap-1.5 px-3 text-xs font-medium transition-all active:scale-95"
             >
               <ShoppingCart className="h-3.5 w-3.5" />

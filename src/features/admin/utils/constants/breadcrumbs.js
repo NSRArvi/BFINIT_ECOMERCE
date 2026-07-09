@@ -3,6 +3,7 @@ const Home_Url = "/";
 export const breadcrubms = {
   // === Main ===
   createStore: [{ label: "Home", href: Home_Url }, { label: "Create Store" }],
+  themes: [{ label: "Home", href: Home_Url }, { label: "Themes" }],
   // Products
   categories: [
     { label: "Home", href: Home_Url },

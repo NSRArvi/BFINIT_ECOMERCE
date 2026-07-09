@@ -1,23 +1,23 @@
 import { Link, useParams } from "react-router";
+import { Mail, Phone, MapPin, Lock, Copyright } from "lucide-react";
 import {
-  Mail,
-  Phone,
-  MapPin,
-  Facebook,
-  Twitter,
-  Instagram,
-  Linkedin,
-  Youtube,
-  Lock,
-} from "lucide-react";
-import useBasePath from "@/hooks/useBasePath";
-import { footerLinks } from "@/features/themes/utils/contstants";
-import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
-import { getDefaultCountry } from "@/utils/currencyHelpers";
-import useCountry from "@/hooks/useCountry";
-import { useMemo } from "react";
+  SiTiktok,
+  SiPinterest,
+  SiFacebook,
+  SiX,
+  SiInstagram,
+  SiYoutube,
+  SiWhatsapp,
+} from "react-icons/si";
 import FooterCountrySwitcher from "./FooterCountrySwitcher";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import useBasePath from "@/hooks/useBasePath";
+import useCountry from "@/hooks/useCountry";
+import { cn } from "@/lib/utils";
+import { footerLinks } from "@/features/admin/theme-editor/utils/contstants";
+import { getImgUrl } from "@/utils/getImgUrl";
+import { editorLinkClick } from "@/utils/themeEditor";
+import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 
 const logos = [
   { src: "/images/logo/visa.png", alt: "Visa" },
@@ -30,43 +30,72 @@ const logos = [
 
 export default function FooterDefault({ content }) {
   const { storeId } = useParams();
+  const { isEditing } = useThemeEditor();
   const { saveCountry } = useCountry();
-  const { data } = useGetStorePreference(storeId);
+  const basePath = useBasePath();
+
+  const { data: countries } = useGetQuery({
+    endpoint: "/api/v1/country",
+    enabled: true,
+    queryKey: ["countries"],
+  });
+
+  const { data: storeData } = useGetQuery({
+    endpoint: `/api/v1/stores/${storeId}/info`,
+    enabled: !!storeId,
+    queryKey: ["store", storeId],
+  });
+
+  const { data: socialMedia } = useGetQuery({
+    endpoint: `/api/v1/general/socialMedia/${storeId}`,
+    enabled: !!storeId,
+    queryKey: ["socialMedia", storeId],
+  });
 
   const { data: stripeConfig, isLoading: isStripeConfigLoading } = useGetQuery({
     endpoint: `/payments/stripe/public/client/${storeId}`,
     queryKey: ["stripe-client-config", storeId],
   });
 
-  const date = new Date();
-  const year = date.getFullYear();
+  const defaultCountry = countries?.data?.find(
+    (country) => country.id === storeData?.data?.default_country_id,
+  );
+
+  const socialMediaLinks = [
+    {
+      id: "facebook",
+      url: socialMedia?.data?.facebook,
+      Icon: SiFacebook,
+    },
+    { id: "x", url: socialMedia?.data?.x, Icon: SiX },
+    {
+      id: "instagram",
+      url: socialMedia?.data?.instagram,
+      Icon: SiInstagram,
+    },
+    { id: "youtube", url: socialMedia?.data?.youtube, Icon: SiYoutube },
+    { id: "tiktok", url: socialMedia?.data?.tiktok, Icon: SiTiktok },
+    {
+      id: "pinterest",
+      url: socialMedia?.data?.pinterest,
+      Icon: SiPinterest,
+    },
+    {
+      id: "whatsapp",
+      url: socialMedia?.data?.whatsapp,
+      Icon: SiWhatsapp,
+    },
+  ];
 
   const isStripeConnected =
     !isStripeConfigLoading &&
     stripeConfig?.data?.charges_enabled &&
     stripeConfig?.data?.payouts_enabled;
 
-  const countries = useMemo(() => data?.countries || [], [data?.countries]);
-  const defaultCountry = getDefaultCountry(data);
-
-  const basePath = useBasePath();
-
-  const fullAddress = `${data?.storeAddress}, ${data?.country ? data?.country : defaultCountry?.country_name}`;
-
-  const {
-    description,
-    showContactInfo,
-    contact,
-    copyright,
-    showSocialLinks,
-    socialLinks,
-  } = content;
-
+  const date = new Date();
+  const year = date.getFullYear();
+  const { description, showContactInfo, showSocialLinks } = content;
   const { company, shop, support } = footerLinks;
-
-  const activeSocialLinks = Object.entries(socialLinks)?.filter(
-    ([_, url]) => url && url.trim() !== "",
-  );
 
   const handleCountryChange = (country) => {
     saveCountry(country);
@@ -75,43 +104,56 @@ export default function FooterDefault({ content }) {
   return (
     <footer className="bg-card border-border border-t">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-        {/* Main Footer Content */}
         <div className="mb-8 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5 lg:gap-12">
-          {/* Company Info */}
           <div className="lg:col-span-2">
-            <h3 className="mb-3 text-lg font-semibold">{data?.storeName}</h3>
+            <Link
+              onClick={isEditing ? editorLinkClick : undefined}
+              to={basePath}
+              className="mb-3 inline-block h-8 max-w-40"
+            >
+              <img
+                src={getImgUrl(storeData?.data?.logo)}
+                alt={`logo of ${storeData?.data?.name}`}
+                className="h-full w-auto object-contain object-left"
+              />
+            </Link>
+
             <p className="text-muted-foreground mb-6 max-w-md text-sm leading-relaxed">
               {description}
             </p>
 
-            {/* Contact Info */}
             {showContactInfo && (
               <div className="space-y-3 text-sm">
                 <a
-                  href={`mailto:${data?.storeEmail}`}
+                  href={`mailto:${storeData?.data?.contact_email}`}
                   className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors"
                 >
                   <Mail className="h-4 w-4 shrink-0" />
-                  <span>{data?.storeEmail}</span>
+                  <span>{storeData?.data?.contact_email}</span>
                 </a>
 
                 <a
-                  href={`tel:${data?.storePhone}`}
+                  href={`tel:${defaultCountry?.country_code}${storeData?.data?.contact_phone}`}
                   className="text-muted-foreground hover:text-foreground flex items-center gap-2 transition-colors"
                 >
                   <Phone className="h-4 w-4 shrink-0" />
-                  <span>{data?.storePhone}</span>
+                  <span>
+                    {defaultCountry?.country_code}
+                    {storeData?.data?.contact_phone}
+                  </span>
                 </a>
 
                 <div className="text-muted-foreground flex items-start gap-2">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0" />
-                  <span className="leading-relaxed">{fullAddress}</span>
+                  <span className="leading-relaxed">
+                    {storeData?.data?.default_country_address},{" "}
+                    {defaultCountry?.name}
+                  </span>
                 </div>
               </div>
             )}
           </div>
 
-          {/* Company Links */}
           {company && company?.length > 0 && (
             <div>
               <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
@@ -121,6 +163,7 @@ export default function FooterDefault({ content }) {
                 {company.map((link, index) => (
                   <li key={index}>
                     <Link
+                      onClick={isEditing ? editorLinkClick : undefined}
                       to={`${basePath}${link.url}`}
                       className="text-muted-foreground hover:text-foreground inline-block text-sm transition-colors"
                     >
@@ -132,7 +175,6 @@ export default function FooterDefault({ content }) {
             </div>
           )}
 
-          {/* Support Links */}
           {support && support.length > 0 && (
             <div>
               <h4 className="mb-4 text-sm font-semibold tracking-wider uppercase">
@@ -142,6 +184,7 @@ export default function FooterDefault({ content }) {
                 {support.slice(0, 3).map((link, index) => (
                   <li key={index}>
                     <Link
+                      onClick={isEditing ? editorLinkClick : undefined}
                       to={`${basePath}${link.url}`}
                       className="text-muted-foreground hover:text-foreground inline-block text-sm transition-colors"
                     >
@@ -162,6 +205,7 @@ export default function FooterDefault({ content }) {
                 {support.slice(3, 6).map((link, index) => (
                   <li key={index}>
                     <Link
+                      onClick={isEditing ? editorLinkClick : undefined}
                       to={`${basePath}${link.url}`}
                       className="text-muted-foreground hover:text-foreground inline-block text-sm transition-colors"
                     >
@@ -179,23 +223,23 @@ export default function FooterDefault({ content }) {
 
         {/* Bottom Footer */}
         <div className="flex flex-col items-center justify-between gap-4 pt-8 md:flex-row">
-          {/* Left: Copyright + Country Switcher */}
+          {/* left side */}
           <div className="flex flex-col items-center gap-3 md:flex-row md:items-center md:gap-6">
-            <p className="text-muted-foreground text-center text-sm md:text-left">
-              © {year} {data?.storeName}. All rights reserved.
+            <p className="text-muted-foreground inline-flex items-center justify-center gap-1 text-sm">
+              <Copyright className="size-4" /> {year} {storeData?.data?.name}.
+              All rights reserved.
             </p>
 
             {countries?.length > 0 && (
               <FooterCountrySwitcher
                 handleCountryChange={handleCountryChange}
-                data={data}
               />
             )}
           </div>
 
-          {/* Right: Payment Icons + Social Links */}
+          {/* right side */}
           <div className="flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-6">
-            {/* Payment Icons — only shown when Stripe is connected */}
+            {/* online payment methods */}
             {isStripeConnected && (
               <div className="flex flex-col items-end gap-1.5">
                 <div className="flex items-center gap-1.5">
@@ -218,53 +262,24 @@ export default function FooterDefault({ content }) {
               </div>
             )}
 
-            {/* Social Links */}
-            {showSocialLinks && activeSocialLinks?.length > 0 && (
+            {/* social media */}
+            {showSocialLinks && (
               <div className="flex items-center gap-4">
-                {socialLinks?.facebook && (
+                {socialMediaLinks?.map(({ id, url, Icon }) => (
                   <Link
-                    to={socialLinks.facebook}
+                    key={id}
+                    to={url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Facebook"
+                    aria-label={id}
+                    className={cn(
+                      "text-muted-foreground hover:text-foreground transition-colors",
+                      !url && "hidden",
+                    )}
                   >
-                    <Facebook className="h-5 w-5" />
+                    <Icon />
                   </Link>
-                )}
-                {socialLinks?.twitter && (
-                  <Link
-                    to={socialLinks.twitter}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Twitter"
-                  >
-                    <Twitter className="h-5 w-5" />
-                  </Link>
-                )}
-                {socialLinks?.instagram && (
-                  <Link
-                    to={socialLinks.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Instagram"
-                  >
-                    <Instagram className="h-5 w-5" />
-                  </Link>
-                )}
-                {socialLinks?.youtube && (
-                  <Link
-                    to={socialLinks.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="YouTube"
-                  >
-                    <Youtube className="h-5 w-5" />
-                  </Link>
-                )}
+                ))}
               </div>
             )}
           </div>

@@ -85,7 +85,7 @@ export default function Inventory() {
       <PageHeader
         icon={Package}
         title="Inventory Management"
-        description="Monitor stock levels, update inventory and keep product availability up to date."
+        description="Monitor stock levels, update inventory and keep product availability up to date"
       />
 
       <div className="bg-card space-y-6 rounded-lg p-5">

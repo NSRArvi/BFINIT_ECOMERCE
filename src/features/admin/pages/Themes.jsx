@@ -1,22 +1,19 @@
 import { Palette } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
 import ThemeOverview from "../components/sections/themes/ThemeOverview";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
+import PageHeader from "@/components/shared/PageHeader";
 import ThemeLibrary from "../components/sections/themes/ThemeLibrary";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import EmptyStoreState from "../components/EmptyStoreState";
-
-const THEME_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "Themes" },
-];
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Themes() {
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
-  if (!selectedStore) {
+  if (!activeStore) {
     return (
-      <EmptyStoreState
+      <EmptyState
+        icon={Palette}
         title="Store Required"
         description="Create a store first to choose and customize your storefront theme."
       />
@@ -25,14 +22,12 @@ export default function Themes() {
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={THEME_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.themes} />
 
-      {/* Page Header */}
       <PageHeader
         icon={Palette}
         title="Themes"
-        description="Choose and customize the design for"
+        description="Manage your store's theme and customize its appearance"
       />
 
       <ThemeOverview />

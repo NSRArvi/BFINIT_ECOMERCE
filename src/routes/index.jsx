@@ -2,7 +2,6 @@ import { createBrowserRouter } from "react-router";
 import { publicRoutes } from "./publicRoutes";
 import { adminRoutes } from "./adminRoutes";
 import { themeEditorRoutes } from "./themeEditorRoutes";
-import { storeFrontRoutes } from "./storefrontRoutes";
 import { superAdminRoutes } from "./superAdminRoutes";
 
 export const router = createBrowserRouter([
@@ -10,5 +9,5 @@ export const router = createBrowserRouter([
   superAdminRoutes,
   adminRoutes,
   themeEditorRoutes,
-  storeFrontRoutes,
+  // storeFrontRoutes,
 ]);

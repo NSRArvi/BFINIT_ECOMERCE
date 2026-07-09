@@ -1,8 +1,8 @@
-import useTheme from "@/hooks/useTheme";
 import SectionRenderer from "./core/SectionRenderer";
+import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 
 export default function Footer() {
-  const { sections, activeSection } = useTheme();
+  const { sections, activeSection } = useThemeEditor();
 
   return (
     <SectionRenderer

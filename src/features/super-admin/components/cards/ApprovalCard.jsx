@@ -16,7 +16,7 @@ export default function ApprovalCard({ orderDetails = {} }) {
   });
 
   const handlePaymentApproval = () => {
-    mutate(null, {
+    mutate(undefined, {
       onSuccess: (data) => {
         toast.success(data?.message);
         queryClient.invalidateQueries([
