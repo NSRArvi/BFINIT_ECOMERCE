@@ -1,6 +1,6 @@
-import { CountryContext } from "@/context/CountryContext";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
+import { CountryContext } from "@/context/CountryContext";
 
 export default function CountryProvider({ children }) {
   const { storeId } = useParams();

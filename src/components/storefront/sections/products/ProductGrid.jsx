@@ -1,6 +1,5 @@
 import { useParams } from "react-router";
 import ProductCard from "../../cards/products/ProductCard";
-import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 import useCountry from "@/hooks/useCountry";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { cn } from "@/lib/utils";
@@ -12,9 +11,8 @@ const gridColsMap = {
   6: "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-6",
 };
 
-export default function ProductGrid({ content }) {
+export default function ProductGrid({ content = {}, isEditing = false }) {
   const { storeId } = useParams();
-  const { isEditorMode } = useThemeEditor();
   const { selectedCountry } = useCountry();
 
   const limit = content?.productsToShow || 8;
@@ -28,7 +26,7 @@ export default function ProductGrid({ content }) {
   const products =
     data?.data?.products?.length > 0 ? data?.data?.products : dummyProducts;
 
-  if (!isEditorMode && products?.length === 0) {
+  if (!isEditing && !data?.data?.products?.length >= 1) {
     return null;
   }
 
@@ -47,7 +45,11 @@ export default function ProductGrid({ content }) {
           )}
         >
           {products?.slice(0, parseInt(limit))?.map((product) => (
-            <ProductCard key={product?._id} product={product} />
+            <ProductCard
+              key={product?.id}
+              product={product}
+              isEditing={isEditing}
+            />
           ))}
         </div>
       </div>

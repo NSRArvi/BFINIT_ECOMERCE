@@ -1,9 +1,24 @@
-const transformVariantsForPayload = (variants, startIndex) => {
+const transformVariantsForPayload = (variants, startIndex, defaultPricing) => {
   let imageIndex = startIndex;
   const imageFields = [];
 
   const transformedVariants = (variants ?? []).map((variant) => {
-    const { image, ...rest } = variant;
+    const { image, price, discount_value, is_discount, ...rest } = variant;
+
+    const finalPrice = defaultPricing.use_default_pricing
+      ? defaultPricing.price
+      : price;
+    const finalDiscount = defaultPricing.use_default_pricing
+      ? defaultPricing.discount_value
+      : discount_value;
+    const finalIsDiscount = finalDiscount > 0;
+
+    const variantPricing = {
+      price: finalPrice,
+      discount_value: finalDiscount,
+      is_discount: finalIsDiscount,
+      ...rest,
+    };
 
     if (image instanceof File) {
       const currentIndex = imageIndex;
@@ -12,10 +27,16 @@ const transformVariantsForPayload = (variants, startIndex) => {
         file: image,
       });
       imageIndex += 1;
-      return { ...rest, image_index: currentIndex };
+      return {
+        ...variantPricing,
+        image_index: currentIndex,
+      };
     }
 
-    return { ...rest, image_index: null };
+    return {
+      ...variantPricing,
+      image_index: null,
+    };
   });
 
   return { transformedVariants, imageFields, nextIndex: imageIndex };
@@ -26,17 +47,22 @@ const transformPricing = (pricing, startIndex) => {
   const allImageFields = [];
 
   const transformedPricing = pricing.map((item) => {
-    const { variants, discount_value, ...rest } = item;
+    const { variants, discount_value, price, use_default_pricing, ...rest } =
+      item;
+
+    const defaultPricing = { price, discount_value, use_default_pricing };
+
     const { transformedVariants, imageFields, nextIndex } =
-      transformVariantsForPayload(variants, runningImageIndex);
+      transformVariantsForPayload(variants, runningImageIndex, defaultPricing);
 
     runningImageIndex = nextIndex;
     allImageFields.push(...imageFields);
 
     return {
       ...rest,
+      price,
       discount_value: discount_value || 0,
-      is_discount: parseFloat(discount_value) > 0,
+      is_discount: discount_value > 0,
       variants: transformedVariants,
     };
   });

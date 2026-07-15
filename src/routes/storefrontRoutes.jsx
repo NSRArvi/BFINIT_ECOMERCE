@@ -3,14 +3,13 @@ import StorefrontLayout from "@/layouts/StorefrontLayout";
 import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";
 import ContentPage from "@/pages/storefront/ContentPage";
-import Home from "@/pages/storefront/Home";
+import Home from "@/features/storefront/pages/Home";
 import Login from "@/pages/storefront/Login";
-import ProductDetails from "@/pages/storefront/ProductDetails";
+import ProductDetails from "@/features/storefront/pages/ProductDetails";
 import ShopPage from "@/pages/storefront/Shop";
 import Signup from "@/pages/storefront/Signup";
 import CartProvider from "@/providers/CartProvider";
 import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
-import StorefrontThemeProvider from "@/providers/StorefrontThemeProvider";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "@/pages/storefront/NotFound";
 import Orders from "@/pages/storefront/Orders";
@@ -22,13 +21,11 @@ export const storeFrontRoutes = {
   path: "/stores/:storeId",
   element: (
     <CountryProvider>
-      <StorefrontThemeProvider>
-        <StorefrontAuthProvider>
-          <CartProvider>
-            <StorefrontLayout />
-          </CartProvider>
-        </StorefrontAuthProvider>
-      </StorefrontThemeProvider>
+      <StorefrontAuthProvider>
+        <CartProvider>
+          <StorefrontLayout />
+        </CartProvider>
+      </StorefrontAuthProvider>
     </CountryProvider>
   ),
   children: [
@@ -45,7 +42,7 @@ export const storeFrontRoutes = {
       element: <ShopPage />,
     },
     {
-      path: "shop/:productId",
+      path: "shop/:slug",
       element: <ProductDetails />,
     },
     {

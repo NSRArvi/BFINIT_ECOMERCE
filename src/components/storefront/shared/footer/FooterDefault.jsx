@@ -18,6 +18,7 @@ import { footerLinks } from "@/features/admin/theme-editor/utils/contstants";
 import { getImgUrl } from "@/utils/getImgUrl";
 import { editorLinkClick } from "@/utils/themeEditor";
 import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
+import { resolveDefaultCountry } from "@/features/storefront/utils/country";
 
 const logos = [
   { src: "/images/logo/visa.png", alt: "Visa" },
@@ -57,8 +58,9 @@ export default function FooterDefault({ content }) {
     queryKey: ["stripe-client-config", storeId],
   });
 
-  const defaultCountry = countries?.data?.find(
-    (country) => country.id === storeData?.data?.default_country_id,
+  const defaultCountry = resolveDefaultCountry(
+    countries?.data,
+    storeData?.data?.default_country_id,
   );
 
   const socialMediaLinks = [
@@ -230,11 +232,7 @@ export default function FooterDefault({ content }) {
               All rights reserved.
             </p>
 
-            {countries?.length > 0 && (
-              <FooterCountrySwitcher
-                handleCountryChange={handleCountryChange}
-              />
-            )}
+            <FooterCountrySwitcher handleCountryChange={handleCountryChange} />
           </div>
 
           {/* right side */}

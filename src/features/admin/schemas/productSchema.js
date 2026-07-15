@@ -51,6 +51,7 @@ const variantSchema = z
     stock: z.number({ error: "Stock is required!" }),
     image: z.instanceof(File).nullable().optional(),
     is_active: z.boolean(),
+    is_discount: z.boolean(),
   })
   .superRefine((data, ctx) => {
     if (

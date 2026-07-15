@@ -1,35 +1,54 @@
 import { useEffect } from "react";
 import { Outlet, ScrollRestoration, useParams } from "react-router";
 import StorefrontLoader from "@/components/storefront/loader/StorefrontLoader";
-import Header from "@/components/storefront/Header";
-import Footer from "@/components/storefront/Footer";
 import useGetStoreMeta from "@/hooks/useGetStoreMeta";
-import useTheme from "@/hooks/useTheme";
 import { updateStoreMeta } from "@/utils/meta";
-import CountrySelectModal from "@/components/storefront/modals/CountrySelectModal";
-import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import SectionRenderer from "@/components/theme-renderer/SectionRenderer";
+import useCountry from "@/hooks/useCountry";
+import CountrySelector from "@/features/storefront/components/CountrySelector";
 
 export default function StorefrontLayout() {
   const { storeId } = useParams();
-  const { isLoading: isThemeLoading } = useThemeEditor();
-  const { data: storeMeta, isLoading: isMetaLoading } =
+  const { selectedCountry } = useCountry();
+
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/themes/storeTheme/getThemeForStore/${storeId}`,
+    enabled: !!storeId && !!selectedCountry,
+    queryKey: ["sections", storeId],
+  });
+
+  /* const { data: storeMeta, isLoading: isMetaLoading } =
     useGetStoreMeta(storeId);
 
   useEffect(() => {
     if (storeMeta?.data?.length > 0) {
       updateStoreMeta(storeMeta?.data?.[0]);
     }
-  }, [storeMeta]);
+  }, [storeMeta]); */
 
-  if (isThemeLoading || isMetaLoading) return <StorefrontLoader />;
+  if (isLoading) return <StorefrontLoader />;
 
   return (
     <main>
-      <CountrySelectModal />
-      <Header />
-      <Outlet />
-      <Footer />
-      <ScrollRestoration />
+      {!selectedCountry ? (
+        <CountrySelector />
+      ) : (
+        <>
+          <header className="sticky top-0 z-50">
+            <SectionRenderer
+              sections={data?.data?.theme_configuration?.header}
+            />
+          </header>
+          <Outlet />
+          <footer>
+            <SectionRenderer
+              sections={data?.data?.theme_configuration?.footer}
+            />
+          </footer>
+          <ScrollRestoration />
+        </>
+      )}
     </main>
   );
 }

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -7,29 +7,36 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useCountry from "@/hooks/useCountry";
-import { getDefaultCountry } from "@/utils/currencyHelpers";
-import { Globe } from "lucide-react";
 import useCart from "@/hooks/useCart";
 import CurrencySwitchWarningModal from "@/components/storefront/modals/CurrencySwitchWarningModal";
 import { cn } from "@/lib/utils";
+import { resolveDefaultCountry } from "@/features/storefront/utils/country";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { useParams } from "react-router";
 
-export default function CountrySwitcher({
-  handleCountryChange,
-  data,
-  className,
-}) {
-  const { selectedCountry } = useCountry();
+export default function CountrySwitcher({ className = "" }) {
+  const { storeId } = useParams();
+  const { selectedCountry, saveCountry } = useCountry();
   const { cartItems, clearCart } = useCart();
-  const defaultCountry = getDefaultCountry(data);
 
-  const countries = useMemo(() => data?.countries || [], [data?.countries]);
+  const { data: storeData } = useGetQuery({
+    endpoint: `/api/v1/stores/${storeId}/info`,
+    enabled: !!storeId,
+    queryKey: ["store", storeId],
+  });
+
+  const countries = storeData?.data?.countries;
+  const defaultCountry = resolveDefaultCountry(
+    countries,
+    storeData?.data?.default_country_id,
+  );
 
   const [isOpen, setIsOpen] = useState(false);
   const [pendingCountry, setPendingCountry] = useState(null);
 
   const handleSwitchCurrency = (country) => {
-    const currentId = selectedCountry?._id || defaultCountry?._id;
-    if (country._id === currentId) return;
+    const currentId = selectedCountry?.id || defaultCountry?.id;
+    if (country.id === currentId) return;
 
     if (cartItems?.length > 0) {
       setPendingCountry(country);
@@ -37,11 +44,11 @@ export default function CountrySwitcher({
       return;
     }
 
-    handleCountryChange(country);
+    saveCountry(country);
   };
 
   const handleConfirm = () => {
-    handleCountryChange(pendingCountry);
+    saveCountry(pendingCountry);
     setPendingCountry(null);
     setIsOpen(false);
     clearCart();
@@ -52,6 +59,10 @@ export default function CountrySwitcher({
     setIsOpen(false);
   };
 
+  if (countries?.length <= 1) {
+    return null;
+  }
+
   return (
     <>
       <DropdownMenu>
@@ -61,29 +72,34 @@ export default function CountrySwitcher({
             size="sm"
             className={cn("h-9 items-center gap-1.5 px-2.5 text-xs", className)}
           >
-            <Globe size={14} />
+            <span>{selectedCountry?.flag_emoji}</span>
             <span className="font-medium">
               {selectedCountry?.currency_code || defaultCountry?.currency_code}
             </span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end" className="w-56">
-          {countries.map((country) => (
-            <DropdownMenuItem
-              key={country._id}
-              onClick={() => handleSwitchCurrency(country)}
-              className="flex cursor-pointer items-center justify-between"
-            >
-              <div className="flex flex-col">
-                <span className="text-sm font-medium">
-                  {country.country_name}
+          {countries?.map((country) => {
+            const isSelected = country.id === selectedCountry?.id;
+            return (
+              <DropdownMenuItem
+                key={country.id}
+                onClick={() => handleSwitchCurrency(country)}
+                className={cn(
+                  "flex cursor-pointer items-center justify-between text-sm",
+                  isSelected && "bg-muted font-medium",
+                )}
+              >
+                <span className="flex items-center gap-2">
+                  <span>{country.flag_emoji}</span>
+                  <span>{country.name}</span>
                 </span>
                 <span className="text-muted-foreground text-xs">
-                  {country.currency_name} ({country.currency_symbol})
+                  {country.currency_code}
                 </span>
-              </div>
-            </DropdownMenuItem>
-          ))}
+              </DropdownMenuItem>
+            );
+          })}
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -92,7 +108,7 @@ export default function CountrySwitcher({
         pendingRegion={
           pendingCountry
             ? {
-                name: pendingCountry.country_name,
+                name: pendingCountry.name,
                 currency: pendingCountry.currency_code,
                 currencyLabel: `${pendingCountry.currency_name} (${pendingCountry.currency_symbol})`,
               }

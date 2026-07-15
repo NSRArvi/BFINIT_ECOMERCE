@@ -23,7 +23,7 @@ export const deleteApi = async (
   }
 
   const res = await fetch(BASE_URL + endpoint, options);
-  handleUnauthorized(res);
+  // handleUnauthorized(res);
   const data = await res.json();
 
   if (!res.ok) {

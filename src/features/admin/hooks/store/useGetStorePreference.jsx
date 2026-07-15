@@ -1,6 +1,7 @@
 import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 
+//TODO: delete this component
 export default function useGetStorePreference(storeId) {
   const { selectedStore } = useSelectedStore();
 

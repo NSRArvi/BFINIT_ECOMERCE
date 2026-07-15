@@ -161,6 +161,7 @@ export default function PricingRow({
       stock: undefined,
       image: null,
       is_active: true,
+      is_discount: false,
       labels: combo.labels.join(" / "),
     }));
     replaceVariants(newVariants);

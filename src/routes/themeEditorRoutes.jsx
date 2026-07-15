@@ -1,6 +1,6 @@
 import PrivateRoute from "./PrivateRoute";
 import CartProvider from "@/providers/CartProvider";
-import Home from "@/pages/storefront/Home";
+import Home from "@/features/storefront/pages/Home";
 import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
 import NotFound from "@/pages/storefront/NotFound";
 import CountryProvider from "@/providers/CountryProvider";

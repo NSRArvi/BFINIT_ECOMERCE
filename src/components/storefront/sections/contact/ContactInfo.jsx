@@ -1,8 +1,27 @@
-import { getDefaultCountry } from "@/utils/currencyHelpers";
+import { resolveDefaultCountry } from "@/features/storefront/utils/country";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { Mail, Phone, MapPin } from "lucide-react";
+import { useParams } from "react-router";
 
 export default function ContactInfo({ data = {} }) {
-  const defaultCountry = getDefaultCountry(data);
+  const { storeId } = useParams();
+
+  const { data: countries } = useGetQuery({
+    endpoint: "/api/v1/country",
+    enabled: true,
+    queryKey: ["countries"],
+  });
+
+  const { data: storeData } = useGetQuery({
+    endpoint: `/api/v1/stores/${storeId}/info`,
+    enabled: !!storeId,
+    queryKey: ["store", storeId],
+  });
+
+  const defaultCountry = resolveDefaultCountry(
+    countries,
+    storeData?.data?.default_country_id,
+  );
 
   const { storePhone, storeTelephone, storeEmail, storeAddress, country } =
     data;

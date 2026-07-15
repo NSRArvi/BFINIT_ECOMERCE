@@ -1,11 +1,13 @@
 import { Pencil } from "lucide-react";
-import { componentMap } from "@/components/theme-renderer/componentMap";
-import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
+import { componentMap } from "./componentMap";
 
-export default function SectionRenderer({ sections = [] }) {
-  const { activeSection, setActiveSection, isPreviewMode, isEditing } =
-    useThemeEditor();
-
+export default function SectionRenderer({
+  sections = [],
+  activeSection = null,
+  isEditing = false,
+  isPreviewMode = false,
+  setActiveSection = () => {},
+}) {
   const renderSection = (section, index) => {
     if (!section.visible) return null;
 
@@ -23,6 +25,7 @@ export default function SectionRenderer({ sections = [] }) {
     }
 
     const isActive = activeSection === section.id;
+    const isInteractive = isEditing && !isPreviewMode;
 
     return (
       <div
@@ -31,7 +34,7 @@ export default function SectionRenderer({ sections = [] }) {
         className="group/section relative"
       >
         {/* section hover effect */}
-        {isEditing && !isPreviewMode && !isActive && (
+        {isInteractive && !isActive && (
           <>
             <div className="border-muted-foreground/40 pointer-events-none absolute inset-0 z-100 border border-dashed opacity-0 transition-opacity group-hover/section:opacity-100" />
 
@@ -42,7 +45,7 @@ export default function SectionRenderer({ sections = [] }) {
         )}
 
         {/* section editing active style */}
-        {isEditing && !isPreviewMode && isActive && (
+        {isInteractive && isActive && (
           <>
             <div className="border-primary pointer-events-none absolute inset-0 z-100 border border-dashed" />
 
@@ -52,7 +55,7 @@ export default function SectionRenderer({ sections = [] }) {
           </>
         )}
 
-        <Component content={section.content} isEditing />
+        <Component content={section.content} isEditing={isEditing} />
       </div>
     );
   };

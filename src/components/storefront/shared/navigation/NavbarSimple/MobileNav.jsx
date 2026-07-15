@@ -1,18 +1,23 @@
 import { X } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useBasePath from "@/hooks/useBasePath";
 import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
 import CountrySwitcher from "./CountrySwitcher";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
-export default function MobileNav({
-  data,
-  navLinks,
-  setMobileMenuOpen,
-  handleCountryChange,
-}) {
+export default function MobileNav({ navLinks, setMobileMenuOpen }) {
+  const { storeId } = useParams();
   const { customer, handleLogout } = useStorefrontAuth();
+
+  const { data: storeData } = useGetQuery({
+    endpoint: `/api/v1/stores/${storeId}/info`,
+    enabled: !!storeId,
+    queryKey: ["store", storeId],
+  });
+
+  const countries = storeData?.data?.countries;
 
   const basePath = useBasePath();
 
@@ -27,7 +32,7 @@ export default function MobileNav({
       {/* Drawer */}
       <div className="bg-background border-border fixed inset-y-0 left-0 z-50 w-64 border-r shadow-lg lg:hidden">
         <div className="flex h-16 items-center justify-between px-4">
-          <span className="text-lg font-bold">{data?.storeName}</span>
+          <span className="text-lg font-bold">{countries?.storeName}</span>
           <Button
             variant="ghost"
             size="icon"
@@ -58,11 +63,7 @@ export default function MobileNav({
 
         {/* User Section */}
         <div className="p-4">
-          <CountrySwitcher
-            className="bg-muted hover:bg-accent w-full rounded-md py-2 transition-colors"
-            handleCountryChange={handleCountryChange}
-            data={data}
-          />
+          <CountrySwitcher className="bg-muted hover:bg-accent w-full rounded-md py-2 transition-colors" />
 
           <Separator className="my-3" />
 

@@ -58,7 +58,7 @@ export default function Pricing({ form }) {
       discount_value: undefined,
       stock: undefined,
       variants_enabled: false,
-      use_default_pricing: true,
+      use_default_pricing: false,
       options: [],
       variants: [],
     });

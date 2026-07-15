@@ -25,7 +25,7 @@ export const postApi = async (
     body: isFormData ? payload : JSON.stringify(payload),
   });
 
-  handleUnauthorized(res);
+  // handleUnauthorized(res);
 
   const data = await res.json();
 

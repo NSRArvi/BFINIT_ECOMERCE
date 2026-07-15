@@ -41,25 +41,3 @@ export const getCurrencyCode = (storePreference) => {
 
   return "USD";
 };
-
-export const getDefaultCountry = (storePreference) => {
-  if (storePreference?.countries && Array.isArray(storePreference.countries)) {
-    return (
-      storePreference.countries.find((country) => country?.isDefault) ||
-      storePreference.countries[0]
-    );
-  }
-
-  // Create country object from old format
-  if (storePreference?.data) {
-    return {
-      country_name: storePreference.data.country,
-      currency_code: storePreference.data.currencyCode,
-      currency_symbol: storePreference.data.currencySymbol,
-      currency_name: storePreference.data.currencyName,
-      isDefault: true,
-    };
-  }
-
-  return null;
-};

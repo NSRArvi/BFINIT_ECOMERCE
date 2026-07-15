@@ -16,7 +16,7 @@ export const patchApi = async (endpoint, token, clientId, payload) => {
     body: isFormData ? payload : JSON.stringify(payload),
   });
 
-  handleUnauthorized(res);
+  // handleUnauthorized(res);
 
   const data = await res.json();
 

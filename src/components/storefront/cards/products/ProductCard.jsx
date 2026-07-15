@@ -5,50 +5,29 @@ import { Button } from "@/components/ui/button";
 import VariantSelectorModal from "../../modals/VariantSelectorModal";
 import useBasePath from "@/hooks/useBasePath";
 import useCart from "@/hooks/useCart";
-import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 import { getImgUrl } from "@/utils/getImgUrl";
 import { getDiscountPercent } from "@/utils/products";
 import { formatPrice } from "@/utils/formatPrice";
 import { editorLinkClick } from "@/utils/themeEditor";
 
-export default function ProductCard({ product }) {
-  const { isEditing } = useThemeEditor();
+export default function ProductCard({ product = {}, isEditing = false }) {
   const { addToCart } = useCart();
   const basePath = useBasePath();
 
-  const {
-    id,
-    name,
-    countryPricing,
-    image,
-    short_description,
-    variants,
-    pricing,
-  } = product || {};
-
-  const { price, discount_value, is_discount, country } = countryPricing || {};
+  const { slug, name, countryPricing, image, short_description } =
+    product || {};
+  const { price, discount_value, is_discount, country, variants_enabled } =
+    countryPricing || {};
 
   const [showVariantModal, setShowVariantModal] = useState(false);
-
   const currencySymbol = country?.abbreviation;
-
-  const hasVariants =
-    (pricing?.variants?.enabled && pricing?.variants?.attributes?.length > 0) ||
-    (variants?.enabled && variants?.attributes?.length > 0);
-
-  const hasRequiredVariants =
-    (hasVariants &&
-      pricing?.variants?.attributes.some((attr) => attr.required === true)) ||
-    (hasVariants &&
-      variants?.attributes.some((attr) => attr.required === true));
-
   const discountPercent = getDiscountPercent(price, discount_value);
 
   const handleAddToCart = () => {
-    if (hasRequiredVariants) {
+    if (variants_enabled) {
       setShowVariantModal(true);
     } else {
-      addToCart(product, 1);
+      addToCart(product);
     }
   };
 
@@ -59,7 +38,7 @@ export default function ProductCard({ product }) {
           {image ? (
             <Link
               onClick={isEditing ? editorLinkClick : undefined}
-              to={`${basePath}/shop/${id}`}
+              to={`${basePath}/shop/${slug}`}
               className="h-full w-full"
             >
               <img
@@ -98,7 +77,7 @@ export default function ProductCard({ product }) {
             >
               <Link
                 onClick={isEditing ? editorLinkClick : undefined}
-                to={`${basePath}/shop/${id}`}
+                to={`${basePath}/shop/${slug}`}
               >
                 <Eye />
               </Link>
@@ -109,7 +88,7 @@ export default function ProductCard({ product }) {
         <div className="flex flex-1 flex-col p-4">
           <Link
             onClick={isEditing ? editorLinkClick : undefined}
-            to={`${basePath}/shop/${id}`}
+            to={`${basePath}/shop/${slug}`}
             className="group-hover:text-primary mb-2 line-clamp-2 text-sm leading-snug font-semibold transition-colors"
           >
             {name}
@@ -151,9 +130,9 @@ export default function ProductCard({ product }) {
       </div>
 
       <VariantSelectorModal
+        product={product}
         open={showVariantModal}
         onClose={setShowVariantModal}
-        product={product}
       />
     </>
   );

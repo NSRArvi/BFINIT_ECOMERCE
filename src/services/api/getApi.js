@@ -9,7 +9,7 @@ export const getApi = async (endpoint, token, clientId) => {
 
   const res = await fetch(BASE_URL + endpoint, { headers });
 
-  handleUnauthorized(res);
+  // handleUnauthorized(res);
 
   if (!res.ok) {
     throw new Error("Network response was not ok");
