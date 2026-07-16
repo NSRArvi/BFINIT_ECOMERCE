@@ -1,6 +1,5 @@
 import Checkout from "@/components/storefront/checkout/Checkout";
 import StorefrontLayout from "@/layouts/StorefrontLayout";
-import Cart from "@/pages/storefront/Cart";
 import Contact from "@/pages/storefront/Contact";
 import ContentPage from "@/pages/storefront/ContentPage";
 import Home from "@/features/storefront/pages/Home";
@@ -16,6 +15,7 @@ import Orders from "@/pages/storefront/Orders";
 import Blogs from "@/pages/storefront/Blogs";
 import BlogDetails from "@/pages/storefront/BlogDetails";
 import CountryProvider from "@/providers/CountryProvider";
+import Cart from "@/features/storefront/pages/Cart";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",

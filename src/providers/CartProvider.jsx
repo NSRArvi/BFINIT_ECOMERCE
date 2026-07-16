@@ -10,6 +10,14 @@ export default function CartProvider({ children }) {
 
   const [cartItems, setCartItems] = useState([]);
   const totalItems = cartItems?.length || 0;
+  const subTotalAmount = cartItems.reduce((total, item) => {
+    return total + item.price * item.quantity;
+  }, 0);
+  const totalAmount = cartItems.reduce((total, item) => {
+    const price = item.discount_value > 0 ? item.discount_value : item.price;
+    return total + price * item.quantity;
+  }, 0);
+  const totalSavingsAmount = subTotalAmount - totalAmount;
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -113,10 +121,37 @@ export default function CartProvider({ children }) {
     }
   };
 
+  const updateItemQuantity = (id, variantId, action) => {
+    const updatedItems = cartItems.map((item) => {
+      if (item.id === id && item.variantId === variantId) {
+        return {
+          ...item,
+          quantity:
+            action === "increment" ? item.quantity + 1 : item.quantity - 1,
+        };
+      }
+      return item;
+    });
+
+    setCartItems(updatedItems);
+  };
+
+  const removeItem = (id, variantId) => {
+    const filteredItems = cartItems.filter(
+      (item) => !(item.id === id && item.variantId === variantId),
+    );
+    setCartItems(filteredItems);
+  };
+
   const value = {
     cartItems,
     totalItems,
+    subTotalAmount,
+    totalAmount,
+    totalSavingsAmount,
     addToCart,
+    updateItemQuantity,
+    removeItem,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
