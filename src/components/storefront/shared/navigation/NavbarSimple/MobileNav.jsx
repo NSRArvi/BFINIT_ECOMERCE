@@ -3,13 +3,13 @@ import { Link, useParams } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useBasePath from "@/hooks/useBasePath";
-import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
 import CountrySwitcher from "./CountrySwitcher";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import useCustomerAuth from "@/features/storefront/hooks/useCustomerAuth";
 
 export default function MobileNav({ navLinks, setMobileMenuOpen }) {
   const { storeId } = useParams();
-  const { customer, handleLogout } = useStorefrontAuth();
+  const { customer, handleLogout } = useCustomerAuth();
 
   const { data: storeData } = useGetQuery({
     endpoint: `/api/v1/stores/${storeId}/info`,
@@ -70,9 +70,9 @@ export default function MobileNav({ navLinks, setMobileMenuOpen }) {
           {customer ? (
             <>
               <div className="bg-muted mb-3 rounded-md p-3">
-                <p className="text-sm font-medium">{customer.data.name}</p>
+                <p className="text-sm font-medium">{customer.user.name}</p>
                 <p className="text-muted-foreground truncate text-xs">
-                  {customer.data.email}
+                  {customer.user.email}
                 </p>
               </div>
               <Link

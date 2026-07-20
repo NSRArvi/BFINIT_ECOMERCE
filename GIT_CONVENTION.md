@@ -31,7 +31,7 @@ Use the feature or area being changed.
 | Scope             | Area                                                                      |
 | ----------------- | ------------------------------------------------------------------------- |
 | `auth`            | Admin/staff login, useAuth, AuthProvider, AuthContext                     |
-| `storefront-auth` | Customer login, useStorefrontAuth, StorefrontAuthProvider                 |
+| `storefront-auth` | Customer login, useCustomerAuth, StorefrontAuthProvider                   |
 | `private-route`   | PrivateRoute gatekeeper, role checks, redirects                           |
 | `routes`          | Route definitions — superAdminRoutes, adminRoutes, storefrontRoutes, etc. |
 | `store`           | Store creation, store switcher, SelectedStoreProvider                     |

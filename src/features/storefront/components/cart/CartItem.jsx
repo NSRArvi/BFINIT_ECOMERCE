@@ -28,10 +28,7 @@ export default function CartItem({ item = {} }) {
   const lineTotal = finalPrice * quantity;
 
   return (
-    <div
-      key={`${id}-${variantId ?? "base"}`}
-      className="flex gap-5 border-r p-6 lg:p-8"
-    >
+    <div key={`${id}-${variantId ?? "base"}`} className="flex gap-5 p-6 lg:p-8">
       <div className="border-border bg-muted relative h-28 w-28 shrink-0 overflow-hidden border">
         <img
           src={getImgUrl(image)}
@@ -54,7 +51,7 @@ export default function CartItem({ item = {} }) {
             )}
 
             {lowStock && (
-              <p className="mt-2 text-xs font-semibold">
+              <p className="text-warning mt-1.5 text-xs font-medium">
                 Only {stock} left in stock
               </p>
             )}
@@ -74,17 +71,17 @@ export default function CartItem({ item = {} }) {
             <button
               onClick={() => updateItemQuantity(id, variantId)}
               disabled={quantity <= 1}
-              className="hover:bg-secondary flex h-8 w-8 items-center justify-center disabled:opacity-30"
+              className="hover:bg-muted flex h-8 w-8 items-center justify-center disabled:pointer-events-none disabled:opacity-50"
             >
               <Minus className="h-3.5 w-3.5" />
             </button>
-            <span className="w-9 text-center text-sm font-semibold">
+            <span className="border-border flex h-8 w-9 items-center justify-center border-x text-sm font-medium">
               {quantity}
             </span>
             <button
               onClick={() => updateItemQuantity(id, variantId, "increment")}
               disabled={quantity >= stock}
-              className="hover:bg-secondary flex h-8 w-8 items-center justify-center disabled:opacity-30"
+              className="hover:bg-muted flex h-8 w-8 items-center justify-center disabled:pointer-events-none disabled:opacity-50"
             >
               <Plus className="h-3.5 w-3.5" />
             </button>
@@ -96,6 +93,7 @@ export default function CartItem({ item = {} }) {
                 {formatPrice(price * quantity, selectedCountry.abbreviation)}
               </p>
             )}
+
             <p className="text-sm font-semibold">
               {formatPrice(lineTotal, selectedCountry.abbreviation)}
             </p>

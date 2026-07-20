@@ -11,13 +11,13 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import useBasePath from "@/hooks/useBasePath";
 import useCart from "@/hooks/useCart";
-import useStorefrontAuth from "@/hooks/auth/useStorefrontAuth";
 import MobileNav from "./MobileNav";
 import SearchOverlay from "./SearchOverlay";
 import CountrySwitcher from "./CountrySwitcher";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { getImgUrl } from "@/utils/getImgUrl";
 import { editorLinkClick } from "@/utils/themeEditor";
+import useCustomerAuth from "@/features/storefront/hooks/useCustomerAuth";
 
 const navLinks = [
   { name: "Home", href: "" },
@@ -30,7 +30,7 @@ export default function NavbarSimple({ content = {}, isEditing = false }) {
   const { storeId } = useParams();
   const basePath = useBasePath();
   const { totalItems } = useCart();
-  const { customer, handleLogout } = useStorefrontAuth();
+  const { customer, handleLogout } = useCustomerAuth();
 
   const { data: storeData } = useGetQuery({
     endpoint: `/api/v1/stores/${storeId}/info`,
@@ -199,10 +199,10 @@ export default function NavbarSimple({ content = {}, isEditing = false }) {
                     <>
                       <div className="px-2 py-2">
                         <p className="text-sm font-medium">
-                          {customer.data.name}
+                          {customer.user.name}
                         </p>
                         <p className="text-muted-foreground truncate text-xs">
-                          {customer.data.email}
+                          {customer.user.email}
                         </p>
                       </div>
                       <Separator className="my-2" />

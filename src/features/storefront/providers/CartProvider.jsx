@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router";
-import { CartContext } from "@/context/CartContext";
-import useCountry from "@/hooks/useCountry";
 import toast from "react-hot-toast";
+import useCountry from "@/hooks/useCountry";
+import { CartContext } from "../context/CartContext";
 
 export default function CartProvider({ children }) {
   const { storeId } = useParams();
@@ -10,14 +10,17 @@ export default function CartProvider({ children }) {
 
   const [cartItems, setCartItems] = useState([]);
   const totalItems = cartItems?.length || 0;
-  const subTotalAmount = cartItems.reduce((total, item) => {
+
+  const originalAmount = cartItems.reduce((total, item) => {
     return total + item.price * item.quantity;
   }, 0);
-  const totalAmount = cartItems.reduce((total, item) => {
+
+  const subTotalAmount = cartItems.reduce((total, item) => {
     const price = item.discount_value > 0 ? item.discount_value : item.price;
     return total + price * item.quantity;
   }, 0);
-  const totalSavingsAmount = subTotalAmount - totalAmount;
+
+  const totalSavingsAmount = originalAmount - subTotalAmount;
 
   // Load cart from localStorage on mount
   useEffect(() => {
@@ -143,15 +146,20 @@ export default function CartProvider({ children }) {
     setCartItems(filteredItems);
   };
 
+  const clearCart = () => {
+    setCartItems([]);
+  };
+
   const value = {
     cartItems,
     totalItems,
+    originalAmount,
     subTotalAmount,
-    totalAmount,
     totalSavingsAmount,
     addToCart,
     updateItemQuantity,
     removeItem,
+    clearCart,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

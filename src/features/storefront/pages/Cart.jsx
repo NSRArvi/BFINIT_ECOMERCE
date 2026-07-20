@@ -4,13 +4,18 @@ import useCart from "@/hooks/useCart";
 import useCountry from "@/hooks/useCountry";
 import { formatPrice } from "@/utils/formatPrice";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router";
+import useBasePath from "@/hooks/useBasePath";
 
 const DELIVERY_FEE = 0;
 
 export default function Cart() {
   const { selectedCountry } = useCountry();
-  const { cartItems, subTotalAmount, totalSavingsAmount, totalAmount } =
+  const { cartItems, subTotalAmount, totalSavingsAmount, originalAmount } =
     useCart();
+  const basePath = useBasePath();
+
+  const totalAmount = subTotalAmount + DELIVERY_FEE;
 
   if (cartItems.length === 0) {
     return (
@@ -65,7 +70,7 @@ export default function Cart() {
           </div>
 
           {/* right order summary */}
-          <div className="bg-muted/40 h-fit">
+          <div className="bg-muted/40 h-fit border border-t-0">
             <div className="p-6 lg:p-8">
               <h2 className="font-geist mb-6 text-sm font-semibold tracking-widest uppercase">
                 Order summary
@@ -75,7 +80,7 @@ export default function Cart() {
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Subtotal</span>
                   <span>
-                    {formatPrice(subTotalAmount, selectedCountry.abbreviation)}
+                    {formatPrice(originalAmount, selectedCountry.abbreviation)}
                   </span>
                 </div>
                 {totalSavingsAmount > 0 && (
@@ -106,9 +111,14 @@ export default function Cart() {
                 </div>
               </div>
 
-              <Button className="mt-6 w-full rounded-none py-6 font-semibold tracking-wide uppercase">
-                Proceed to checkout
-                <ArrowRight className="h-4 w-4" />
+              <Button
+                asChild
+                className="mt-6 w-full rounded-none py-6 font-semibold tracking-wide uppercase"
+              >
+                <Link to={`${basePath}/checkout`}>
+                  Proceed to checkout
+                  <ArrowRight className="h-4 w-4" />
+                </Link>
               </Button>
 
               <p className="text-muted-foreground mt-3 text-center text-xs">

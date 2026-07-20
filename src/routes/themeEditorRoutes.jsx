@@ -1,11 +1,11 @@
 import PrivateRoute from "./PrivateRoute";
-import CartProvider from "@/providers/CartProvider";
 import Home from "@/features/storefront/pages/Home";
-import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
 import NotFound from "@/pages/storefront/NotFound";
 import CountryProvider from "@/providers/CountryProvider";
 import ThemeEditorLayout from "@/features/admin/theme-editor/layout/ThemeEditorLayout";
 import ThemeEditorProvider from "@/features/admin/theme-editor/providers/ThemeEditorProvider";
+import CustomerAuthProvider from "@/features/storefront/providers/CustomerAuthProvider";
+import CartProvider from "@/features/storefront/providers/CartProvider";
 
 export const themeEditorRoutes = {
   path: "/stores/:storeId/theme-editor/:themeId",
@@ -13,11 +13,11 @@ export const themeEditorRoutes = {
     <PrivateRoute role="user">
       <CountryProvider>
         <ThemeEditorProvider>
-          <StorefrontAuthProvider>
+          <CustomerAuthProvider>
             <CartProvider>
               <ThemeEditorLayout />
             </CartProvider>
-          </StorefrontAuthProvider>
+          </CustomerAuthProvider>
         </ThemeEditorProvider>
       </CountryProvider>
     </PrivateRoute>

@@ -1,6 +1,5 @@
 import useAuth from "@/hooks/auth/useAuth";
-import { postApi } from "@/services-v2/api/postApi";
-import { useMutation } from "@tanstack/react-query";
+import useBasePostMutation from "./useBasePostMutation";
 
 export default function usePostMutation({
   endpoint = "",
@@ -9,9 +8,10 @@ export default function usePostMutation({
 }) {
   const { token } = useAuth();
 
-  return useMutation({
-    mutationFn: (payload) =>
-      postApi({ endpoint, payload, token: isTokenRequired ? token : null }),
+  return useBasePostMutation({
+    endpoint,
+    isTokenRequired,
+    token,
     ...options,
   });
 }

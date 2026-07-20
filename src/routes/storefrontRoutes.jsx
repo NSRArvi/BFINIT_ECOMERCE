@@ -1,31 +1,32 @@
-import Checkout from "@/components/storefront/checkout/Checkout";
 import StorefrontLayout from "@/layouts/StorefrontLayout";
 import Contact from "@/pages/storefront/Contact";
 import ContentPage from "@/pages/storefront/ContentPage";
 import Home from "@/features/storefront/pages/Home";
-import Login from "@/pages/storefront/Login";
 import ProductDetails from "@/features/storefront/pages/ProductDetails";
 import ShopPage from "@/pages/storefront/Shop";
-import Signup from "@/pages/storefront/Signup";
-import CartProvider from "@/providers/CartProvider";
-import StorefrontAuthProvider from "@/providers/StorefrontAuthProvider";
+import CartProvider from "@/features/storefront/providers/CartProvider";
 import PrivateRoute from "./PrivateRoute";
 import NotFound from "@/pages/storefront/NotFound";
-import Orders from "@/pages/storefront/Orders";
+import Orders from "@/features/storefront/pages/Orders";
 import Blogs from "@/pages/storefront/Blogs";
 import BlogDetails from "@/pages/storefront/BlogDetails";
 import CountryProvider from "@/providers/CountryProvider";
 import Cart from "@/features/storefront/pages/Cart";
+import Signup from "@/features/storefront/pages/Signup";
+import Login from "@/features/storefront/pages/Login";
+import Checkout from "@/features/storefront/pages/Checkout";
+import CustomerAuthProvider from "@/features/storefront/providers/CustomerAuthProvider";
+import OrderDetails from "@/features/storefront/pages/OrderDetails";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
   element: (
     <CountryProvider>
-      <StorefrontAuthProvider>
+      <CustomerAuthProvider>
         <CartProvider>
           <StorefrontLayout />
         </CartProvider>
-      </StorefrontAuthProvider>
+      </CustomerAuthProvider>
     </CountryProvider>
   ),
   children: [
@@ -54,6 +55,14 @@ export const storeFrontRoutes = {
     {
       path: "cart",
       element: <Cart />,
+    },
+    {
+      path: "checkout",
+      element: (
+        // <PrivateRoute role="customer">
+        <Checkout />
+        // </PrivateRoute>
+      ),
     },
     {
       path: "contact",
@@ -113,19 +122,19 @@ export const storeFrontRoutes = {
       element: <BlogDetails />,
     },
     {
-      path: "checkout",
+      path: "orders",
       element: (
-        <PrivateRoute role="customer">
-          <Checkout />
-        </PrivateRoute>
+        // <PrivateRoute role="customer">
+        <Orders />
+        // </PrivateRoute>
       ),
     },
     {
-      path: "orders",
+      path: "orders/:orderId",
       element: (
-        <PrivateRoute role="customer">
-          <Orders />
-        </PrivateRoute>
+        // <PrivateRoute role="customer">
+        <OrderDetails />
+        // </PrivateRoute>
       ),
     },
   ],

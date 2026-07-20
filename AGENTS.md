@@ -50,7 +50,7 @@ Commit convention is defined in `GIT_CONVENTION.md`. Always read it before writi
 - `useGetQuery` — custom TanStack Query wrapper for all data fetching
 - `useUpdateMutation` — custom mutation wrapper for updates
 - `useAuth` — admin/staff auth (localStorage key: `authInfo`)
-- `useStorefrontAuth` — customer auth (localStorage key: `customerAuthInfo`)
+- `useCustomerAuth` — customer auth (localStorage key: `customerAuthInfo`)
 - `useSelectedStore` — active store from `SelectedStoreProvider`
 - `usePackageInfo(invoiceNumber)` — subscription/plan limits
 - URL-driven pagination via `useSearchParams`; `TablePagination` accepts `meta` prop
