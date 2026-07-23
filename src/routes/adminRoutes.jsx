@@ -27,6 +27,8 @@ import ManageBank from "@/features/admin/pages/ManageBank";
 import UpdateBank from "@/features/admin/pages/UpdateBank";
 import BlogForm from "@/features/admin/pages/BlogForm";
 import ProductForm from "@/features/admin/pages/ProductForm";
+import ShippingZones from "@/features/admin/pages/ShippingZones";
+import ShippingZoneForm from "@/features/admin/pages/ShippingZoneForm";
 
 export const adminRoutes = {
   path: "/",
@@ -111,6 +113,18 @@ export const adminRoutes = {
     {
       path: "/payment/edit/:id",
       element: <UpdateBank />,
+    },
+    {
+      path: "/shipping-zones",
+      element: <ShippingZones />,
+    },
+    {
+      path: "/shipping-zones/add",
+      element: <ShippingZoneForm />,
+    },
+    {
+      path: "/shipping-zones/edit/:id/:storeId",
+      element: <ShippingZoneForm />,
     },
     {
       path: "/support/customer-support",

@@ -71,6 +71,7 @@ export default function VariantSelectorModal({
   const activeDiscount =
     matchedVariant?.is_discount && matchedVariant?.discount_value;
   const activeStock = matchedVariant?.stock ?? stock;
+  const inStock = activeStock > 0;
 
   const handleSelectValue = (optionId, valueId) => {
     setSelectedOptions((prev) => ({ ...prev, [optionId]: valueId }));
@@ -191,17 +192,20 @@ export default function VariantSelectorModal({
                     <Plus className="h-3.5 w-3.5" />
                   </button>
                 </div>
-                <p className="text-muted-foreground text-xs">
-                  {activeStock} in stock
+                <p
+                  className={`text-xs ${inStock ? "text-muted-foreground" : "text-destructive"}`}
+                >
+                  {inStock ? `${activeStock} in stock` : "Out of stock"}
                 </p>
               </div>
             </div>
 
             <Button
               onClick={handleAddToCart}
+              disabled={!inStock}
               className="mt-8 h-12 w-full rounded-none text-sm tracking-wider uppercase"
             >
-              Add to Cart
+              {inStock ? "Add to Cart" : "Out of Stock"}
             </Button>
           </div>
         </div>

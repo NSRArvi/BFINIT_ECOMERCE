@@ -48,7 +48,7 @@ export default function OrderDetails() {
   const { user } = useAuth();
 
   const { data: orderData, isLoading } = useGetQuery({
-    endpoint: `/orders/${orderId}`,
+    endpoint: `/api/v1/order/${orderId}`,
     token: user?.token,
     clientId: user?.data?.clientid,
     queryKey: ["orders", orderId],

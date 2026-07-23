@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Link } from "react-router";
 import toast from "react-hot-toast";
 import { Eye, Copy, CreditCard, Banknote } from "lucide-react";
@@ -12,342 +11,180 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import useAuth from "@/hooks/auth/useAuth";
-import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 import { TableCell, TableRow } from "@/components/ui/table";
-import { Checkbox } from "@/components/ui/checkbox";
-import { formatPrice } from "@/utils/formatPrice";
 import useSelectedStore from "@/hooks/useSelectedStore";
+import { useState } from "react";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 
-// Status configurations matching API format
+// TODO: confirm real numeric status enum with backend
 const ORDER_STATUSES = [
-  { value: "PLACED", label: "Placed", variant: "secondary" },
-  { value: "CONFIRMED", label: "Confirmed", variant: "default" },
-  { value: "PROCESSING", label: "Processing", variant: "default" },
-  { value: "SHIPPED", label: "Shipped", variant: "default" },
-  { value: "DELIVERED", label: "Delivered", variant: "default" },
-  { value: "CANCELLED", label: "Cancelled", variant: "destructive" },
+  { value: 0, label: "Pending", variant: "secondary" },
+  { value: 1, label: "Processing", variant: "default" },
+  { value: 2, label: "Delivered", variant: "default" },
+  { value: 3, label: "Cancelled", variant: "destructive" },
 ];
 
-const DELIVERY_STATUSES = [
-  { value: "PENDING", label: "Pending", variant: "secondary" },
-  { value: "IN_TRANSIT", label: "In Transit", variant: "default" },
-  { value: "OUT_FOR_DELIVERY", label: "Out for Delivery", variant: "default" },
-  { value: "DELIVERED", label: "Delivered", variant: "default" },
-  { value: "FAILED", label: "Failed", variant: "destructive" },
-  { value: "RETURNED", label: "Returned", variant: "destructive" },
-];
-
-const PAYMENT_STATUS_MAP = {
-  PENDING: { label: "Pending", variant: "secondary" },
-  COMPLETED: { label: "Completed", variant: "default" },
-  FAILED: { label: "Failed", variant: "destructive" },
-};
-
-const MANUAL_PAYMENT_STATUSES = [
-  { value: "PENDING", label: "Pending", variant: "secondary" },
-  { value: "PAID", label: "Paid", variant: "default" },
-  { value: "FAILED", label: "Failed", variant: "destructive" },
-  { value: "REFUNDED", label: "Refunded", variant: "secondary" },
-];
-
-function getStatusVariant(status, statusList) {
-  const found = statusList.find((s) => s.value === status);
-  return found ? found.variant : "secondary";
+function getStatusVariant(status) {
+  return ORDER_STATUSES.find((s) => s.value === status)?.variant ?? "secondary";
 }
 
-function getStatusLabel(status, statusList) {
-  const found = statusList.find((s) => s.value === status);
-  return found ? found.label : status;
+function getStatusLabel(status) {
+  return ORDER_STATUSES.find((s) => s.value === status)?.label ?? status;
 }
 
 function formatDateTime(isoString) {
   const date = new Date(isoString);
-  const formattedDate = date.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  });
-  const formattedTime = date.toLocaleTimeString("en-US", {
-    hour: "2-digit",
-    minute: "2-digit",
-    hour12: true,
-  });
-  return { date: formattedDate, time: formattedTime };
-}
-
-function getPaymentMethodIcon(method) {
-  if (method === "COD") return Banknote;
-  return CreditCard;
-}
-
-function getPaymentMethodLabel(method) {
-  const methodMap = {
-    COD: "Cash On Delivery",
-    STRIPE: "Stripe",
-    CARD: "Card",
-    BankTransfer: "Bank Transfer",
+  return {
+    date: date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    }),
+    time: date.toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: true,
+    }),
   };
-  return methodMap[method] || method;
+}
+
+function getPaymentMethodIcon(type) {
+  return type === "offline" ? Banknote : CreditCard;
 }
 
 export default function OrderRow({ order }) {
   const {
-    _id,
-    orderId,
-    orderStatus: initialOrderStatus,
-    deliveryStatus: initialDeliveryStatus,
-    createdAt,
-    pricingSummary,
-    products,
-    payment,
-    shippingDetails,
-    currencySymbol,
+    id,
+    order_number,
+    status: initialStatus,
+    created_at,
+    total_amount,
+    currency,
+    payment_type,
+    phone,
+    shipping_address,
+    ecomOrderItems,
   } = order;
 
   const { selectedStore } = useSelectedStore();
-
   const queryClient = useQueryClient();
-  const { user } = useAuth();
-  const [currentPaymentStatus, setCurrentPaymentStatus] = useState(
-    payment?.status,
-  );
-  const [orderStatus, setOrderStatus] = useState(initialOrderStatus);
-  const [deliveryStatus, setDeliveryStatus] = useState(initialDeliveryStatus);
+  const [status, setStatus] = useState(initialStatus);
 
-  const isManualPayment = ["COD", "BankTransfer"].includes(payment?.method);
-  const paymentStatusOptions = isManualPayment ? MANUAL_PAYMENT_STATUSES : [];
+  const { date: createdDate, time: createdTime } = formatDateTime(created_at);
 
-  // Format date and time from createdAt
-  const { date: createdDate, time: createdTime } = formatDateTime(createdAt);
-
-  // Calculate total items
   const totalItems =
-    products?.reduce((sum, product) => sum + product.quantity, 0) || 0;
+    ecomOrderItems?.reduce((sum, item) => sum + item.quantity, 0) || 0;
 
-  // Get grand total
-  const grandTotal = pricingSummary?.grandTotal || "0";
+  const PaymentIcon = getPaymentMethodIcon(payment_type);
 
-  // Payment info
-  const PaymentIcon = getPaymentMethodIcon(payment?.method);
-  const paymentMethodLabel = getPaymentMethodLabel(payment?.method);
-  const paymentStatus = PAYMENT_STATUS_MAP[payment?.status] || {
-    label: payment?.status,
-    variant: "secondary",
-  };
-
-  // custom patch hooks to update order status
-  const { mutate: orderMutate, isPending: orderLoading } = usePatchMutaion({
-    endpoint: `/orders/update/order/${_id}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-  });
-
-  // custom patch hooks to update delivery status
-  const { mutate: deliveryMutate, isPending: deliveryLoading } =
-    usePatchMutaion({
-      endpoint: `/orders/update/delivery/${_id}`,
-      token: user?.token,
-      clientId: user?.data?.clientid,
+  // single status endpoint - no separate order/delivery/payment status yet
+  const { mutate: statusMutate, isPending: isUpdatingStatus } =
+    usePatchMutation({
+      endpoint: `/api/v1/order/status/${id}`,
+      token: true,
+      clientId: true,
     });
 
-  const { mutate: paymentMutate, isPending: paymentLoading } = usePatchMutaion({
-    endpoint: `/orders/update/payment/${_id}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-  });
-
-  const updatePaymentStatus = (value) => {
-    setCurrentPaymentStatus(value);
-    paymentMutate(
-      { paymentStatus: value },
+  const updateStatus = (value) => {
+    setStatus(value);
+    statusMutate(
+      { status: value },
       {
         onSuccess: () => {
-          toast.success("Payment status updated!");
+          toast.success("Order status updated!");
           queryClient.invalidateQueries(["orders", selectedStore?.storeId]);
         },
         onError: () => {
           toast.error("Something went wrong!");
-          setCurrentPaymentStatus(payment?.status);
+          setStatus(initialStatus);
         },
       },
     );
   };
 
-  // function to update order status
-  const updateOrderStatus = (value) => {
-    setOrderStatus(value);
-
-    const payload = {
-      orderStatus: value,
-    };
-
-    orderMutate(payload, {
-      onSuccess: () => {
-        toast.success("Order status updated!");
-        queryClient.invalidateQueries(["orders", selectedStore?.storeId]);
-      },
-      onError: () => {
-        toast.error("Something went wrong!");
-        setOrderStatus(initialOrderStatus);
-      },
-    });
-  };
-
-  // function to update delivery status
-  const updateDeliveryStatus = (value) => {
-    setDeliveryStatus(value);
-
-    const payload = {
-      deliveryStatus: value,
-    };
-
-    deliveryMutate(payload, {
-      onSuccess: () => {
-        toast.success("Delivery status updated!");
-        queryClient.invalidateQueries(["orders", selectedStore?.storeId]);
-      },
-      onError: () => {
-        toast.error("Something went wrong!");
-        setDeliveryStatus(initialDeliveryStatus);
-      },
-    });
-  };
-
   const copyOrderId = () => {
-    navigator.clipboard.writeText(orderId || _id);
+    navigator.clipboard.writeText(order_number);
     toast.success("Order ID copied!");
   };
 
   return (
     <TableRow>
-      {/* <TableCell className="w-10 border border-l-0">
-        <Checkbox />
-      </TableCell> */}
-
-      <TableCell className="max-w-xs truncate border text-xs font-medium">
-        <div className="flex items-center gap-2">
-          <span>{orderId}</span>
+      <TableCell className="border text-xs">
+        <div className="flex items-center gap-1.5">
           <Button
             onClick={copyOrderId}
             size="icon"
             variant="ghost"
-            className="size-4 shrink-0"
+            className="size-3.5 shrink-0"
           >
-            <Copy />
+            <Copy className="size-3.5" />
           </Button>
+          <span className="max-w-xs truncate">{order_number}</span>
         </div>
       </TableCell>
 
       <TableCell className="max-w-xs border text-xs">
         <div className="flex flex-col gap-1">
-          <span className="text-foreground font-medium">
-            {shippingDetails?.name || "N/A"}
-          </span>
-          <span className="text-muted-foreground">
-            {shippingDetails?.email}
-          </span>
-          <span className="text-muted-foreground">
-            {shippingDetails?.countryPhoneCode}
-            {shippingDetails?.phone}
+          <span>{phone}</span>
+          <span className="text-muted-foreground truncate">
+            {shipping_address}
           </span>
         </div>
       </TableCell>
 
       <TableCell className="border text-xs">
         <div className="flex flex-col gap-0.5">
-          <span className="font-medium">{createdDate}</span>
+          <span className="">{createdDate}</span>
           <span className="text-muted-foreground">{createdTime}</span>
         </div>
       </TableCell>
 
-      <TableCell className="border text-xs font-medium">
+      <TableCell className="border text-xs">
         {totalItems} {totalItems === 1 ? "item" : "items"}
       </TableCell>
 
-      <TableCell className="border text-xs font-medium">
-        {formatPrice(grandTotal, currencySymbol)}
+      <TableCell className="border text-xs">
+        {Number(total_amount).toLocaleString()} {currency}
       </TableCell>
 
       <TableCell className="border text-xs">
         <div className="flex items-center gap-1.5">
           <PaymentIcon className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
-          <span className="font-medium">{paymentMethodLabel}</span>
+          <span className="capitalize">{payment_type}</span>
         </div>
       </TableCell>
 
+      {/* stub - no payment_status field in response, reusing status */}
       <TableCell className="border text-xs">
-        {isManualPayment ? (
-          <Select
-            value={currentPaymentStatus}
-            onValueChange={updatePaymentStatus}
-            disabled={paymentLoading}
-          >
-            <SelectTrigger className="w-40 border text-xs">
-              <SelectValue>
-                <Badge
-                  variant={getStatusVariant(
-                    currentPaymentStatus,
-                    paymentStatusOptions,
-                  )}
-                  className="text-xs font-normal"
-                >
-                  {getStatusLabel(currentPaymentStatus, paymentStatusOptions)}
-                </Badge>
-              </SelectValue>
-            </SelectTrigger>
-            <SelectContent>
-              {paymentStatusOptions.map((status) => (
-                <SelectItem
-                  key={status.value}
-                  value={status.value}
-                  className="text-xs"
-                >
-                  <Badge
-                    variant={status.variant}
-                    className="text-xs font-normal"
-                  >
-                    {status.label}
-                  </Badge>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        ) : (
-          <Badge
-            variant={paymentStatus.variant}
-            className="text-xs font-normal"
-          >
-            {paymentStatus.label}
-          </Badge>
-        )}
+        <Badge
+          variant={getStatusVariant(status)}
+          className="text-xs font-normal"
+        >
+          {getStatusLabel(status)}
+        </Badge>
       </TableCell>
 
       <TableCell className="border text-xs">
         <Select
-          value={orderStatus}
-          onValueChange={updateOrderStatus}
-          disabled={orderLoading}
+          value={status}
+          onValueChange={updateStatus}
+          disabled={isUpdatingStatus}
         >
           <SelectTrigger className="w-33 border text-xs">
             <SelectValue>
               <Badge
-                variant={getStatusVariant(orderStatus, ORDER_STATUSES)}
+                variant={getStatusVariant(status)}
                 className="text-xs font-normal"
               >
-                {getStatusLabel(orderStatus, ORDER_STATUSES)}
+                {getStatusLabel(status)}
               </Badge>
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
-            {ORDER_STATUSES.map((status) => (
-              <SelectItem
-                key={status.value}
-                value={status.value}
-                className="text-xs"
-              >
-                <Badge variant={status.variant} className="text-xs font-normal">
-                  {status.label}
+            {ORDER_STATUSES.map((s) => (
+              <SelectItem key={s.value} value={s.value} className="text-xs">
+                <Badge variant={s.variant} className="text-xs font-normal">
+                  {s.label}
                 </Badge>
               </SelectItem>
             ))}
@@ -355,41 +192,19 @@ export default function OrderRow({ order }) {
         </Select>
       </TableCell>
 
+      {/* stub - no delivery_status field in response, reusing status */}
       <TableCell className="border text-xs">
-        <Select
-          value={deliveryStatus}
-          onValueChange={updateDeliveryStatus}
-          disabled={deliveryLoading}
+        <Badge
+          variant={getStatusVariant(status)}
+          className="text-xs font-normal"
         >
-          <SelectTrigger className="w-40 border text-xs">
-            <SelectValue>
-              <Badge
-                variant={getStatusVariant(deliveryStatus, DELIVERY_STATUSES)}
-                className="text-xs font-normal"
-              >
-                {getStatusLabel(deliveryStatus, DELIVERY_STATUSES)}
-              </Badge>
-            </SelectValue>
-          </SelectTrigger>
-          <SelectContent>
-            {DELIVERY_STATUSES.map((status) => (
-              <SelectItem
-                key={status.value}
-                value={status.value}
-                className="text-xs"
-              >
-                <Badge variant={status.variant} className="text-xs font-normal">
-                  {status.label}
-                </Badge>
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+          {getStatusLabel(status)}
+        </Badge>
       </TableCell>
 
       <TableCell className="border text-xs">
         <Button variant="ghost" size="sm" asChild className="text-xs">
-          <Link to={`/orders/${_id}`}>
+          <Link to={`/orders/${id}`}>
             <Eye />
             View
           </Link>

@@ -11,18 +11,25 @@ import { useState } from "react";
 import useDebounce from "@/hooks/useDebounce";
 import OrdersToolsSkeleton from "../components/skeletons/OrdersToolsSkeleton";
 import EmptyState from "../components/EmptyState";
-import useGetOrders from "../hooks/orders/useGetOrders";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
 export default function Orders() {
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
-  const { data: orders, isLoading } = useGetOrders();
+  const { data, isLoading } = useGetQuery({
+    endpoint: "/api/v1/order",
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["orders"],
+  });
+
+  const orders = data?.data ?? [];
 
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search);
 
   const filteredOrders =
-    orders?.data?.filter((order) => {
+    orders?.filter((order) => {
       const searchTerm = debouncedSearch?.trim()?.toLowerCase();
       if (!searchTerm) return true;
 
@@ -35,7 +42,7 @@ export default function Orders() {
 
   let content = null;
 
-  if (!selectedStore) {
+  if (!activeStore) {
     return (
       <EmptyStoreState
         title="No Orders Yet"

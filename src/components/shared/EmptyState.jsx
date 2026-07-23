@@ -20,7 +20,7 @@ export default function EmptyState({
         className,
       )}
     >
-      <div className="bg-muted rounded-full p-4">
+      <div className="bg-muted/70 rounded-full p-4">
         <Icon className="text-muted-foreground h-10 w-10" />
       </div>
       <div className="space-y-2">

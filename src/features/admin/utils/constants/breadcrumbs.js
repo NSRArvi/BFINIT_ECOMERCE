@@ -99,6 +99,12 @@ export const breadcrubms = {
     { label: "Bank" },
   ],
 
+  shippingZones: [{ label: "Home", href: Home_Url }, { label: "Shipping" }],
+  addShippingZone: [
+    { label: "Home", href: Home_Url },
+    { label: "Add Shipping Zone" },
+  ],
+
   // === Settings ===
   // Legal
   privacyPolicy: [

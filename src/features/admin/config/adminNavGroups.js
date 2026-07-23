@@ -13,6 +13,7 @@ import {
   LifeBuoy,
   Building2,
   Users,
+  Truck,
 } from "lucide-react";
 
 export const adminNavGroups = [
@@ -137,6 +138,11 @@ export const adminNavGroups = [
             icon: CornerDownRight,
           },
         ],
+      },
+      {
+        icon: Truck,
+        name: "Shipping",
+        url: "/shipping-zones",
       },
       {
         icon: Scale,

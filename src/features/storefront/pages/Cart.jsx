@@ -7,15 +7,11 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
 import useBasePath from "@/hooks/useBasePath";
 
-const DELIVERY_FEE = 0;
-
 export default function Cart() {
   const { selectedCountry } = useCountry();
   const { cartItems, subTotalAmount, totalSavingsAmount, originalAmount } =
     useCart();
   const basePath = useBasePath();
-
-  const totalAmount = subTotalAmount + DELIVERY_FEE;
 
   if (cartItems.length === 0) {
     return (
@@ -95,18 +91,16 @@ export default function Cart() {
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground flex items-center gap-1">
+                <div className="text-muted-foreground flex justify-between">
+                  <span className="flex items-center gap-1">
                     <Truck className="h-3.5 w-3.5" /> Delivery
                   </span>
-                  <span>
-                    {formatPrice(DELIVERY_FEE, selectedCountry.abbreviation)}
-                  </span>
+                  <span>Calculated at checkout</span>
                 </div>
                 <div className="border-border flex justify-between border-t pt-3 text-base font-semibold">
                   <span>Total</span>
                   <span>
-                    {formatPrice(totalAmount, selectedCountry.abbreviation)}
+                    {formatPrice(subTotalAmount, selectedCountry.abbreviation)}
                   </span>
                 </div>
               </div>
@@ -120,10 +114,6 @@ export default function Cart() {
                   <ArrowRight className="h-4 w-4" />
                 </Link>
               </Button>
-
-              <p className="text-muted-foreground mt-3 text-center text-xs">
-                Shipping and taxes calculated at checkout
-              </p>
             </div>
           </div>
         </div>
