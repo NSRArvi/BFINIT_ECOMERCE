@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { ImagePlus, Pencil, X } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { getImgUrl } from "@/utils/getImgUrl";
 
 export default function GalleryImageSlot({
   value,
@@ -25,7 +26,7 @@ export default function GalleryImageSlot({
     }
 
     if (typeof value === "string") {
-      setPreview(value);
+      setPreview(getImgUrl(value));
     }
   }, [value]);
 

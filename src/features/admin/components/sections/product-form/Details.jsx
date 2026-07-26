@@ -108,6 +108,13 @@ export default function Details({ form }) {
               <FieldLabel htmlFor={field.name}>
                 Category <span className="text-destructive">*</span>
               </FieldLabel>
+              {console.log(
+                "category_id field.value:",
+                field.value,
+                typeof field.value,
+              )}
+              {console.log("isCategoriesLoading:", isCategoriesLoading)}
+              {console.log("categories:", categories)}
               <Select
                 name={field.name}
                 value={field.value ? String(field.value) : ""}

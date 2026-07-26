@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import { ChevronLeft, PackagePlus, Store } from "lucide-react";
 import toast from "react-hot-toast";
@@ -13,15 +13,27 @@ import Images from "../components/sections/product-form/Images";
 import Pricing from "../components/sections/product-form/Pricing";
 import { Spinner } from "@/components/ui/spinner";
 import useSelectedStore from "@/hooks/useSelectedStore";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
-import { buildProductPayload } from "../utils/productHelper";
+import {
+  buildProductPayload,
+  transformProductToFormValues,
+} from "../utils/productHelper";
 import { productSchema } from "../schemas/productSchema";
 
 export default function ProductForm() {
   const navigate = useNavigate();
+  const { id } = useParams();
   const { activeStore } = useSelectedStore();
+
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/product/store/${activeStore?.id}/${id}`,
+    enabled: !!id && !!activeStore?.id,
+    isTokenRequired: true,
+    queryKey: ["product", activeStore?.id, id],
+  });
 
   const form = useForm({
     resolver: zodResolver(productSchema),
@@ -55,6 +67,7 @@ export default function ProductForm() {
         },
       ],
     },
+    values: data?.data ? transformProductToFormValues(data?.data) : undefined,
   });
 
   const { mutate, isPending } = usePostMutation({

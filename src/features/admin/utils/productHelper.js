@@ -116,3 +116,21 @@ export const buildProductPayload = (data, storeId) => {
 
   return formData;
 };
+
+export const transformProductToFormValues = (product) => {
+  return {
+    name: product.name,
+    category_id: product.category_id,
+    sub_category_id: product?.sub_category_id,
+    brand_id: product?.brand_id,
+    tags: product?.tags,
+    short_description: product?.short_description,
+    description: product?.description,
+    is_hot_deal: product.is_hot_deal,
+    is_new_arrival: product.is_new_arrival,
+    is_featured: product.is_featured,
+    is_best_selling: product.is_best_selling,
+    image: product.image,
+    images: product?.images.map((galleryImage) => galleryImage.image),
+  };
+};

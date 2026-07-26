@@ -63,6 +63,10 @@ export const adminRoutes = {
       element: <ProductForm />,
     },
     {
+      path: "/products/inventory/edit/:id",
+      element: <ProductForm />,
+    },
+    {
       path: "/products/inventory",
       element: <Inventory />,
     },
