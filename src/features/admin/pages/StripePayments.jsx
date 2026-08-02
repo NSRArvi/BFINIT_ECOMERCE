@@ -1,79 +1,60 @@
-import { CreditCard } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import EmptyStoreState from "../components/EmptyStoreState";
-import PageHeader from "../components/PageHeader";
-import PaymentStatus from "../components/sections/stripe-payments/PaymentStatus";
+import { SiStripe } from "react-icons/si";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
+import PageHeader from "@/components/shared/PageHeader";
+import StripeConnectCard from "../components/sections/stripe/StripeConnectCard";
+import StripeConnectedCard from "../components/sections/stripe/StripeConnectedCard";
+import StripeConnectSkeleton from "../components/skeletons/StripeConnectSkeleton";
 import useAuth from "@/hooks/auth/useAuth";
-import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Payments() {
   const { user } = useAuth();
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
-  // fetch stripe info of all stores
-  const { data } = useGetQuery({
-    endpoint: `/payments/stripe/client`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-    queryKey: ["stripeConnectionInfo", user?.token, user?.data?.clientid],
-    enabled: !!user?.token && !!user?.data?.clientid,
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/stores/${activeStore?.id}/connect/status`,
+    enabled: !!activeStore?.id && !!user?.token,
+    isTokenRequired: true,
+    queryKey: ["stripe", activeStore?.id],
   });
 
-  const currentStore =
-    data?.data?.length > 0 &&
-    data?.data?.find((status) => status.storeId === selectedStore?.storeId);
+  let content = null;
 
-  if (!selectedStore) {
-    return (
-      <EmptyStoreState
+  if (!activeStore) {
+    content = (
+      <EmptyState
+        className="min-h-[calc(100dvh-300px)]"
         title="No Store Selected"
         description="Create a store before setting up payment methods for your customers."
       />
     );
+  } else if (isLoading) {
+    content = <StripeConnectSkeleton />;
+  } else if (!data?.data?.is_ready) {
+    content = (
+      <StripeConnectCard
+        status={data?.data?.account_id ? "incomplete" : "new"}
+      />
+    );
+  } else {
+    content = <StripeConnectedCard isEnabled={true} />;
   }
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={breadcrubms.StripePayment} />
+      <DynamicBreadcrumb items={breadcrubms.stripePayment} />
 
-      {/* Page Header */}
       <PageHeader
-        icon={CreditCard}
-        title="Stripe Integration"
-        description="Connect your Stripe account to accept payments and receive payouts"
+        icon={SiStripe}
+        title="Stripe"
+        description="Accept payments and receive payouts with Stripe"
         showStoreName={false}
       />
 
-      <PaymentStatus currentStore={currentStore} />
-
-      {/* <div className="grid gap-4 sm:grid-cols-2">
-        <div className="border-border bg-card rounded-lg border p-4">
-          <h4 className="text-card-foreground mb-2 text-sm font-semibold">
-            Why Connect Stripe?
-          </h4>
-          <ul className="text-muted-foreground space-y-1.5 text-xs">
-            <li className="flex items-start gap-2">
-              <span className="text-primary">•</span>
-              <span>Accept credit and debit card payments securely</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary">•</span>
-              <span>Get paid directly to your bank account</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary">•</span>
-              <span>Manage refunds and disputes easily</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <span className="text-primary">•</span>
-              <span>Access detailed payment analytics</span>
-            </li>
-          </ul>
-        </div>
-      </div> */}
+      {content}
     </section>
   );
 }

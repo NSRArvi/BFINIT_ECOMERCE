@@ -7,7 +7,7 @@ import {
 import useCart from "@/hooks/useCart";
 import useCountry from "@/hooks/useCountry";
 import { useState } from "react";
-import CurrencySwitchWarningModal from "../../modals/CurrencySwitchWarningModal";
+import CurrencySwitchWarningModal from "../../../../storefront/modals/CurrencySwitchWarningModal";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { useParams } from "react-router";
 import { resolveDefaultCountry } from "@/features/storefront/utils/country";

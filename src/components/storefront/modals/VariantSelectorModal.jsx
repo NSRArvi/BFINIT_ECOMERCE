@@ -39,9 +39,9 @@ export default function VariantSelectorModal({
   const thumbnailImage = useMemo(() => {
     let resolvedImage = image;
 
-    for (const option of options) {
+    for (const option of options ?? []) {
       const valueId = selectedOptions[option.id];
-      const value = option.values.find((v) => v.id === valueId);
+      const value = option.values?.find((v) => v.id === valueId);
       if (value?.image) resolvedImage = value.image;
     }
 
@@ -117,7 +117,7 @@ export default function VariantSelectorModal({
             <div className="space-y-8">
               <DialogHeader className="space-y-2 text-left">
                 <p className="text-muted-foreground text-xs tracking-wider uppercase">
-                  {category.name}
+                  {category?.name}
                 </p>
                 <DialogTitle className="text-2xl font-normal">
                   {name}
@@ -139,7 +139,7 @@ export default function VariantSelectorModal({
 
               <div className="bg-border h-px" />
 
-              {options.map((option) => (
+              {options?.map((option) => (
                 <div key={option.id} className="space-y-3">
                   <p className="text-muted-foreground text-xs tracking-wider uppercase">
                     {option.name}

@@ -90,6 +90,14 @@ export const breadcrubms = {
   ],
 
   // payment
+  stripePayment: [
+    { label: "Home", href: "/" },
+    {
+      label: "Payments",
+      dropdown: [{ label: "Bank", href: "/payments/bank" }],
+    },
+    { label: "Stripe" },
+  ],
   bankPayment: [
     { label: "Home", href: Home_Url },
     {

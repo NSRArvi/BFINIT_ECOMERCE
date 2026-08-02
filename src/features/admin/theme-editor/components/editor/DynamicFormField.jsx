@@ -13,6 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import ImageUploadField from "./ImageUploadField";
 import FieldHeader from "./FieldHeader";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import ArrayField from "./ArrayField";
 
 export default function DynamicFormField({ field, value, onChange }) {
   switch (field.type) {
@@ -73,6 +74,9 @@ export default function DynamicFormField({ field, value, onChange }) {
       return (
         <ImageUploadField field={field} value={value} onChange={onChange} />
       );
+
+    case "array":
+      return <ArrayField field={field} value={value} onChange={onChange} />;
 
     case "checkbox":
       return (

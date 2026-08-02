@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { ThemeEditorContext } from "../context/ThemeEditorContext";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
-import {
-  getCategoryFromTemplateId,
-  getSectionType,
-} from "../utils/sectionHelpers";
 
 export default function ThemeEditorProvider({ children }) {
   const { storeId, themeId } = useParams();
@@ -17,7 +13,7 @@ export default function ThemeEditorProvider({ children }) {
     queryKey: ["admin", "stores", storeId, "themes", themeId],
   });
 
-  const storeThemeId = data?.data?.id;
+  const storeThemeId = data?.data?.theme_id;
 
   const [sections, setSections] = useState({
     header: [],
@@ -75,8 +71,7 @@ export default function ThemeEditorProvider({ children }) {
   };
 
   const handleAddSection = (template) => {
-    const category = getCategoryFromTemplateId(template.id);
-    const sectionType = getSectionType(template.id);
+    const category = template.category;
 
     const newSection = {
       id: `${template.id}-${Date.now()}`,
@@ -91,10 +86,10 @@ export default function ThemeEditorProvider({ children }) {
     setSections((prev) => {
       const newSections = { ...prev };
 
-      if (template.singleInstance && sectionType) {
+      if (template.singleInstance) {
         Object.keys(newSections).forEach((cat) => {
           newSections[cat] = newSections[cat].filter(
-            (section) => getSectionType(section.templateId) !== sectionType,
+            (section) => section.templateId !== template.id,
           );
         });
 

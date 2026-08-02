@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import ProductCard from "../../cards/products/ProductCard";
+import ProductCard from "../../../storefront/cards/products/ProductCard";
 import useCountry from "@/hooks/useCountry";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { cn } from "@/lib/utils";

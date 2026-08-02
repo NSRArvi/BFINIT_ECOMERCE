@@ -1,5 +1,5 @@
 import { useParams } from "react-router";
-import SectionRenderer from "@/components/theme-renderer/SectionRenderer";
+import SectionRenderer from "@/components/theme-renderer/config/SectionRenderer";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useCountry from "@/hooks/useCountry";
 

@@ -7,7 +7,7 @@ import CountrySwitcher from "./CountrySwitcher";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useCustomerAuth from "@/features/storefront/hooks/useCustomerAuth";
 
-export default function MobileNav({ navLinks, setMobileMenuOpen }) {
+export default function MainHeaderMobile({ navLinks, setMobileMenuOpen }) {
   const { storeId } = useParams();
   const { customer, handleLogout } = useCustomerAuth();
 

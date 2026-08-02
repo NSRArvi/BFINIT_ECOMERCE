@@ -49,15 +49,6 @@ export const breadcrubms = {
   domain: [{ label: "Home", href: "/" }, { label: "Domain" }],
 
   // payments
-  StripePayment: [
-    { label: "Home", href: "/" },
-    {
-      label: "Payments",
-      dropdown: [{ label: "Bank", href: "/payments/bank" }],
-    },
-    { label: "Stripe" },
-  ],
-
   BankPayment: [
     { label: "Home", href: "/" },
     {

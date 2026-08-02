@@ -4,7 +4,7 @@ import StorefrontLoader from "@/components/storefront/loader/StorefrontLoader";
 import useGetStoreMeta from "@/hooks/useGetStoreMeta";
 import { updateStoreMeta } from "@/utils/meta";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
-import SectionRenderer from "@/components/theme-renderer/SectionRenderer";
+import SectionRenderer from "@/components/theme-renderer/config/SectionRenderer";
 import useCountry from "@/hooks/useCountry";
 import CountrySelector from "@/features/storefront/components/CountrySelector";
 

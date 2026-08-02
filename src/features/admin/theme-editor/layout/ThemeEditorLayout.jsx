@@ -1,4 +1,3 @@
-import { Outlet } from "react-router";
 import ThemeEditorSidebar from "@/features/admin/theme-editor/components/layout/ThemeEditorSidebar";
 import Canvas from "@/features/admin/theme-editor/components/Canvas";
 import SectionEditor from "@/features/admin/theme-editor/components/layout/SectionEditor";
@@ -8,7 +7,7 @@ import useThemeEditor from "../hooks/useThemeEditor";
 import ThemeEditorSidebarSkeleton from "../components/skeletons/ThemeEditorSidebarSkeleton";
 import CanvasSkeleton from "../components/skeletons/CanvasSkeleton";
 import CountrySelectModal from "@/components/storefront/modals/CountrySelectModal";
-import SectionRenderer from "@/components/theme-renderer/SectionRenderer";
+import SectionRenderer from "@/components/theme-renderer/config/SectionRenderer";
 
 export default function ThemeEditorLayout() {
   const {
@@ -47,7 +46,15 @@ export default function ThemeEditorLayout() {
               setActiveSection={setActiveSection}
             />
           </header>
-          <Outlet />
+          <main>
+            <SectionRenderer
+              sections={sections?.body}
+              activeSection={activeSection}
+              isEditing={isEditing}
+              isPreviewMode={isPreviewMode}
+              setActiveSection={setActiveSection}
+            />
+          </main>
           <footer>
             <SectionRenderer
               sections={sections?.footer}

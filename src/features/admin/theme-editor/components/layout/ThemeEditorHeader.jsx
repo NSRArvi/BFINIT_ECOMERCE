@@ -2,6 +2,7 @@ import { useNavigate, useParams } from "react-router";
 import { LogOut } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
+import { Spinner } from "@/components/ui/spinner";
 import useThemeEditor from "../../hooks/useThemeEditor";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
 
@@ -63,8 +64,15 @@ export default function ThemeEditorHeader() {
           onClick={handleSave}
           disabled={isPending || isLoading}
           size="sm"
+          className="min-w-[89px]"
         >
-          Save
+          {isPending ? (
+            <>
+              <Spinner /> Saving...
+            </>
+          ) : (
+            "Save"
+          )}
         </Button>
 
         <div className="bg-border mx-1 h-5 w-px" />

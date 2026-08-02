@@ -36,9 +36,9 @@ export default function SectionRenderer({
         {/* section hover effect */}
         {isInteractive && !isActive && (
           <>
-            <div className="border-muted-foreground/40 pointer-events-none absolute inset-0 z-100 border border-dashed opacity-0 transition-opacity group-hover/section:opacity-100" />
+            <div className="border-muted-foreground/40 pointer-events-none absolute inset-0 z-50 border border-dashed opacity-0 transition-opacity group-hover/section:opacity-100" />
 
-            <div className="bg-muted text-muted-foreground pointer-events-none absolute -top-3 left-3 z-100 rounded px-1.5 py-0.5 text-xs font-medium opacity-0 transition-opacity group-hover/section:opacity-100">
+            <div className="bg-muted text-muted-foreground pointer-events-none absolute -top-3 left-3 z-50 rounded px-1.5 py-0.5 text-xs font-medium opacity-0 transition-opacity group-hover/section:opacity-100">
               {section.name}
             </div>
           </>
@@ -47,9 +47,9 @@ export default function SectionRenderer({
         {/* section editing active style */}
         {isInteractive && isActive && (
           <>
-            <div className="border-primary pointer-events-none absolute inset-0 z-100 border border-dashed" />
+            <div className="border-primary pointer-events-none absolute inset-0 z-50 border border-dashed" />
 
-            <div className="bg-primary text-primary-foreground absolute -top-3 left-3 z-100 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium">
+            <div className="bg-primary text-primary-foreground absolute -top-3 left-3 z-50 inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs font-medium">
               <Pencil className="size-3.5" /> Editing
             </div>
           </>

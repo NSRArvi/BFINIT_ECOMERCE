@@ -11,7 +11,7 @@ import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
 import useBasePath from "@/hooks/useBasePath";
 import useCart from "@/hooks/useCart";
-import MobileNav from "./MobileNav";
+import MainHeaderMobile from "./MainHeaderMobile";
 import SearchOverlay from "./SearchOverlay";
 import CountrySwitcher from "./CountrySwitcher";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
@@ -26,7 +26,7 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ];
 
-export default function NavbarSimple({ content = {}, isEditing = false }) {
+export default function MainHeader({ content = {}, isEditing = false }) {
   const { storeId } = useParams();
   const basePath = useBasePath();
   const { totalItems } = useCart();
@@ -126,7 +126,7 @@ export default function NavbarSimple({ content = {}, isEditing = false }) {
 
   return (
     <>
-      <nav className="bg-background border-border sticky top-0 z-50 border-b">
+      <nav className="bg-background border-border border-b">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             {/* Mobile: Hamburger Menu (Left) */}
@@ -273,7 +273,10 @@ export default function NavbarSimple({ content = {}, isEditing = false }) {
 
       {/* Mobile Menu Drawer */}
       {mobileMenuOpen && (
-        <MobileNav navLinks={navLinks} setMobileMenuOpen={setMobileMenuOpen} />
+        <MainHeaderMobile
+          navLinks={navLinks}
+          setMobileMenuOpen={setMobileMenuOpen}
+        />
       )}
 
       {/* Full-Screen Search Overlay */}
