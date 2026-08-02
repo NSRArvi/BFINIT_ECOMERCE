@@ -88,9 +88,9 @@ export default function AddSectionModal({ isOpen, onClose, onAddSection }) {
         </div>
 
         <div className="custom-scrollbar-hide grid h-[50dvh] grid-cols-4 items-start gap-4 overflow-y-auto">
-          {templates.map((template) => (
+          {templates?.map((template) => (
             <div
-              key={template.id}
+              key={template?.id}
               onClick={() => setSelectedTemplate(template)}
               onKeyDown={(e) =>
                 e.key === "Enter" && setSelectedTemplate(template)
@@ -99,24 +99,24 @@ export default function AddSectionModal({ isOpen, onClose, onAddSection }) {
               tabIndex={0}
               className={cn(
                 "flex min-h-64 flex-col overflow-hidden rounded-lg border text-left",
-                selectedTemplate.id === template.id && "border-primary",
+                selectedTemplate?.id === template?.id && "border-primary",
               )}
             >
               <img
                 src={
                   "https://cdn.dribbble.com/userupload/15111095/file/original-936cd4f19002c360ef4d5697eaa47e99.jpg?resize=1024x1024&vertical=center"
                 }
-                alt={template.name}
+                alt={template?.name}
                 className="h-32 w-full shrink-0 object-cover"
               />
               <div className="flex flex-1 flex-col p-3">
                 <div className="space-y-1">
-                  <h3 className="text-sm font-medium">{template.name}</h3>
+                  <h3 className="text-sm font-medium">{template?.name}</h3>
                   <p className="text-muted-foreground text-xs">
-                    {template.description}
+                    {template?.description}
                   </p>
                 </div>
-                {template.singleInstance && (
+                {template?.singleInstance && (
                   <div className="text-muted-foreground mt-auto flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <Lock className="size-3.5" />
