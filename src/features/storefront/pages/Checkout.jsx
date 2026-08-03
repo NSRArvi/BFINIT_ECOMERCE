@@ -113,6 +113,7 @@ export default function Checkout() {
           product_variant_combination_id: item.variantId,
         }),
       })),
+      payment_method: data?.payment_type === "offline" ? "cod" : "stripe",
       ...data,
     };
 
@@ -121,6 +122,12 @@ export default function Checkout() {
         if (!data?.success) {
           return toast.error(data?.message);
         }
+
+        if (payload?.payment_method === "stripe") {
+          window.location.href = data?.checkout_url;
+          return;
+        }
+
         clearCart();
         toast.success(data?.message);
         navigate(`${basePath}/orders/${data.data.id}`);
