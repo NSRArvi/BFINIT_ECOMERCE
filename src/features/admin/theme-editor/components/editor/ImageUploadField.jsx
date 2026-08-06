@@ -35,6 +35,7 @@ const validateImage = (file) => {
 export default function ImageUploadField({ field, value, onChange }) {
   const { storeId, themeId } = useParams();
   const { setIsUploading, storeThemeId } = useThemeEditor();
+  console.log(storeThemeId);
 
   const { mutate, isPending: isUploading } = usePostMutation({
     endpoint: `/api/v1/themes/storeTheme/createImageGallary/${storeId}/${themeId}`,

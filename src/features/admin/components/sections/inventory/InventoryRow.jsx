@@ -22,7 +22,8 @@ export default function InventoryRow({ product }) {
   const queryClient = useQueryClient();
   const { activeStore } = useSelectedStore();
 
-  const { id, image, name, category, stock, is_active } = product || {};
+  const { id, image, name, category, stock, is_active, slug } = product || {};
+  console.log(product);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -105,7 +106,10 @@ export default function InventoryRow({ product }) {
 
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link to="/products/inventory" target="_blank">
+                <Link
+                  to={`/stores/${activeStore?.id}/shop/${slug}`}
+                  target="_blank"
+                >
                   <Eye />
                   View on Store
                 </Link>

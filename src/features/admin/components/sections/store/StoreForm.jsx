@@ -19,10 +19,12 @@ import {
   createSocialMediaPayload,
   createStorePayload,
 } from "@/features/admin/utils/storeHelpers";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
 export default function StoreForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { activeStore, selectStore } = useSelectedStore();
 
   const isEditMode = !!id;
 
@@ -39,7 +41,11 @@ export default function StoreForm() {
       queryKey: ["socialMedia", id],
     });
 
-  const { data, isLoading: isStoreLoading } = useGetQuery({
+  const {
+    data,
+    isLoading: isStoreLoading,
+    refetch,
+  } = useGetQuery({
     endpoint: `/api/v1/store/${id}`,
     enabled: !!id,
     isTokenRequired: true,
@@ -105,9 +111,15 @@ export default function StoreForm() {
     });
     const socialMediaPayload = createSocialMediaPayload(data, store?.id);
 
-    const onSuccess = (data) => {
+    const onSuccess = async (data) => {
       if (!data?.success) return toast.error(data?.message);
       toast.success(data?.message);
+
+      if (String(activeStore?.id) === String(id)) {
+        const fresh = await refetch();
+        const freshStore = fresh?.data?.data ?? [];
+        if (freshStore) selectStore(freshStore);
+      }
       navigate("/stores");
     };
 
