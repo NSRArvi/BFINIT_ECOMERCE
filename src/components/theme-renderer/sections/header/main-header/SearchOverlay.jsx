@@ -5,7 +5,7 @@ import { Separator } from "@/components/ui/separator";
 import { useState } from "react";
 import { Link, useParams } from "react-router";
 import useDebounce from "@/hooks/useDebounce";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useBasePath from "@/hooks/useBasePath";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 

@@ -8,7 +8,7 @@ import toast from "react-hot-toast";
 import { Link } from "react-router";
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePostMutation from "@/hooks/api/usePostMutation";
 import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";

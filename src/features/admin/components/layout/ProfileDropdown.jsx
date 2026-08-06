@@ -6,6 +6,7 @@ import {
   FileDown,
   ChevronDown,
   ExternalLink,
+  Store,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -18,7 +19,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import { adminDropdownLinks } from "@/utils/contstants";
 
 export default function ProfileDropdown() {
   const navigate = useNavigate();
@@ -80,18 +80,12 @@ export default function ProfileDropdown() {
 
         <DropdownMenuSeparator />
 
-        {/* Dynamic Navigation Links */}
-        {adminDropdownLinks.map((link) => (
-          <DropdownMenuItem key={link.url} asChild>
-            <Link
-              to={link.url}
-              className="flex cursor-pointer items-center gap-2"
-            >
-              <link.icon className="h-4 w-4" />
-              <span className="capitalize">{link.name}</span>
-            </Link>
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuItem asChild>
+          <Link to="/stores" className="flex cursor-pointer items-center gap-2">
+            <Store className="size-4" />
+            <span className="capitalize">Stores</span>
+          </Link>
+        </DropdownMenuItem>
 
         {/* Help & Support */}
         <DropdownMenuItem asChild>

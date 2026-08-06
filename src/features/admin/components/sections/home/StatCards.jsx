@@ -1,21 +1,19 @@
-import useGetOrders from "@/features/admin/hooks/orders/useGetOrders";
 import { ChartColumn, DollarSign, ShoppingCart, Users } from "lucide-react";
 import StatCard from "./StatCard";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import { formatPrice } from "@/utils/formatPrice";
 import StatCardsSkeleton from "../../skeletons/StatCardsSkeleton";
-import useGetCustomer from "@/features/admin/hooks/customers/useGetCustomer";
 import { formatNumber } from "@/utils/formatNumber";
 import { getCurrencySymbol } from "@/utils/currencyHelpers";
 
 export default function StatCards() {
   const { data: storePreference, isLoading: isStorePreferenceLoading } =
     useGetStorePreference();
-  const { data: orders, isLoading: isOrdersLoading } = useGetOrders();
-  const { data: customers, isLoading: isCustomersLoading } = useGetCustomer();
+
+  const orders = [];
 
   const currencySymbol = getCurrencySymbol(storePreference);
-  const totalCustomers = customers?.length || 0;
+  const totalCustomers = 0; //TODO: make it dynamic
   const totalOrders = orders?.data?.length || 0;
 
   const totalSales =
@@ -28,7 +26,7 @@ export default function StatCards() {
 
   const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
 
-  if (isStorePreferenceLoading || isOrdersLoading || isCustomersLoading) {
+  if (isStorePreferenceLoading) {
     return <StatCardsSkeleton />;
   }
 

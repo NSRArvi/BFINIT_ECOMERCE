@@ -11,7 +11,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
 export default function ProductSelectionModal({
   isOpen,

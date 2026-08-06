@@ -1,7 +1,7 @@
 import { Landmark, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import BankAccountsTable from "../components/sections/bank-accounts/BankAccountsTable";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import { breadcrubms } from "../utils/constants/breadcrumbs";

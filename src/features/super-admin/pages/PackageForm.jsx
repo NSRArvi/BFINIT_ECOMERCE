@@ -27,7 +27,7 @@ import {
   emptyPeriod,
   transformPackageData,
 } from "../../admin/utils/packagesHelper";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePatchMutaion from "@/hooks/api/usePatchMutaion";
 import {
   closestCenter,

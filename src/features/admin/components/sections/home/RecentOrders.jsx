@@ -7,7 +7,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import useGetOrders from "@/features/admin/hooks/orders/useGetOrders";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import { formatPrice } from "@/utils/formatPrice";
 import { Link } from "react-router";
@@ -43,7 +42,7 @@ function formatDate(dateString) {
 
 export default function RecentOrders() {
   const { data: storePreference } = useGetStorePreference();
-  const { data: orders } = useGetOrders();
+  const orders = [];
 
   const currencySymbol = getCurrencySymbol(storePreference);
   const hasOrders = orders?.data && orders.data.length > 0;

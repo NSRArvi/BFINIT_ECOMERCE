@@ -1,5 +1,5 @@
 import { ArrowLeft } from "lucide-react";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { useParams } from "react-router";
 
 export default function BlogDetails() {

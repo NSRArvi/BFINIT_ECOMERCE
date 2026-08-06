@@ -3,7 +3,7 @@ import QuickNavs from "../components/sections/home/QuickNavs";
 import QuickTips from "../components/sections/home/QuickTips";
 import StoreLimitCard from "../components/sections/home/StoreLimitCard";
 import useAuth from "@/hooks/auth/useAuth";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useGetStores from "../hooks/useGetStores";
 import StoreCard from "../components/sections/stores/StoreCard";
 import StatCards from "../components/sections/home/StatCards";

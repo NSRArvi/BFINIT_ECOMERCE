@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import ProductSelectionModal from "../modals/ProductSelectionModal";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { formatPrice } from "@/utils/formatPrice";
 import FieldHeader from "./FieldHeader";
 

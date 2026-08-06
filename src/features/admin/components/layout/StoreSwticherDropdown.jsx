@@ -17,10 +17,10 @@ import {
   DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import useSelectedStore from "@/hooks/useSelectedStore";
-import usePackageInfo from "../../hooks/usePackageInfo";
 import useGetStores from "@/features/admin/hooks/useGetStores";
-import { cn } from "@/lib/utils";
+import usePackageInfo from "../../hooks/usePackageInfo";
 import { getImgUrl } from "@/utils/getImgUrl";
+import { cn } from "@/lib/utils";
 
 export default function StoreSwitcherDropdown() {
   const { selectStore, activeStore } = useSelectedStore();
@@ -181,7 +181,7 @@ export default function StoreSwitcherDropdown() {
           disabled={isLoading}
           variant="outline"
           size="sm"
-          className="group hover:bg-accent flex cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 shadow-none transition-all"
+          className="group hover:bg-accent hidden cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 shadow-none transition-all lg:flex"
         >
           {btnContent}
         </Button>

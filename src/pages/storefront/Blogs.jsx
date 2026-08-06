@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileText, ArrowRight } from "lucide-react";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useBasePath from "@/hooks/useBasePath";
 import { Link } from "react-router";

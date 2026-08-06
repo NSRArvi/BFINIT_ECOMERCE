@@ -2,17 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { AlertCircle, CreditCard, Building2 } from "lucide-react";
 import { Link } from "react-router";
-import useGetOrders from "@/features/admin/hooks/orders/useGetOrders";
 import { useMemo } from "react";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useAuth from "@/hooks/auth/useAuth";
 import useSelectedStore from "@/hooks/useSelectedStore";
 
 export default function ActionItems() {
   const { user } = useAuth();
   const { selectedStore } = useSelectedStore();
-
-  const { data: orders } = useGetOrders();
 
   const { data } = useGetQuery({
     endpoint: `/payments/stripe/client`,
@@ -44,10 +41,12 @@ export default function ActionItems() {
 
   // Count orders with pending delivery
   const pendingDeliveryCount = useMemo(() => {
+    const orders = [];
+
     if (!orders?.data) return 0;
     return orders.data.filter((order) => order.deliveryStatus === "PENDING")
       .length;
-  }, [orders]);
+  }, []);
 
   const isStripeConnected =
     currentStore?.payouts_enabled && currentStore?.charges_enabled;

@@ -1,6 +1,6 @@
 import { useParams } from "react-router";
 import Hero from "@/components/storefront/sections/content/Hero";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { ContentPageSkeleton } from "@/components/storefront/loader/ContentPageSkeleton";
 import { EmptyContent } from "@/components/storefront/sections/content/EmptyContent";
 

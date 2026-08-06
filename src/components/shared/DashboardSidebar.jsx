@@ -1,11 +1,7 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { ChevronDown, Store, LogOut, FileDown } from "lucide-react";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router";
-import { adminDropdownLinks } from "@/utils/contstants";
+import { ChevronDown, Store } from "lucide-react";
 import useAuth from "@/hooks/auth/useAuth";
-import useGetQuery from "@/hooks/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetStores from "@/features/admin/hooks/useGetStores";
 import GuidePrompt from "@/features/admin/components/GuidePrompt";
@@ -15,27 +11,15 @@ export default function DashboardSidebar({
   toggleSideNav,
   navGroups,
 }) {
-  const { user, isSuperAdmin } = useAuth();
-  const navigate = useNavigate();
   const location = useLocation();
+  const { isSuperAdmin } = useAuth();
+  const { selectStore, activeStore } = useSelectedStore();
+
+  const { data: stores } = useGetStores();
+
   const [openDropdown, setOpenDropdown] = useState("");
-  const [showUserMenu, setShowUserMenu] = useState(false);
   const [showStoreMenu, setShowStoreMenu] = useState(false);
 
-  // Fetch client info
-  const { data: clientInfo } = useGetQuery({
-    endpoint: `/clients/${user?.data?.clientid}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
-    queryKey: ["clientInfo", user?.data?.clientid],
-    enabled: !!user?.data?.clientid && !!user?.token,
-  });
-
-  // Fetch stores
-  const { data: stores } = useGetStores();
-  const { selectedStore, selectStore } = useSelectedStore();
-
-  // handle dropdown toggle on click
   const toggleDropdown = (groupIndex, linkIndex) => {
     const dropdownKey = `${groupIndex}-${linkIndex}`;
 
@@ -46,23 +30,12 @@ export default function DashboardSidebar({
     }
   };
 
-  const handleLogOut = () => {
-    localStorage.removeItem("authInfo");
-    toast.success("Logged out successfully");
-    navigate("/login");
-  };
-
   const isLinkActive = (url) => {
     return location.pathname === url;
   };
 
   const isDropdownActive = (subCategories) => {
     return subCategories?.some((subItem) => location.pathname === subItem.url);
-  };
-
-  const handleStoreSwitch = (store) => {
-    selectStore(store);
-    setShowStoreMenu(false);
   };
 
   return (
@@ -73,75 +46,6 @@ export default function DashboardSidebar({
     >
       {/* Mobile Only: User Profile & Store Switcher */}
       <div className="space-y-2 lg:hidden">
-        {/* User Profile Dropdown - IMPROVED */}
-        <div className="border-b border-slate-200 pb-2">
-          <button
-            onClick={() => setShowUserMenu(!showUserMenu)}
-            className="flex w-full items-center justify-between rounded-lg p-2.5 transition-colors hover:bg-slate-50"
-          >
-            <div className="flex items-center gap-2.5">
-              <div className="bg-dashboard-primary flex h-9 w-9 items-center justify-center rounded-full text-[11px] font-semibold text-white">
-                {clientInfo?.data?.clientFname?.[0]}
-                {clientInfo?.data?.clientLname?.[0]}
-              </div>
-              <div className="flex flex-col items-start">
-                <span className="text-xs leading-tight font-semibold text-slate-900">
-                  {clientInfo?.data?.clientFname}{" "}
-                  {clientInfo?.data?.clientLname}
-                </span>
-                <span className="text-[11px] leading-tight text-slate-500">
-                  {clientInfo?.data?.clientEmail}
-                </span>
-              </div>
-            </div>
-            <ChevronDown
-              size={14}
-              className={`shrink-0 text-slate-500 transition-transform duration-200 ${
-                showUserMenu ? "rotate-180" : ""
-              }`}
-            />
-          </button>
-
-          {/* User Menu Items - IMPROVED */}
-          {showUserMenu && (
-            <div className="mt-1.5 space-y-0.5 px-1">
-              {adminDropdownLinks.map((link, i) => (
-                <Link
-                  key={i}
-                  to={link.url}
-                  onClick={toggleSideNav}
-                  className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
-                >
-                  <link.icon className="h-4 w-4 text-slate-600" />
-                  <span className="capitalize">{link.name}</span>
-                </Link>
-              ))}
-
-              <a
-                href="https://ecomback.bfinit.com/uploads/ecom/guide/BFINIT%20E-Commerce%20Guide.pdf"
-                download
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={toggleSideNav}
-                className="flex items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-slate-700 transition-colors hover:bg-slate-50"
-              >
-                <FileDown className="h-4 w-4 text-slate-600" />
-                <span>Get Help Guide</span>
-              </a>
-
-              <div className="mt-0.5 border-t border-slate-200 pt-0.5">
-                <button
-                  onClick={handleLogOut}
-                  className="flex w-full items-center gap-2.5 rounded-md px-3 py-2 text-xs font-medium text-red-600 transition-colors hover:bg-red-50"
-                >
-                  <LogOut className="h-4 w-4" />
-                  <span>Log Out</span>
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-
         {/* Store Switcher Dropdown - IMPROVED */}
         <div className="border-b border-slate-200 pb-2">
           <button
@@ -157,7 +61,7 @@ export default function DashboardSidebar({
                   Current Store
                 </span>
                 <span className="text-xs leading-tight font-semibold text-slate-900">
-                  {selectedStore?.storeName || "Select store"}
+                  {activeStore?.storeName || "Select store"}
                 </span>
               </div>
             </div>
@@ -172,14 +76,14 @@ export default function DashboardSidebar({
           {/* Store Menu Items - IMPROVED */}
           {showStoreMenu && (
             <div className="mt-1.5 max-h-[280px] space-y-0.5 overflow-y-auto px-1">
-              {stores && stores?.data?.length > 0 ? (
+              {stores && stores?.data?.data?.length > 0 ? (
                 <>
-                  {stores?.data?.map((store) => (
+                  {stores?.data?.data?.map((store) => (
                     <button
-                      key={store?.storeId}
-                      onClick={() => handleStoreSwitch(store)}
+                      key={store?.id}
+                      onClick={() => selectStore(store)}
                       className={`flex w-full items-center gap-2.5 rounded-md p-2 text-left transition-colors ${
-                        selectedStore?.storeId === store?.storeId
+                        activeStore?.id === store?.id
                           ? "bg-blue-50"
                           : "hover:bg-slate-50"
                       }`}
@@ -190,15 +94,15 @@ export default function DashboardSidebar({
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5">
                           <span className="truncate text-xs leading-tight font-medium text-slate-900">
-                            {store?.storeName}
+                            {store?.name}
                           </span>
-                          {selectedStore?.storeId === store?.storeId && (
+                          {activeStore?.id === store?.id && (
                             <div className="h-1.5 w-1.5 shrink-0 rounded-full bg-blue-600" />
                           )}
                         </div>
-                        {store?.storeDomain && (
+                        {store?.public_subdomain && (
                           <span className="mt-0.5 block truncate text-[11px] leading-tight text-slate-500">
-                            {store.storeDomain}
+                            {store.public_subdomain}.bfinit.com
                           </span>
                         )}
                       </div>

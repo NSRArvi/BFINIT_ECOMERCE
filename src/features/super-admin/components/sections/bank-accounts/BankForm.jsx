@@ -17,7 +17,7 @@ import PageHeader from "../../../../admin/components/PageHeader";
 import DynamicBreadcrumb from "../../../../admin/components/DynamicBreadcrumb";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import { Link, useNavigate, useParams } from "react-router";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import {
   emptyDefaults,
   transformPlatformBankData,

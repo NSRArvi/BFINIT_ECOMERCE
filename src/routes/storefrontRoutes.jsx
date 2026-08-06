@@ -3,9 +3,7 @@ import Contact from "@/pages/storefront/Contact";
 import ContentPage from "@/pages/storefront/ContentPage";
 import Home from "@/features/storefront/pages/Home";
 import ProductDetails from "@/features/storefront/pages/ProductDetails";
-import ShopPage from "@/pages/storefront/Shop";
 import CartProvider from "@/features/storefront/providers/CartProvider";
-import PrivateRoute from "./PrivateRoute";
 import NotFound from "@/pages/storefront/NotFound";
 import Orders from "@/features/storefront/pages/Orders";
 import Blogs from "@/pages/storefront/Blogs";
@@ -17,6 +15,7 @@ import Login from "@/features/storefront/pages/Login";
 import Checkout from "@/features/storefront/pages/Checkout";
 import CustomerAuthProvider from "@/features/storefront/providers/CustomerAuthProvider";
 import OrderDetails from "@/features/storefront/pages/OrderDetails";
+import Shop from "@/features/storefront/pages/Shop";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -40,7 +39,7 @@ export const storeFrontRoutes = {
     },
     {
       path: "shop",
-      element: <ShopPage />,
+      element: <Shop />,
     },
     {
       path: "shop/:slug",

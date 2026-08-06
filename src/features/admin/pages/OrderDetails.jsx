@@ -7,7 +7,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 import useAuth from "@/hooks/auth/useAuth";
-import useGetQuery from "@/hooks/api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
