@@ -19,12 +19,11 @@ import ShoppingGuide from "@/features/admin/pages/ShoppingGuide";
 import Stores from "@/features/admin/pages/Stores";
 import AboutUs from "@/features/admin/pages/AboutUs";
 import FAQ from "@/features/admin/pages/FAQ";
-import BankPayment from "@/features/admin/pages/BankPayment";
+import BankForm from "@/features/admin/pages/BankForm";
 import PrivacyPolicy from "@/features/admin/pages/PrivacyPolicy";
 import Customers from "@/features/admin/pages/Customers";
 import StoreForm from "@/features/admin/components/sections/store/StoreForm";
 import ManageBank from "@/features/admin/pages/ManageBank";
-import UpdateBank from "@/features/admin/pages/UpdateBank";
 import BlogForm from "@/features/admin/pages/BlogForm";
 import ProductForm from "@/features/admin/pages/ProductForm";
 import ShippingZones from "@/features/admin/pages/ShippingZones";
@@ -103,16 +102,16 @@ export const adminRoutes = {
       element: <StripePayments />,
     },
     {
-      path: "/payments/bank",
-      element: <BankPayment />,
-    },
-    {
       path: "/payments/manage-bank",
       element: <ManageBank />,
     },
     {
-      path: "/payment/edit/:id",
-      element: <UpdateBank />,
+      path: "/payments/bank/add",
+      element: <BankForm />,
+    },
+    {
+      path: "/payments/bank/edit/:id",
+      element: <BankForm />,
     },
     {
       path: "/shipping-zones",

@@ -1,4 +1,4 @@
-import { Lock, Truck } from "lucide-react";
+import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import CartItem from "./CartItem";
 import useCart from "@/hooks/useCart";
@@ -50,9 +50,7 @@ export default function CheckoutSummary({
           )}
 
           <div className="flex justify-between">
-            <span className="text-muted-foreground flex items-center gap-1">
-              <Truck className="h-3.5 w-3.5" /> Delivery
-            </span>
+            <span className="text-muted-foreground">Delivery</span>
 
             {isLoading && (
               <span className="text-muted-foreground text-sm">

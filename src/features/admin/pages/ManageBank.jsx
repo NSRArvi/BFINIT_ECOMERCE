@@ -1,41 +1,30 @@
 import { useState } from "react";
-import { Link, useNavigate, useSearchParams } from "react-router";
-import { FileText, Plus, Search } from "lucide-react";
+import { Link, useNavigate } from "react-router";
+import { Landmark, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
-import EmptyStoreState from "../components/EmptyStoreState";
-import TablePagination from "@/components/shared/TablePagination";
-import BlogTableRowSkeleton from "../components/skeletons/BlogTableRowSkeleton";
-import BankTableRow from "../components/sections/manageBankAccount/BankTableRow";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
+import PageHeader from "@/components/shared/PageHeader";
+import { Spinner } from "@/components/ui/spinner";
+import BankTable from "../components/sections/manage-bank/BankTable";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useDebounce from "@/hooks/useDebounce";
-import EmptyState from "@/components/shared/EmptyState";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
-import { BankTableSkeleton } from "../components/skeletons/BankTableRowSkeleton";
 
 export default function ManageBank() {
-  const { activeStore } = useSelectedStore();
-  const [search, setSearch] = useState("");
-  const [searchParams] = useSearchParams();
-  const page = searchParams.get("page") || 1;
   const navigate = useNavigate();
+  const { activeStore } = useSelectedStore();
+
+  const [search, setSearch] = useState("");
   const debouncedSearch = useDebounce(search);
 
   const { data, isLoading } = useGetQuery({
     endpoint: `/api/v1/bankPayment/get-all/${activeStore?.id}`,
-    enabled: true,
+    enabled: !!activeStore?.id,
     isTokenRequired: true,
-    queryKey: ["bankAccounts", activeStore?.id, page],
+    queryKey: ["bankAccounts", activeStore?.id],
   });
 
   const bankAccounts = data?.data ?? [];
@@ -48,9 +37,12 @@ export default function ManageBank() {
 
   if (!activeStore) {
     return (
-      <EmptyStoreState
+      <EmptyState
+        icon={Landmark}
         title="No Store Selected"
-        description="Create a store to manage your bank accounts."
+        description="Create a store to start managing bank accounts and payment methods"
+        actionText="Create Store"
+        actionPath="/stores/create"
       />
     );
   }
@@ -58,61 +50,31 @@ export default function ManageBank() {
   let content = null;
 
   if (isLoading) {
-    content = <BankTableSkeleton />;
+    content = <BankTable isLoading={isLoading} />;
   }
 
   if (!isLoading && filteredAccounts.length > 0) {
-    content = (
-      <>
-        <Table>
-          <TableHeader className="bg-card hover:bg-transparent">
-            <TableRow>
-              <TableHead className="border text-center text-xs font-semibold">
-                Bank Account
-              </TableHead>
-              <TableHead className="border text-center text-xs font-semibold">
-                Account Name
-              </TableHead>
-              <TableHead className="border text-center text-xs font-semibold">
-                Account Number
-              </TableHead>
-              <TableHead className="border text-center text-xs font-semibold">
-                Routing Number
-              </TableHead>
-              <TableHead className="border text-center text-xs font-semibold">
-                Action
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-
-          <TableBody>
-            {filteredAccounts?.map((bank) => (
-              <BankTableRow key={bank.id} bank={bank} />
-            ))}
-          </TableBody>
-        </Table>
-      </>
-    );
+    content = <BankTable isLoading={isLoading} accounts={filteredAccounts} />;
   }
 
   if (!isLoading && filteredAccounts?.length === 0) {
     content = (
       <EmptyState
         className="min-h-[calc(100dvh-300px)]"
-        icon={FileText}
+        icon={Landmark}
         title={
-          debouncedSearch ? "No matching account found" : "No account added yet"
+          debouncedSearch ? "No matching account found" : "No bank accounts yet"
         }
         description={
           debouncedSearch
             ? `No results for "${debouncedSearch}". Try a different keyword.`
-            : "Organize your products by adding bank account"
+            : "Add your first bank account to start accepting bank transfer payments"
         }
-        actionText={debouncedSearch ? "Clear Search" : "Add Bank"}
+        actionText={debouncedSearch ? "Clear Search" : "Add Bank Account"}
         onAction={
           debouncedSearch
             ? () => setSearch("")
-            : () => navigate("/payments/bank")
+            : () => navigate("/payments/bank/add")
         }
       />
     );
@@ -120,31 +82,35 @@ export default function ManageBank() {
 
   return (
     <section className="space-y-6">
-      {/* Breadcrumb Navigation */}
       <DynamicBreadcrumb items={breadcrubms.bankPayment} />
 
-      {/* Page Header */}
       <PageHeader
-        icon={FileText}
-        title="Manage Bank Account"
-        description="View and manage all All Bank for"
+        icon={Landmark}
+        title="Bank Accounts"
+        description="View and manage bank accounts for bank transfer payments"
       />
 
-      <div className="bg-card space-y-6 rounded-lg py-5">
-        <div className="flex items-center justify-end gap-4 px-5">
+      <div className="bg-card space-y-6 rounded-lg p-5">
+        <div className="flex items-center justify-end gap-4">
           <div className="relative w-full max-w-72">
-            <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
+            {isLoading ? (
+              <div className="text-muted-foreground absolute top-1/2 left-2.5 -translate-y-1/2">
+                <Spinner className="size-3.5" />
+              </div>
+            ) : (
+              <Search className="text-muted-foreground absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2" />
+            )}
             <Input
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search Bank..."
+              placeholder="Search bank accounts..."
               value={search}
               className="pl-7 placeholder:text-xs md:text-xs"
             />
           </div>
 
           <Button size="sm" asChild className="text-xs">
-            <Link to="/payments/bank">
-              <Plus /> Add Bank
+            <Link to="/payments/bank/add">
+              <Plus /> Add Bank Account
             </Link>
           </Button>
         </div>

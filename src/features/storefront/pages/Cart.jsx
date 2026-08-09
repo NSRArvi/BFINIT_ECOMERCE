@@ -1,4 +1,4 @@
-import { ShoppingBag, Truck, ArrowRight, ArrowLeft } from "lucide-react";
+import { ShoppingBag, ArrowRight, ArrowLeft } from "lucide-react";
 import CartItem from "../components/cart/CartItem";
 import useCart from "@/hooks/useCart";
 import useCountry from "@/hooks/useCountry";
@@ -92,9 +92,7 @@ export default function Cart() {
                   </div>
                 )}
                 <div className="text-muted-foreground flex justify-between">
-                  <span className="flex items-center gap-1">
-                    <Truck className="h-3.5 w-3.5" /> Delivery
-                  </span>
+                  <span>Delivery</span>
                   <span>Calculated at checkout</span>
                 </div>
                 <div className="border-border flex justify-between border-t pt-3 text-base font-semibold">

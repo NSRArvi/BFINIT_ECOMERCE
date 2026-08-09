@@ -14,6 +14,7 @@ import { useQuery } from "@tanstack/react-query";
 import { postApi } from "@/services-v2/api/postApi";
 import useDebounce from "@/hooks/useDebounce";
 import { checkoutSchema } from "@/features/admin/schemas/checkoutSchema";
+import { buildCheckoutPayload } from "../utils/checkoutHelper";
 
 export default function Checkout() {
   const navigate = useNavigate();
@@ -39,7 +40,9 @@ export default function Checkout() {
       delivery_zone_id: "",
       delivery_zone_rate_id: "",
       note: "",
-      payment_type: "offline",
+      payment_method: "cod",
+      transaction_id: "",
+      transaction_proof: undefined,
     },
   });
 
@@ -97,25 +100,17 @@ export default function Checkout() {
   });
 
   const onSubmit = (data) => {
-    const payload = {
-      user_id: customer?.user?.id,
-      store_id: parseInt(storeId),
-      country_id: selectedCountry?.id,
+    const payload = buildCheckoutPayload({
+      data,
+      storeId: parseInt(storeId),
+      countryId: selectedCountry?.id,
       currency: selectedCountry?.currency_code,
-      sub_total: subTotalAmount,
-      total_amount: subTotalAmount + deliveryFee,
-      delivery_zone_id: data?.data?.zone_id,
-      delivery_zone_rate_id: selectedDeliveryCharge?.rate_id,
-      items: cartItems.map((item) => ({
-        product_id: item.id,
-        quantity: item.quantity,
-        ...(item.variantId && {
-          product_variant_combination_id: item.variantId,
-        }),
-      })),
-      payment_method: data?.payment_type === "offline" ? "cod" : "stripe",
-      ...data,
-    };
+      userId: customer?.user?.id,
+      cartItems,
+      subTotalAmount,
+      deliveryFee,
+      selectedDeliveryCharge,
+    });
 
     mutate(payload, {
       onSuccess: (data) => {

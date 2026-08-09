@@ -1,13 +1,14 @@
+import { Link } from "react-router";
 import { Controller } from "react-hook-form";
 import { ArrowLeft, Truck } from "lucide-react";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import useBasePath from "@/hooks/useBasePath";
 import useCountry from "@/hooks/useCountry";
 import { formatPrice } from "@/utils/formatPrice";
-import { Link } from "react-router";
-import useBasePath from "@/hooks/useBasePath";
+import PaymentMethod from "./shipping-details/PaymentMethod";
 
 export default function ShippingDetails({
   control,
@@ -29,13 +30,14 @@ export default function ShippingDetails({
           <Controller
             name="phone"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel htmlFor="phone">
                   Phone number <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Input
                   id="phone"
+                  aria-invalid={fieldState.invalid}
                   placeholder="Enter your phone number"
                   className="rounded-none"
                   {...field}
@@ -48,13 +50,14 @@ export default function ShippingDetails({
           <Controller
             name="state"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel htmlFor="state">
                   State / Province <span className="text-destructive">*</span>
                 </FieldLabel>
                 <Input
                   id="state"
+                  aria-invalid={fieldState.invalid}
                   placeholder="Enter your state or province"
                   className="rounded-none"
                   {...field}
@@ -103,7 +106,7 @@ export default function ShippingDetails({
           <Controller
             name="shipping_address"
             control={control}
-            render={({ field }) => (
+            render={({ field, fieldState }) => (
               <Field>
                 <FieldLabel htmlFor="shipping_address">
                   Address <span className="text-destructive">*</span>
@@ -111,6 +114,7 @@ export default function ShippingDetails({
                 <Textarea
                   id="shipping_address"
                   rows={4}
+                  aria-invalid={fieldState.invalid}
                   placeholder="Street address, apartment, suite, etc."
                   className="rounded-none"
                   {...field}
@@ -207,60 +211,7 @@ export default function ShippingDetails({
         </div>
       </div>
 
-      <div className="p-6 lg:p-8">
-        <h2 className="font-geist mb-6 text-sm font-semibold tracking-widest uppercase">
-          Payment method
-        </h2>
-
-        <Controller
-          name="payment_type"
-          control={control}
-          render={({ field }) => (
-            <Field>
-              <RadioGroup
-                value={field.value}
-                onValueChange={field.onChange}
-                className="space-y-3"
-              >
-                <label
-                  htmlFor="offline"
-                  className={`flex cursor-pointer items-center gap-3 border p-4 transition-colors ${
-                    field.value === "offline"
-                      ? "border-foreground"
-                      : "border-border"
-                  }`}
-                >
-                  <RadioGroupItem value="offline" id="offline" />
-                  <div>
-                    <p className="text-sm font-medium">Cash on delivery</p>
-                    <p className="text-muted-foreground text-xs">
-                      Pay when your order arrives
-                    </p>
-                  </div>
-                </label>
-
-                <label
-                  htmlFor="online"
-                  className={`flex cursor-pointer items-center gap-3 border p-4 transition-colors ${
-                    field.value === "online"
-                      ? "border-foreground"
-                      : "border-border"
-                  }`}
-                >
-                  <RadioGroupItem value="online" id="online" />
-                  <div>
-                    <p className="text-sm font-medium">Pay online</p>
-                    <p className="text-muted-foreground text-xs">
-                      Card, mobile banking, or wallet
-                    </p>
-                  </div>
-                </label>
-              </RadioGroup>
-              <FieldError>{errors.payment_type?.message}</FieldError>
-            </Field>
-          )}
-        />
-      </div>
+      <PaymentMethod control={control} errors={errors} />
 
       <div className="p-6 lg:p-8">
         <Controller
@@ -268,17 +219,14 @@ export default function ShippingDetails({
           control={control}
           render={({ field }) => (
             <Field>
-              <FieldLabel htmlFor="shipping_address">
-                Order Notes (Optional)
-              </FieldLabel>
+              <FieldLabel htmlFor="note">Order Notes (Optional)</FieldLabel>
               <Textarea
-                id="shipping_address"
+                id="note"
                 rows={4}
                 placeholder="Add delivery instructions..."
                 className="rounded-none"
                 {...field}
               />
-              <FieldError>{errors.shipping_address?.message}</FieldError>
             </Field>
           )}
         />
