@@ -3,8 +3,7 @@ import { orderStatusVariantConfig } from "@/features/super-admin/utils/constants
 import { formatDate } from "@/utils/formatDate";
 
 export default function OrderDetailHeader({ orderDetails = {} }) {
-  const { invoice_number, invoice_type, created_at, package_upgrade, status } =
-    orderDetails;
+  const { invoice_number, created_at, package_upgrade, status } = orderDetails;
 
   const durationMonth = package_upgrade?.subscriptionPeriod?.duration;
   const statusVariant = orderStatusVariantConfig[status];
@@ -14,9 +13,6 @@ export default function OrderDetailHeader({ orderDetails = {} }) {
       <div className="space-y-1">
         <div className="flex items-center gap-2">
           <h2 className="text-sm font-semibold">Invoice #{invoice_number}</h2>
-          <Badge variant="outline" className="font-normal capitalize">
-            {invoice_type}
-          </Badge>
         </div>
 
         <div className="text-muted-foreground flex items-center gap-1.5 text-xs">

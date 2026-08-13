@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { Outlet, ScrollRestoration } from "react-router";
+import { Outlet, ScrollRestoration, useNavigate } from "react-router";
 import DashboardNavbar from "@/components/shared/DashboardNavbar";
 import DashboardSidebar from "@/components/shared/DashboardSidebar";
 import StoreSelectionModal from "@/features/admin/components/modals/StoreSelectionModal";
 import { adminNavGroups } from "@/features/admin/config/adminNavGroups";
+import useAuth from "@/hooks/auth/useAuth";
 
 export default function AdminLayout() {
+  const navigate = useNavigate();
+  const { isSuperAdmin } = useAuth();
+
   const [showSideNav, setShowSideNav] = useState(false);
 
   useEffect(() => {
@@ -18,9 +22,19 @@ export default function AdminLayout() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isSuperAdmin) {
+      navigate("/super-admin/packages");
+    }
+  }, [isSuperAdmin, navigate]);
+
   const toggleSideNav = () => {
     setShowSideNav((prev) => !prev);
   };
+
+  if (isSuperAdmin) {
+    return null;
+  }
 
   return (
     <div className="font-inter h-dvh w-full overflow-hidden">

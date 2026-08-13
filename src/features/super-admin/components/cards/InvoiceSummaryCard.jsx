@@ -4,10 +4,8 @@ import { Separator } from "@/components/ui/separator";
 import { formatDecimal } from "@/utils/format/formatDecimal";
 
 export default function InvoiceSummaryCard({ orderDetails = {} }) {
-  const { payment_amount, manualPayments, invoice_number, package_upgrade } =
-    orderDetails;
+  const { payment_amount, invoice_number, package_upgrade } = orderDetails;
 
-  const currency = manualPayments?.[0]?.currency;
   const duration = package_upgrade?.subscriptionPeriod?.duration;
   const discount = Number(package_upgrade?.discount_amount);
   const discountType = package_upgrade?.discount_type;
@@ -31,8 +29,8 @@ export default function InvoiceSummaryCard({ orderDetails = {} }) {
         <div>
           <p className="font-semibold">€{formatDecimal(payment_amount)}</p>
           <p className="text-muted-foreground mt-0.5 text-xs">
-            {currency} · {duration >= 12 ? "1 year" : `${duration} month`} ·{" "}
-            {hasDiscount ? "discount" : "no discount"}
+            {duration >= 12 ? "1 year" : `${duration} month`}
+            {hasDiscount && "· discount"}
           </p>
         </div>
 
