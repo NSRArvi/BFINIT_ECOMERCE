@@ -1,11 +1,11 @@
+import { Link } from "react-router";
+import toast from "react-hot-toast";
+import { AlertCircle, Clipboard, Clock } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { AlertCircle, ArrowRight, Clipboard, Clock } from "lucide-react";
-import toast from "react-hot-toast";
-import { Link } from "react-router";
 
-export default function DNSConfiguration({ data }) {
+export default function DNSConfiguration() {
   const handleTextCopy = (text) => {
     navigator.clipboard.writeText(text);
     toast.success("Text copied!");
@@ -13,41 +13,28 @@ export default function DNSConfiguration({ data }) {
 
   return (
     <div className="border-border bg-card rounded-lg border p-6">
-      {/* dns header */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-0.5">
-          <h3 className="text-sm font-semibold">DNS Configuration</h3>
-          <p className="text-muted-foreground text-xs">
-            Add these records to your Cloudflare DNS settings. Your domain must
-            be managed through Cloudflare for this setup to work.
-          </p>
-        </div>
-
-        {/* section collapse toggle button */}
-        <Button variant="link" size="sm" asChild className="text-xs">
-          <Link to="/help/domain-setup">
-            View Complete Guide <ArrowRight />
-          </Link>
-        </Button>
+      <div className="space-y-0.5">
+        <h3 className="text-sm font-medium">DNS Configuration</h3>
+        <p className="text-muted-foreground text-xs">
+          Add these records to your Cloudflare DNS settings. Your domain must be
+          managed through Cloudflare for this setup to work.
+        </p>
       </div>
 
-      {/* content */}
       <div className="mt-6 space-y-6">
-        {/* time warning */}
+        {/* propagation time alert */}
         <Alert variant="warning">
           <Clock />
-          <AlertTitle className="text-xs">DNS Propagation Time</AlertTitle>
-          <AlertDescription className="text-xs">
+          <AlertTitle>DNS Propagation Time</AlertTitle>
+          <AlertDescription>
             DNS changes can take up to 48 hours to propagate worldwide, but
             typically complete within 1-4 hours
           </AlertDescription>
         </Alert>
 
-        {/* required records */}
+        {/* records guide */}
         <div className="space-y-4">
-          <h3 className="text-sm font-semibold">
-            Cloudflare DNS Records Setup
-          </h3>
+          <h3 className="text-sm font-medium">Cloudflare DNS Records Setup</h3>
 
           {/* Record 1 Root Domain */}
           <div className="border-border bg-card rounded-lg border p-5">
@@ -98,14 +85,14 @@ export default function DNSConfiguration({ data }) {
                 </p>
                 <div className="flex items-center gap-2">
                   <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
-                    {data?.dnsData?.cName}
+                    ecom.bfinit.com
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 shrink-0"
-                    onClick={() => handleTextCopy(data?.dnsData?.cName)}
+                    onClick={() => handleTextCopy("ecom.bfinit.com")}
                   >
                     <Clipboard className="h-4 w-4" />
                   </Button>
@@ -180,14 +167,14 @@ export default function DNSConfiguration({ data }) {
                 </p>
                 <div className="flex items-center gap-2">
                   <div className="border-border bg-muted flex-1 rounded-md border px-3 py-2 font-mono text-xs">
-                    {data?.dnsData?.cName}
+                    ecom.bfinit.com
                   </div>
                   <Button
                     type="button"
                     variant="ghost"
                     size="icon"
                     className="h-9 w-9 shrink-0"
-                    onClick={() => handleTextCopy(data?.dnsData?.cName)}
+                    onClick={() => handleTextCopy("ecom.bfinit.com")}
                   >
                     <Clipboard className="h-4 w-4" />
                   </Button>
@@ -213,19 +200,16 @@ export default function DNSConfiguration({ data }) {
             </div>
           </div>
 
-          {/* Help Banner */}
+          {/* helping guide */}
           <Alert variant="info">
             <AlertCircle />
-            <AlertTitle className="text-xs">
-              Need help setting up Cloudflare DNS?
-            </AlertTitle>
-            <AlertDescription className="text-xs">
+            <AlertTitle>Need help setting up Cloudflare DNS?</AlertTitle>
+            <AlertDescription>
               <p>
                 View our complete guide for adding these records in your
                 Cloudflare dashboard.
               </p>
 
-              {/* Provider Quick Links */}
               <div className="flex flex-wrap items-center gap-2">
                 <Button
                   variant="link"

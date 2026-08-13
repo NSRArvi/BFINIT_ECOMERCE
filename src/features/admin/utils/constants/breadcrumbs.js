@@ -89,6 +89,8 @@ export const breadcrubms = {
     { label: "Manage Blog" },
   ],
 
+  domain: [{ label: "Home", href: "/" }, { label: "Domain" }],
+
   // payment
   stripePayment: [
     { label: "Home", href: Home_Url },

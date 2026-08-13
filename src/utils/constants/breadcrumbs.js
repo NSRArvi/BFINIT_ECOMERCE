@@ -46,7 +46,6 @@ export const breadcrubms = {
   // ============================================================================
 
   /** Breadcrumb for domain managment */
-  domain: [{ label: "Home", href: "/" }, { label: "Domain" }],
 
   // payments
   BankPayment: [
