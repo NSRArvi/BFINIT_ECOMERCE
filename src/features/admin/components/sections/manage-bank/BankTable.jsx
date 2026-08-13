@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 const tableHeaders = [
   { label: "Bank", className: "text-left" },
   { label: "Account Holder", className: "text-left" },
-  { label: "Account Number", className: "text-left" },
+  { label: "IBAN / Account No.", className: "text-left" },
   { label: "SWIFT / BIC", className: "text-left" },
   { label: "Active", className: "text-center" },
   { label: "Action", className: "text-center" },

@@ -26,8 +26,15 @@ export default function BankRow({ bank }) {
   const queryClient = useQueryClient();
   const { activeStore } = useSelectedStore();
 
-  const { id, bank_name, account_name, account_number, swift_code, is_active } =
-    bank;
+  const {
+    id,
+    bank_name,
+    account_name,
+    account_number,
+    iban,
+    swift_code,
+    is_active,
+  } = bank;
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -74,7 +81,7 @@ export default function BankRow({ bank }) {
         <TableCell className="border text-xs">{bank_name}</TableCell>
         <TableCell className="border text-xs">{account_name}</TableCell>
         <TableCell className="border text-xs tracking-wider tabular-nums">
-          {maskAccountNumber(account_number)}
+          {maskAccountNumber(account_number || iban)}
         </TableCell>
         <TableCell className="border text-xs">
           {swift_code || <span className="text-muted-foreground">Not set</span>}

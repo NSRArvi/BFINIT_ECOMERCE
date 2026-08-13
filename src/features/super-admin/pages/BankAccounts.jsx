@@ -1,18 +1,18 @@
+import { Link } from "react-router";
 import { Landmark, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import BankAccountsTable from "../components/sections/bank-accounts/BankAccountsTable";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
-import { breadcrubms } from "../utils/constants/breadcrumbs";
 import PageHeader from "@/components/shared/PageHeader";
 import BankAccountsTableSkeleton from "@/components/skeletons/BankAccountsTableSkeleton";
 import EmptyState from "@/components/shared/EmptyState";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function PackageBankAccounts() {
   const { data, isLoading } = useGetQuery({
     endpoint: "/api/v1/platform-bank-payment/get-all-admin",
-    newBaseUrl: true,
+    enabled: true,
     queryKey: ["platform_banks"],
   });
 

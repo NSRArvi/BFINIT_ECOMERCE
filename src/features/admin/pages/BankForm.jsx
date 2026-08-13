@@ -148,28 +148,53 @@ export default function BankForm() {
               )}
             />
 
-            <Controller
-              name="account_number"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>
-                    Account Number <span className="text-destructive">*</span>
-                  </FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="e.g. 123456789012"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+            <div className="grid grid-cols-2 gap-6">
+              <Controller
+                name="account_number"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>Account Number</FieldLabel>
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.trigger(["account_number", "iban"]);
+                      }}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="e.g. 123456789012"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
 
-            <div className="grid grid-cols-2 gap-x-6">
+              <Controller
+                name="iban"
+                control={form.control}
+                render={({ field, fieldState }) => (
+                  <Field data-invalid={fieldState.invalid}>
+                    <FieldLabel htmlFor={field.name}>IBAN</FieldLabel>
+                    <Input
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        form.trigger(["account_number", "iban"]);
+                      }}
+                      id={field.name}
+                      aria-invalid={fieldState.invalid}
+                      placeholder="e.g. DE89 3704 0044 0532 0130 00"
+                    />
+                    {fieldState.invalid && (
+                      <FieldError errors={[fieldState.error]} />
+                    )}
+                  </Field>
+                )}
+              />
+
               <Controller
                 name="swift_code"
                 control={form.control}
@@ -192,16 +217,16 @@ export default function BankForm() {
               />
 
               <Controller
-                name="iban"
+                name="routing_number"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor={field.name}>IBAN</FieldLabel>
+                    <FieldLabel htmlFor={field.name}>Routing Number</FieldLabel>
                     <Input
                       {...field}
                       id={field.name}
                       aria-invalid={fieldState.invalid}
-                      placeholder="e.g. DE89 3704 0044 0532 0130 00"
+                      placeholder="e.g. 021000021 (if applicable)"
                     />
                     {fieldState.invalid && (
                       <FieldError errors={[fieldState.error]} />
@@ -210,25 +235,6 @@ export default function BankForm() {
                 )}
               />
             </div>
-
-            <Controller
-              name="routing_number"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor={field.name}>Routing Number</FieldLabel>
-                  <Input
-                    {...field}
-                    id={field.name}
-                    aria-invalid={fieldState.invalid}
-                    placeholder="e.g. 021000021 (if applicable)"
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
 
             <Controller
               name="is_active"

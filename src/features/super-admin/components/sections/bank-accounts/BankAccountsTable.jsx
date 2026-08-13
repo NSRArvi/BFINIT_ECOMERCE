@@ -10,31 +10,30 @@ import BankAccountRow from "./BankAccountRow";
 import { cn } from "@/lib/utils";
 
 const tableHeaders = [
-  "Bank name",
-  "Account name",
-  "Account no.",
-  "Routing no.",
-  "Swift code",
-  "Status",
-  "Actions",
+  { label: "Bank", className: "text-left" },
+  { label: "Account Holder", className: "text-left" },
+  { label: "IBAN / Account No.", className: "text-left" },
+  { label: "SWIFT / BIC", className: "text-left" },
+  { label: "Active", className: "text-center" },
+  { label: "Action", className: "text-center" },
 ];
 
 export default function BankAccountsTable({ data }) {
   return (
     <TooltipProvider delayDuration={300}>
-      <div className="bg-card rounded-lg border">
+      <div className="bg-card">
         <Table>
           <TableHeader>
-            <TableRow>
-              {tableHeaders.map((header, index) => (
+            <TableRow className="bg-card hover:bg-transparent">
+              {tableHeaders.map(({ label, className }) => (
                 <TableHead
-                  key={index}
+                  key={label}
                   className={cn(
-                    "text-xs",
-                    index === tableHeaders?.length - 1 && "text-right",
+                    "text-muted-foreground border text-xs font-medium",
+                    className,
                   )}
                 >
-                  {header}
+                  {label}
                 </TableHead>
               ))}
             </TableRow>

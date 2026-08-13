@@ -1,38 +1,74 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { Pencil, Trash2 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { TableCell, TableRow } from "@/components/ui/table";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
-import useDeleteMutation from "@/hooks/api/useDeleteMutation";
+import { EllipsisVertical, Pencil, Trash2 } from "lucide-react";
 import { useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
-import ConfirmationDialog from "../../../../admin/components/modals/ConfirmationDialog";
+import { Button } from "@/components/ui/button";
+import ConfirmationDialog from "@/features/admin/components/modals/ConfirmationDialog";
+import { TableCell, TableRow } from "@/components/ui/table";
+import { Switch } from "@/components/ui/switch";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import useDeleteMutation from "@/hooks-v2/api/useDeleteMutation";
+
+const maskAccountNumber = (accountNumber) => {
+  if (!accountNumber) return "";
+  return "••••••••" + accountNumber.slice(-4);
+};
 
 export default function BankAccountRow({ account }) {
   const queryClient = useQueryClient();
+
+  const {
+    id,
+    bank_name,
+    account_name,
+    account_number,
+    iban,
+    swift_code,
+    is_active,
+  } = account;
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  const { mutate, isPending } = useDeleteMutation({
-    endpoint: `/api/v1/platform-bank-payment/delete/${account.id}`,
-    newBaseUrl: true,
+  const { mutate: toggle, isPending: isTogglePending } = usePatchMutation({
+    endpoint: `/api/v1/platform-bank-payment/toggle-status/${id}`,
+    isTokenRequired: true,
   });
+
+  const { mutate, isPending } = useDeleteMutation({
+    endpoint: `/api/v1/platform-bank-payment/delete/${id}`,
+    isTokenRequired: true,
+  });
+
+  const handleStatusToggle = () => {
+    toggle(null, {
+      onSuccess: (data) => {
+        if (!data?.success) return toast.error(data?.message);
+        queryClient.invalidateQueries(["platform_banks"]);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
 
   const handleDelete = () => {
     mutate(null, {
       onSuccess: (data) => {
-        queryClient.invalidateQueries(["platform_banks"]);
+        if (!data?.success) return toast.error(data?.message);
         close();
         toast.success(data?.message);
+        queryClient.invalidateQueries(["platform_banks"]);
       },
       onError: (error) => {
-        close();
-        toast.error(error?.message);
+        toast.error(error?.message || "Failed to delete bank account");
       },
     });
   };
@@ -40,59 +76,54 @@ export default function BankAccountRow({ account }) {
   return (
     <>
       <TableRow>
-        <TableCell className="text-xs font-medium">
-          {account.bank_name}
+        <TableCell className="border text-xs">{bank_name}</TableCell>
+        <TableCell className="border text-xs">{account_name}</TableCell>
+        <TableCell className="border text-xs tracking-wider tabular-nums">
+          {maskAccountNumber(account_number || iban)}
         </TableCell>
-        <TableCell className="text-muted-foreground text-xs">
-          {account.account_name}
+        <TableCell className="border text-xs">
+          {swift_code || <span className="text-muted-foreground">Not set</span>}
         </TableCell>
-        <TableCell className="text-muted-foreground font-mono text-xs">
-          ••••••{account.account_number.slice(-4)}
+        <TableCell className="w-20 border text-center text-xs">
+          <Switch
+            disabled={isTogglePending || isPending}
+            checked={is_active}
+            onCheckedChange={handleStatusToggle}
+          />
         </TableCell>
-        <TableCell className="text-muted-foreground font-mono text-xs">
-          {account.routing_number}
-        </TableCell>
-        <TableCell className="text-muted-foreground font-mono text-xs">
-          {account.swift_code}
-        </TableCell>
-        <TableCell className="text-xs">
-          {account.is_active ? (
-            <Badge variant="success" className="text-xs">
-              Active
-            </Badge>
-          ) : (
-            <Badge variant="secondary" className="text-xs">
-              Inactive
-            </Badge>
-          )}
-        </TableCell>
-        <TableCell className="text-right">
-          <div className="flex items-center justify-end gap-1">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button variant="ghost" size="icon" className="h-7 w-7" asChild>
-                  <Link to={`/super-admin/bank-accounts/edit/${account.id}`}>
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Link>
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Edit</TooltipContent>
-            </Tooltip>
+        <TableCell className="w-18 border text-center">
+          <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <EllipsisVertical />
+              </Button>
+            </DropdownMenuTrigger>
 
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  onClick={() => setIsDeleteDialogOpen(true)}
-                  variant="ghost"
-                  size="icon"
-                  className="text-destructive hover:bg-destructive/10 hover:text-destructive h-7 w-7"
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem asChild>
+                <Link
+                  to={`/super-admin/bank-accounts/edit/${id}`}
+                  className="cursor-pointer text-xs font-medium"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Delete</TooltipContent>
-            </Tooltip>
-          </div>
+                  <Pencil />
+                  Edit
+                </Link>
+              </DropdownMenuItem>
+
+              {/* delete menu item */}
+              <DropdownMenuItem
+                className="text-destructive focus:text-destructive cursor-pointer text-xs font-medium"
+                onSelect={(e) => {
+                  e.preventDefault();
+                  setIsDeleteDialogOpen(true);
+                  setIsDropdownOpen(false);
+                }}
+              >
+                <Trash2 className="text-destructive" />
+                Delete
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </TableCell>
       </TableRow>
 

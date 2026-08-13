@@ -1,19 +1,21 @@
 export const emptyDefaults = {
   bank_name: "",
-  account_number: "",
   account_name: "",
-  routing_number: "",
+  account_number: "",
+  iban: "",
   swift_code: "",
+  routing_number: "",
   is_active: true,
 };
 
 export const transformPlatformBankData = (data) => {
   return {
     bank_name: data?.bank_name,
-    account_number: data?.account_number,
     account_name: data?.account_name,
-    routing_number: data?.routing_number,
+    account_number: data?.account_number,
+    iban: data?.iban,
     swift_code: data?.swift_code,
+    routing_number: data?.routing_number,
     is_active: data?.is_active,
   };
 };
