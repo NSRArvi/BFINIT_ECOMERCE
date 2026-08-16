@@ -8,10 +8,11 @@ import { Form } from "@/components/ui/form";
 import DomainSkeleton from "../components/skeletons/DomainSkeleton";
 import DomainOwnership from "../components/sections/domains/DomainOwnership";
 import NewDomain from "../components/sections/domains/NewDomain";
-import DomainField from "../components/sections/domains/DomainField";
+import AddDomain from "../components/sections/domains/AddDomain";
 import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
+import DomainStatusRow from "../components/sections/domains/DomainStatus";
 import DNSConfiguration from "../components/sections/domains/DNSConfiguration";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
@@ -99,21 +100,13 @@ export default function Domains() {
     content = (
       <>
         <DomainOwnership form={form} />
-        <DomainField
-          form={form}
-          isDomainIntegrated={isDomainIntegrated}
-          data={data?.data}
-        />
+        <AddDomain form={form} />
       </>
     );
   } else {
     content = (
       <>
-        <DomainField
-          form={form}
-          isDomainIntegrated={isDomainIntegrated}
-          data={data?.data}
-        />
+        <DomainStatusRow domain={data?.data} />
         <DNSConfiguration />
       </>
     );
@@ -141,11 +134,11 @@ export default function Domains() {
               </Link>
             </Button>
 
-            <div className="flex flex-col-reverse gap-4 lg:flex-row">
+            {!isDomainIntegrated && (
               <Button disabled={isSubmitting} type="submit" size="sm">
                 {isSubmitting ? "Connecting..." : "Connect Domain"}
               </Button>
-            </div>
+            )}
           </div>
         </form>
       </Form>

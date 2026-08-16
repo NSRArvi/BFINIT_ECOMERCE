@@ -7,4 +7,6 @@ export const breadcrubms = {
     { label: "Home", href: Home_Url },
     { label: "Bank Accounts" },
   ],
+  domains: [{ label: "Home", href: Home_Url }, { label: "Domains" }],
+  subdomains: [{ label: "Home", href: Home_Url }, { label: "Subdomains" }],
 };

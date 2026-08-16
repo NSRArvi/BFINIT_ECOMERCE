@@ -16,6 +16,9 @@ const Orders = lazy(() => import("@/features/super-admin/pages/Orders"));
 const OrderDetails = lazy(
   () => import("@/features/super-admin/pages/OrderDetails"),
 );
+const DomainManagement = lazy(
+  () => import("@/features/super-admin/pages/DomainManagement"),
+);
 
 export const superAdminRoutes = {
   path: "/super-admin",
@@ -35,5 +38,9 @@ export const superAdminRoutes = {
     { path: "bank-accounts", element: <BankAccounts /> },
     { path: "bank-accounts/new", element: <BankForm /> },
     { path: "bank-accounts/edit/:id", element: <BankForm /> },
+    {
+      path: "domains",
+      element: <DomainManagement />,
+    },
   ],
 };

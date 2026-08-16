@@ -1,4 +1,4 @@
-import { ClipboardList, Crown, Landmark } from "lucide-react";
+import { ClipboardList, Crown, Landmark, Globe, Waypoints } from "lucide-react";
 
 export const superAdminNavGroups = [
   {
@@ -19,6 +19,21 @@ export const superAdminNavGroups = [
         name: "Bank Accounts",
         url: "/super-admin/bank-accounts",
       },
+    ],
+  },
+  {
+    groupName: "Stores",
+    links: [
+      {
+        icon: Globe,
+        name: "Domains",
+        url: "/super-admin/domains",
+      },
+      // {
+      //   icon: Waypoints,
+      //   name: "Subdomains",
+      //   url: "/super-admin/subdomains",
+      // },
     ],
   },
 ];
