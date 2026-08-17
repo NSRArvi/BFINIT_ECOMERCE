@@ -1,4 +1,4 @@
-import { ClipboardList, Crown, Landmark, Globe, Waypoints } from "lucide-react";
+import { ClipboardList, Crown, Landmark, Globe, Network } from "lucide-react";
 
 export const superAdminNavGroups = [
   {
@@ -29,11 +29,11 @@ export const superAdminNavGroups = [
         name: "Domains",
         url: "/super-admin/domains",
       },
-      // {
-      //   icon: Waypoints,
-      //   name: "Subdomains",
-      //   url: "/super-admin/subdomains",
-      // },
+      {
+        icon: Network,
+        name: "Subdomains",
+        url: "/super-admin/subdomains",
+      },
     ],
   },
 ];

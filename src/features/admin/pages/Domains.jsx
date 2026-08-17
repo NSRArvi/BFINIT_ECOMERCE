@@ -3,16 +3,17 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChevronLeft, Globe } from "lucide-react";
+import AddDomain from "../components/sections/domains/AddDomain";
 import { Button } from "@/components/ui/button";
-import { Form } from "@/components/ui/form";
 import DomainSkeleton from "../components/skeletons/DomainSkeleton";
 import DomainOwnership from "../components/sections/domains/DomainOwnership";
+import { Form } from "@/components/ui/form";
 import NewDomain from "../components/sections/domains/NewDomain";
-import AddDomain from "../components/sections/domains/AddDomain";
 import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
-import DomainStatusRow from "../components/sections/domains/DomainStatus";
+import DomainStatus from "../components/sections/domains/DomainStatus";
+import SubDomainStatus from "../components/sections/domains/SubDomainStatus";
 import DNSConfiguration from "../components/sections/domains/DNSConfiguration";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
@@ -88,6 +89,7 @@ export default function Domains() {
   ) {
     content = (
       <>
+        <SubDomainStatus />
         <DomainOwnership form={form} />
         <NewDomain />
       </>
@@ -99,6 +101,7 @@ export default function Domains() {
   ) {
     content = (
       <>
+        <SubDomainStatus />
         <DomainOwnership form={form} />
         <AddDomain form={form} />
       </>
@@ -106,7 +109,7 @@ export default function Domains() {
   } else {
     content = (
       <>
-        <DomainStatusRow domain={data?.data} />
+        <DomainStatus domain={data?.data} />
         <DNSConfiguration />
       </>
     );

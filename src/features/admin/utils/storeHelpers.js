@@ -1,16 +1,3 @@
-const generatePublicSubdomain = (name) => {
-  const slug =
-    name
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, "")
-      .replace(/\s+/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "") || "store";
-
-  return `${slug}-${Math.random().toString(36).slice(2, 7)}`;
-};
-
 const generateStoreCode = (name) => {
   const prefix =
     name
@@ -24,7 +11,7 @@ export const createStorePayload = (data) => {
   const formData = new FormData();
 
   formData.append("name", data.name);
-  formData.append("public_subdomain", generatePublicSubdomain(data.name)); // TODO: generate via backend
+  formData.append("public_subdomain", data.public_subdomain);
   formData.append("store_code", generateStoreCode(data.name)); // TODO: generate via backend
   formData.append("default_country_id", data.default_country_id);
   formData.append("contact_email", data.email);

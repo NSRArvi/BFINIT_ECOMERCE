@@ -47,46 +47,46 @@ const domainStatusConfig = {
 
 const statusChangeHints = {
   pending: null,
-  verified: "The domain will be treated as live immediately.",
+  verified:
+    "The subdomain will be marked as active and available for the store.",
   failed:
-    "The store owner will need to check their DNS records and resubmit the domain.",
-  disabled:
-    "The domain will be taken offline and the store will use its default subdomain.",
+    "The subdomain will be marked as unavailable until the setup issue is resolved.",
+  disabled: "The subdomain will be disabled and unavailable for the store.",
 };
 
-export default function DomainRow({ domain }) {
+export default function SubDomainRow({ subdomain }) {
   const queryClient = useQueryClient();
   const [search] = useSearchParamState("search");
   const [page] = useSearchParamState("page", "1");
 
   const {
-    domain: domain_name,
-    store_name,
-    store_owner_email,
-    status,
+    public_subdomain,
+    name,
+    contact_email,
+    subdomain_status,
     created_at,
     id,
-  } = domain || {};
+  } = subdomain || {};
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState(status);
+  const [selectedStatus, setSelectedStatus] = useState(subdomain_status);
 
-  const { variant, icon: StatusIcon } = domainStatusConfig[status];
+  const { variant, icon: StatusIcon } = domainStatusConfig[subdomain_status];
 
   const { mutate, isPending } = usePatchMutation({
-    endpoint: `/api/v1/platform/domains/${id}/verify`,
+    endpoint: `/api/v1/platform/domains/${id}/subdomain-verification`,
     isTokenRequired: true,
   });
 
   const handleConfirm = () => {
     mutate(
       {
-        status: selectedStatus,
+        subdomain_status: selectedStatus,
       },
       {
         onSuccess: (data) => {
           if (!data?.success) return toast.error(data?.message);
-          queryClient.invalidateQueries(["domains", page, search]);
+          queryClient.invalidateQueries(["subdomains", page, search]);
           setIsStatusDialogOpen(false);
         },
         onError: (error) => {
@@ -98,21 +98,21 @@ export default function DomainRow({ domain }) {
 
   const handleOpenChange = (open) => {
     setIsStatusDialogOpen(open);
-    if (open) setSelectedStatus(status);
+    if (open) setSelectedStatus(subdomain_status);
   };
 
   return (
     <>
       <TableRow>
-        <TableCell className="border text-xs">{domain_name}</TableCell>
-        <TableCell className="border text-xs">{store_name}</TableCell>
+        <TableCell className="border text-xs">{public_subdomain}</TableCell>
+        <TableCell className="border text-xs">{name}</TableCell>
         <TableCell className="border text-xs tracking-wider tabular-nums">
-          {store_owner_email}
+          {contact_email}
         </TableCell>
         <TableCell className="w-28 border text-center text-xs capitalize">
           <Badge variant={variant}>
             <StatusIcon />
-            {status}
+            {subdomain_status}
           </Badge>
         </TableCell>
         <TableCell className="w-32 border text-center text-xs">
@@ -139,10 +139,12 @@ export default function DomainRow({ domain }) {
       <Dialog open={isStatusDialogOpen} onOpenChange={handleOpenChange}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
-            <DialogTitle>Update domain status</DialogTitle>
+            <DialogTitle>Update subdomain status</DialogTitle>
             <DialogDescription className="text-xs">
               Change the status of{" "}
-              <span className="text-foreground font-medium">{domain_name}</span>
+              <span className="text-foreground font-medium">
+                {public_subdomain}
+              </span>
             </DialogDescription>
           </DialogHeader>
 
@@ -177,7 +179,7 @@ export default function DomainRow({ domain }) {
               Cancel
             </Button>
             <Button
-              disabled={isPending || selectedStatus === status}
+              disabled={isPending || selectedStatus === subdomain_status}
               onClick={handleConfirm}
               size="sm"
               className="min-w-[106px]"

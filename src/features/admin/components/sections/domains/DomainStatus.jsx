@@ -34,7 +34,7 @@ const domainStatusDisplay = {
   },
 };
 
-export default function DomainStatusRow({ domain }) {
+export default function DomainStatus({ domain }) {
   const { domain: domainName, status, verified_at, created_at } = domain || {};
   const { label, variant, supportTitle, supportDescription } =
     domainStatusDisplay[status];

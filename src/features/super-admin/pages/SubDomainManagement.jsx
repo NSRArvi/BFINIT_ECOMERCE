@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Globe, Search } from "lucide-react";
+import { Network, Search } from "lucide-react";
 import { keepPreviousData } from "@tanstack/react-query";
-import DomainTable from "../components/sections/domain-management/DomainTable";
+import SubDomainTable from "../components/sections/subdomain-mangement/SubDomainTable";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import { Input } from "@/components/ui/input";
 import PageHeader from "@/components/shared/PageHeader";
@@ -12,7 +12,7 @@ import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useDebounce from "@/hooks/useDebounce";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 
-export default function DomainManagement() {
+export default function SubDomainManagement() {
   const [search, setSearch] = useSearchParamState("search");
   const [page] = useSearchParamState("page", "1");
 
@@ -24,10 +24,10 @@ export default function DomainManagement() {
   }, [debouncedSearch, search, setSearch]);
 
   const { data, isLoading } = useGetQuery({
-    endpoint: `/api/v1/platform/domains/search-domain?limit=20&page=${page}${search ? `&search=${search}` : ""}`,
+    endpoint: `/api/v1/platform/domains/search-subdomain?limit=20&page=${page}${search ? `&search=${search}` : ""}`,
     enabled: true,
     isTokenRequired: true,
-    queryKey: ["domains", page, search],
+    queryKey: ["subdomains", page, search],
     placeholderData: keepPreviousData,
   });
 
@@ -36,19 +36,19 @@ export default function DomainManagement() {
   if (!isLoading && data?.data?.data?.length > 0) {
     content = (
       <>
-        <DomainTable domains={data?.data?.data} />
-        <TablePagination meta={data?.data?.meta} itemLabel="domains" />
+        <SubDomainTable domains={data?.data?.data} />
+        <TablePagination meta={data?.data?.meta} itemLabel="subdomains" />
       </>
     );
   }
 
   return (
     <section className="space-y-6">
-      <DynamicBreadcrumb items={breadcrubms.domains} />
+      <DynamicBreadcrumb items={breadcrubms.subdomains} />
       <PageHeader
-        icon={Globe}
-        title="Domains"
-        description="Manage custom domains for stores"
+        icon={Network}
+        title="Subdomains"
+        description="Manage subdomains for stores"
       />
       <div className="bg-card space-y-6 rounded-lg p-5">
         <div className="relative ml-auto w-full max-w-72">
@@ -62,7 +62,7 @@ export default function DomainManagement() {
           <Input
             onChange={(e) => setSearchInput(e.target.value)}
             value={searchInput}
-            placeholder="Search domains..."
+            placeholder="Search subdomains..."
             className="pl-7 placeholder:text-xs md:text-xs"
           />
         </div>

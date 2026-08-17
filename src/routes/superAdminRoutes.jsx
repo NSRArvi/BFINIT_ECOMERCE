@@ -19,6 +19,9 @@ const OrderDetails = lazy(
 const DomainManagement = lazy(
   () => import("@/features/super-admin/pages/DomainManagement"),
 );
+const SubDomainManagement = lazy(
+  () => import("@/features/super-admin/pages/SubDomainManagement"),
+);
 
 export const superAdminRoutes = {
   path: "/super-admin",
@@ -41,6 +44,10 @@ export const superAdminRoutes = {
     {
       path: "domains",
       element: <DomainManagement />,
+    },
+    {
+      path: "subdomains",
+      element: <SubDomainManagement />,
     },
   ],
 };
