@@ -1,7 +1,7 @@
 import { Link, useNavigate, useParams } from "react-router";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { ChevronLeft, Landmark } from "lucide-react";
+import { ChevronLeft, ChevronsUpDown, Landmark, SearchX } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import { Form, FormDescription } from "@/components/ui/form";
@@ -20,11 +20,31 @@ import {
   transformPlatformBankData,
 } from "@/features/admin/utils/platformBankAccHelper";
 import { bankSchema } from "@/features/admin/schemas/bankSchema";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import { useState } from "react";
 
 export default function BankForm() {
   const navigate = useNavigate();
   const { id } = useParams();
   const isEditMode = !!id;
+
+  const { data: countries, isLoading: isCountriesLoading } = useGetQuery({
+    endpoint: "/api/v1/country",
+    enabled: true,
+    queryKey: ["countries"],
+  });
 
   const { data, isLoading: isDataLoading } = useGetQuery({
     endpoint: `/api/v1/platform-bank-payment/get/${id}`,
@@ -38,6 +58,8 @@ export default function BankForm() {
   });
   const { handleSubmit } = form;
 
+  const [open, setOpen] = useState(false);
+
   const { mutate, isPending: isCreating } = usePostMutation({
     endpoint: "/api/v1/platform-bank-payment/create",
     isTokenRequired: true,
@@ -47,10 +69,6 @@ export default function BankForm() {
     endpoint: `/api/v1/platform-bank-payment/update/${id}`,
     newBaseUrl: true,
   });
-
-  const isLoading = isCreating || isDataLoading || isUpdating;
-  const btnLabel = isEditMode ? "Update" : "Save";
-  const btnLoadingLabel = isEditMode ? "Updating..." : "Saving...";
 
   const onSubmit = (data) => {
     if (!id) {
@@ -79,6 +97,10 @@ export default function BankForm() {
     });
   };
 
+  const isLoading = isCreating || isDataLoading || isUpdating;
+  const btnLabel = isEditMode ? "Update" : "Save";
+  const btnLoadingLabel = isEditMode ? "Updating..." : "Saving...";
+
   return (
     <section className="space-y-6">
       <DynamicBreadcrumb items={breadcrubms.addPlatformBank} />
@@ -97,6 +119,78 @@ export default function BankForm() {
           className="bg-card rounded-lg border p-5"
         >
           <fieldset disabled={isLoading} className="space-y-6">
+            <Controller
+              name="country"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor={field.name}>
+                    Country <span className="text-destructive">*</span>
+                  </FieldLabel>
+                  <Popover open={open} onOpenChange={setOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={open}
+                        disabled={isCountriesLoading}
+                        className="w-full justify-between font-normal"
+                      >
+                        <span
+                          className={
+                            field.value ? "" : "text-muted-foreground text-sm"
+                          }
+                        >
+                          {isCountriesLoading
+                            ? "Loading countries..."
+                            : field.value || "Search countries"}
+                        </span>
+                        <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent
+                      className="w-[--radix-popover-trigger-width] min-w-[--radix-popover-trigger-width] p-0"
+                      align="start"
+                    >
+                      <Command>
+                        <CommandInput placeholder="Search countries..." />
+                        <CommandList>
+                          <CommandEmpty>
+                            <SearchX className="text-muted-foreground mx-auto mb-2 size-4" />
+                            <p className="text-muted-foreground text-xs">
+                              No countries found
+                            </p>
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {countries?.data?.map((country) => (
+                              <CommandItem
+                                key={country?.id}
+                                value={country?.name}
+                                onSelect={() => {
+                                  field.onChange(country?.name);
+                                  setOpen(false);
+                                }}
+                              >
+                                <span>{country?.flag_emoji}</span>
+                                <span>{country?.name}</span>
+                                <span className="text-muted-foreground ml-auto text-[11px]">
+                                  {country?.currency_code}
+                                </span>
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
+
             <Controller
               name="bank_name"
               control={form.control}

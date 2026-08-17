@@ -1,4 +1,5 @@
 export const emptyDefaults = {
+  country: "",
   bank_name: "",
   account_name: "",
   account_number: "",
@@ -10,6 +11,7 @@ export const emptyDefaults = {
 
 export const transformPlatformBankData = (data) => {
   return {
+    country: data?.country,
     bank_name: data?.bank_name,
     account_name: data?.account_name,
     account_number: data?.account_number,

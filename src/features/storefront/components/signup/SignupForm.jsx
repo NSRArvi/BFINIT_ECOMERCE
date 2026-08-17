@@ -13,6 +13,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import CountryCodeSelect from "./CountryCodeSelect";
 
 export default function SignupForm({
   control,
@@ -128,21 +129,35 @@ export default function SignupForm({
           <Controller
             name="phone"
             control={control}
-            render={({ field }) => (
-              <Field>
-                <FieldLabel htmlFor="phone">
-                  Phone{" "}
-                  <span className="text-muted-foreground">(optional)</span>
-                </FieldLabel>
-                <Input
-                  id="phone"
-                  type="tel"
-                  placeholder="+1 555 123 4567"
-                  className="rounded-none"
-                  {...field}
-                />
-                <FieldError />
-              </Field>
+            render={({ field: phoneField, fieldState: phoneState }) => (
+              <Controller
+                name="country_code"
+                control={control}
+                render={({ field: countryField, fieldState: countryState }) => (
+                  <Field
+                    data-invalid={phoneState.invalid || countryState.invalid}
+                  >
+                    <FieldLabel htmlFor="phone">
+                      Phone
+                      <span className="text-muted-foreground">(optional)</span>
+                    </FieldLabel>
+                    <div className="flex gap-2">
+                      <CountryCodeSelect
+                        value={countryField.value}
+                        onChange={countryField.onChange}
+                      />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        placeholder="555 123 4567"
+                        className="flex-1 rounded-none"
+                        aria-invalid={phoneState.invalid}
+                        {...phoneField}
+                      />
+                    </div>
+                  </Field>
+                )}
+              />
             )}
           />
 

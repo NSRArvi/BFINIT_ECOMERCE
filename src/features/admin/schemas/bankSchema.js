@@ -2,6 +2,7 @@ import * as z from "zod";
 
 export const bankSchema = z
   .object({
+    country: z.string().trim().min(1, "Select a country"),
     bank_name: z.string().trim().min(1, "Enter the bank name"),
     account_name: z.string().trim().min(1, "Enter the account holder's name"),
     account_number: z.string().trim().optional(),

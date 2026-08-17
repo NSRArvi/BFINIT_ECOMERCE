@@ -9,6 +9,7 @@ export const signupSchema = z.object({
     .refine((val) => /[A-Z]/.test(val) && /[0-9]/.test(val), {
       message: "Must contain at least one uppercase letter and one number",
     }),
+  country_code: z.string().optional(),
   phone: z.string().optional(),
   agreeToTerms: z.boolean().refine((val) => val === true, {
     message: "You must accept the terms and privacy policy",
