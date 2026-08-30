@@ -55,6 +55,7 @@ export default function FooterDefault({ content }) {
 
   const { data: stripeConfig, isLoading: isStripeConfigLoading } = useGetQuery({
     endpoint: `/payments/stripe/public/client/${storeId}`,
+    enabled: !!storeId,
     queryKey: ["stripe-client-config", storeId],
   });
 
@@ -97,7 +98,7 @@ export default function FooterDefault({ content }) {
   const date = new Date();
   const year = date.getFullYear();
   const { description, showContactInfo, showSocialLinks } = content;
-  const { company, shop, support } = footerLinks;
+  const { company, support } = footerLinks;
 
   const handleCountryChange = (country) => {
     saveCountry(country);

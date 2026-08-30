@@ -6,18 +6,19 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useCart from "@/hooks/useCart";
+import useCountry from "@/hooks/useCountry";
 import { getImgUrl } from "@/utils/getImgUrl";
 import { formatPrice } from "@/utils/formatPrice";
 
 export default function ProductDetailsPage() {
   const { storeId, slug } = useParams();
   const { addToCart } = useCart();
+  const { selectedCountry } = useCountry();
 
   const { data, isLoading } = useGetQuery({
-    endpoint: `/api/v1/product/store/${storeId}/slug/${slug}`,
+    endpoint: `/api/v1/stores/products/${selectedCountry?.id}/${storeId}/slug/${slug}`,
     enabled: !!storeId && !!slug,
-    isTokenRequired: true, //TODO: make this endpoint public
-    queryKey: ["product", storeId, slug],
+    queryKey: ["products", selectedCountry?.id, storeId, slug],
   });
 
   const product = data?.data || {};
@@ -40,7 +41,7 @@ export default function ProductDetailsPage() {
     variants_enabled,
     options,
     variants,
-  } = countryPricing?.[0] || {};
+  } = countryPricing || {};
 
   const currency = country?.abbreviation;
 
