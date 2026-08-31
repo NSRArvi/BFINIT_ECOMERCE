@@ -13,7 +13,6 @@ import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
 import DomainStatus from "../components/sections/domains/DomainStatus";
-import SubDomainStatus from "../components/sections/domains/SubDomainStatus";
 import DNSConfiguration from "../components/sections/domains/DNSConfiguration";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
@@ -89,7 +88,6 @@ export default function Domains() {
   ) {
     content = (
       <>
-        <SubDomainStatus />
         <DomainOwnership form={form} />
         <NewDomain />
       </>
@@ -101,7 +99,6 @@ export default function Domains() {
   ) {
     content = (
       <>
-        <SubDomainStatus />
         <DomainOwnership form={form} />
         <AddDomain form={form} />
       </>
