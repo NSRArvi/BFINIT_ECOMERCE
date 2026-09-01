@@ -106,7 +106,7 @@ export default function ShippingZones() {
           </div>
 
           <Button asChild size="sm" className="shrink-0">
-            <Link to="/shipping-zones/add">
+            <Link to="/settings/shipping-zones/add">
               <Plus /> Add Shipping Zone
             </Link>
           </Button>

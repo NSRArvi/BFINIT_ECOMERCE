@@ -65,7 +65,7 @@ export default function ShippingZoneForm() {
         return toast.error(data?.message);
       }
       toast.success(data?.message);
-      navigate("/shipping-zones");
+      navigate("/settings/shipping-zones");
     };
 
     const onError = (error) => {

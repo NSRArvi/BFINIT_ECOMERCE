@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, useLocation } from "react-router";
 import { Menu, X } from "lucide-react";
 import ProfileDropdown from "@/features/admin/components/layout/ProfileDropdown";
 import StoreSwitcherDropdown from "@/features/admin/components/layout/StoreSwticherDropdown";
@@ -6,8 +6,10 @@ import useAuth from "@/hooks/auth/useAuth";
 import logo from "@/assets/logo/bfinit.png";
 
 export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
+  const location = useLocation();
   const { isSuperAdmin } = useAuth();
 
+  const isSettingsRoute = location.pathname.startsWith("/settings");
   const homePageUrl = isSuperAdmin ? "/super-admin/packages" : "/";
 
   return (
@@ -27,7 +29,7 @@ export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
       </Link>
 
       {/* desktop store switcher */}
-      <StoreSwitcherDropdown />
+      {!isSettingsRoute && <StoreSwitcherDropdown />}
 
       {/* profile dropdown */}
       <ProfileDropdown />

@@ -90,6 +90,7 @@ export const breadcrubms = {
   ],
 
   domain: [{ label: "Home", href: "/" }, { label: "Domain" }],
+  subdomain: [{ label: "Home", href: "/" }, { label: "Subdomain" }],
 
   // payment
   stripePayment: [

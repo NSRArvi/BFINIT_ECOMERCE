@@ -71,7 +71,7 @@ export default function StripeConnectCard({ status = "new" }) {
     <div className="grid rounded-lg border px-5 py-4 md:grid-cols-2">
       {/* left side content */}
       <div>
-        <h2 className="flex items-center gap-2 text-sm font-semibold">
+        <h2 className="flex items-center gap-2 text-sm font-medium">
           {heading}
           {isIncomplete && (
             <Badge variant="warning" className="font-normal [&>svg]:size-3.5">
