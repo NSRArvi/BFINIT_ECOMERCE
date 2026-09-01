@@ -74,7 +74,7 @@ export default function ManageBank() {
         onAction={
           debouncedSearch
             ? () => setSearch("")
-            : () => navigate("/payments/bank/add")
+            : () => navigate("/settings/payments/bank/add")
         }
       />
     );
@@ -109,7 +109,7 @@ export default function ManageBank() {
           </div>
 
           <Button size="sm" asChild className="text-xs">
-            <Link to="/payments/bank/add">
+            <Link to="/settings/payments/bank/add">
               <Plus /> Add Bank Account
             </Link>
           </Button>

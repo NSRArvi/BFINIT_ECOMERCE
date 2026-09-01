@@ -1,4 +1,3 @@
-import { useEffect, useRef } from "react";
 import { Link, useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -15,12 +14,10 @@ import PageHeader from "@/components/shared/PageHeader";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
-import useDebounce from "@/hooks/useDebounce";
 import {
   createSocialMediaPayload,
   createStorePayload,
 } from "@/features/admin/utils/storeHelpers";
-import { slugify } from "@/features/admin/utils/slugify";
 import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
 
 export default function StoreForm() {
@@ -64,7 +61,6 @@ export default function StoreForm() {
       favicon: store?.favicon ?? null,
       name: store?.name ?? "",
       email: store?.contact_email ?? "",
-      public_subdomain: store?.public_subdomain ?? "",
       mobile: store?.contact_phone ?? "",
       telephone: store?.contact_telephone ?? "",
       countries: savedCountries ?? [],
@@ -79,31 +75,7 @@ export default function StoreForm() {
       pinterest: socialMediaData?.data?.pinterest ?? "",
     },
   });
-  const { handleSubmit, watch, setValue } = form;
-
-  const storeName = watch("name");
-  const publicSubdomain = watch("public_subdomain");
-
-  const debouncedSubdomain = useDebounce(publicSubdomain);
-  const subdomainTouchedRef = useRef(false);
-
-  useEffect(() => {
-    if (isEditMode) return;
-    if (subdomainTouchedRef.current) return;
-    if (!storeName) return;
-
-    setValue("public_subdomain", slugify(storeName), {
-      shouldValidate: false,
-      shouldDirty: false,
-    });
-  }, [storeName]);
-
-  const { data: subdomainCheck, isLoading: isSubdomainChecking } = useGetQuery({
-    endpoint: `/api/v1/store/search-public-subdomain?q=${debouncedSubdomain}`,
-    enabled: !isEditMode && !!debouncedSubdomain,
-    isTokenRequired: true,
-    queryKey: ["subdomain-availability", debouncedSubdomain],
-  });
+  const { handleSubmit } = form;
 
   const { mutate, isPending } = usePostMutation({
     endpoint: "/api/v1/store",
@@ -177,8 +149,6 @@ export default function StoreForm() {
     isSocialMediaPending;
   const btnLabel = isEditMode ? "Update Store" : "Create Store";
   const btnLoadingLabel = isEditMode ? "Updating..." : "Creating...";
-  const isSubmitDisabled =
-    isLoading || subdomainCheck?.data?.available === false;
 
   return (
     <section className="space-y-6">
@@ -202,13 +172,7 @@ export default function StoreForm() {
               countries={countries}
               isLoading={isCountriesLoading}
             />
-            <StoreInfo
-              form={form}
-              isEditMode={isEditMode}
-              subdomainTouchedRef={subdomainTouchedRef}
-              isSubdomainChecking={isSubdomainChecking}
-              subdomainCheck={subdomainCheck}
-            />
+            <StoreInfo form={form} />
             <SocialMedia form={form} />
           </fieldset>
 
@@ -220,11 +184,7 @@ export default function StoreForm() {
               </Link>
             </Button>
 
-            <Button
-              type="submit"
-              disabled={isLoading || isSubmitDisabled}
-              size="sm"
-            >
+            <Button type="submit" disabled={isLoading} size="sm">
               {isPending || isUpdating ? (
                 <>
                   <Spinner /> {btnLoadingLabel}

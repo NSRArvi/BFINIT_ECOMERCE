@@ -1,26 +1,26 @@
 import { Link } from "react-router";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronLeft, Globe } from "lucide-react";
-import AddDomain from "../components/sections/domains/AddDomain";
+import { ChevronLeft, Network } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import DomainSkeleton from "../components/skeletons/DomainSkeleton";
-import DomainOwnership from "../components/sections/domains/DomainOwnership";
+import SubdomainOwnership from "../components/sections/subdomain/SubdomainOwnership";
 import { Form } from "@/components/ui/form";
 import NewDomain from "../components/sections/domains/NewDomain";
 import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
 import DomainStatus from "../components/sections/domains/DomainStatus";
-import SubDomainStatus from "../components/sections/domains/SubDomainStatus";
 import DNSConfiguration from "../components/sections/domains/DNSConfiguration";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
+import AddSubdomain from "../components/sections/subdomain/AddSubdomain";
+import SubdomainStatus from "../components/sections/subdomain/SubdomainStatus";
 
-export default function Domains() {
+export default function Subdomain() {
   const queryClient = useQueryClient();
   const { activeStore } = useSelectedStore();
 
@@ -40,20 +40,26 @@ export default function Domains() {
   });
 
   const { mutate, isPending: isSubmitting } = usePostMutation({
-    endpoint: "/api/v1/tenant/domains",
+    endpoint: "/api/v1/tenant/domains/createSubDomain",
     isTokenRequired: true,
   });
 
-  const isDomainIntegrated = Boolean(data?.data?.id);
+  const isSubdomainIntegrated = Boolean(data?.data?.id);
+  const domainOwnership = useWatch({
+    control: form.control,
+    name: "domainOwnership",
+  });
+  const needsDomain = domainOwnership === "need-domain";
+  const hasDomain = domainOwnership === "has-domain";
 
   const onSubmit = (data) => {
     const payload = {
-      domain: data.domain,
+      store_id: activeStore?.id,
+      public_subdomain: data.subdomain,
       type: "store",
-      storeId: activeStore?.id,
     };
 
-    if (!isDomainIntegrated) {
+    if (!isSubdomainIntegrated) {
       mutate(payload, {
         onSuccess: (data) => {
           if (!data.success) return toast.error(data.message);
@@ -82,34 +88,24 @@ export default function Domains() {
 
   if (isLoading) {
     content = <DomainSkeleton />;
-  } else if (
-    !isLoading &&
-    !isDomainIntegrated &&
-    form.watch("domainOwnership") === "need-domain"
-  ) {
+  } else if (!isLoading && !isSubdomainIntegrated && needsDomain) {
     content = (
       <>
-        <SubDomainStatus />
-        <DomainOwnership form={form} />
+        <SubdomainOwnership form={form} />
         <NewDomain />
       </>
     );
-  } else if (
-    !isLoading &&
-    !isDomainIntegrated &&
-    form.watch("domainOwnership") === "has-domain"
-  ) {
+  } else if (!isLoading && !isSubdomainIntegrated && hasDomain) {
     content = (
       <>
-        <SubDomainStatus />
-        <DomainOwnership form={form} />
-        <AddDomain form={form} />
+        <SubdomainOwnership form={form} />
+        <AddSubdomain form={form} />
       </>
     );
   } else {
     content = (
       <>
-        <DomainStatus domain={data?.data} />
+        <SubdomainStatus subdomain={data?.data} />
         <DNSConfiguration />
       </>
     );
@@ -117,12 +113,12 @@ export default function Domains() {
 
   return (
     <div className="space-y-6">
-      <DynamicBreadcrumb items={breadcrubms.domain} />
+      <DynamicBreadcrumb items={breadcrubms.subdomain} />
 
       <PageHeader
-        icon={Globe}
-        title="Domain Settings"
-        description="Configure a custom domain for your store"
+        icon={Network}
+        title="Subdomain Settings"
+        description="Configure a custom subdomain for your store"
       />
 
       <Form {...form}>
@@ -137,9 +133,9 @@ export default function Domains() {
               </Link>
             </Button>
 
-            {!isDomainIntegrated && (
+            {!isSubdomainIntegrated && (
               <Button disabled={isSubmitting} type="submit" size="sm">
-                {isSubmitting ? "Connecting..." : "Connect Domain"}
+                {isSubmitting ? "Connecting..." : "Connect Subdomain"}
               </Button>
             )}
           </div>

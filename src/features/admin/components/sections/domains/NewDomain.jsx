@@ -5,7 +5,7 @@ export default function NewDomain() {
   return (
     <div className="bg-card rounded-lg border p-5">
       <div className="space-y-0.5">
-        <h3 className="text-sm font-semibold">Purchase a domain</h3>
+        <h3 className="text-sm font-medium">Purchase a domain</h3>
         <p className="text-muted-foreground text-xs">
           Register a domain through our domain registration partner.
         </p>
@@ -19,7 +19,7 @@ export default function NewDomain() {
             </div>
 
             <div className="space-y-0.5">
-              <h4 className="text-xs font-semibold">
+              <h4 className="text-xs font-medium">
                 BFINIT Domain Registration
               </h4>
 

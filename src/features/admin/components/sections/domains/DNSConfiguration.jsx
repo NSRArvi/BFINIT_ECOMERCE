@@ -18,8 +18,8 @@ const tableHeaders = [
 ];
 
 const DNS_RECORDS = [
-  { type: "CNAME", name: "@", value: "ecom.bfinit.com" },
-  { type: "CNAME", name: "www", value: "ecom.bfinit.com" },
+  { type: "CNAME", name: "@", value: "origin.bfinit.com" },
+  { type: "CNAME", name: "www", value: "origin.bfinit.com" },
 ];
 
 export default function DNSConfiguration() {

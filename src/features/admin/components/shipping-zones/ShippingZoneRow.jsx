@@ -113,7 +113,7 @@ export default function ShippingZoneRow({ zone }) {
 
             <DropdownMenuContent align="end">
               <DropdownMenuItem asChild>
-                <Link to={`/shipping-zones/edit/${id}/${store_id}`}>
+                <Link to={`/settings/shipping-zones/edit/${id}/${store_id}`}>
                   <Pencil />
                   Edit
                 </Link>

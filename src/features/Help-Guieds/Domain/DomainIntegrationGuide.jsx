@@ -372,7 +372,7 @@ export default function DomainIntegrationGuide() {
                           onClick={() =>
                             copyToClipboard(
                               record.hostname,
-                              `hostname-${index}`
+                              `hostname-${index}`,
                             )
                           }
                           className="rounded-md border border-gray-300 bg-white px-3 py-2 transition-colors hover:bg-gray-50"
@@ -876,7 +876,7 @@ export default function DomainIntegrationGuide() {
                         characters)
                       </li>
                       <li>
-                        • Ensure the CNAME value is exactly "ecom.bfinit.com"
+                        • Ensure the CNAME value is exactly "origin.bfinit.com"
                       </li>
                     </ul>
                   </div>

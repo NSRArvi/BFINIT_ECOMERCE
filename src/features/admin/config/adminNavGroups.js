@@ -109,14 +109,27 @@ export const adminNavGroups = [
       },
     ],
   },
+];
 
+export const adminSettingsNavGroups = [
   {
-    groupName: "settings",
+    groupName: "Store",
     links: [
       {
         icon: Globe,
         name: "Domain",
-        url: "/domains",
+        subCategories: [
+          {
+            name: "Domain",
+            url: "/settings/domain",
+            icon: CornerDownRight,
+          },
+          {
+            name: "Subdomain",
+            url: "/settings/subdomain",
+            icon: CornerDownRight,
+          },
+        ],
       },
       {
         icon: CreditCard,
@@ -124,12 +137,12 @@ export const adminNavGroups = [
         subCategories: [
           {
             name: "Stripe",
-            url: "/payments/stripe",
+            url: "/settings/payments/stripe",
             icon: CornerDownRight,
           },
           {
             name: "Bank",
-            url: "/payments/manage-bank",
+            url: "/settings/payments/manage-bank",
             icon: CornerDownRight,
           },
         ],
@@ -137,25 +150,30 @@ export const adminNavGroups = [
       {
         icon: Truck,
         name: "Shipping",
-        url: "/shipping-zones",
+        url: "/settings/shipping-zones",
       },
+    ],
+  },
+  {
+    groupName: "Content",
+    links: [
       {
         icon: Scale,
         name: "Legal",
         subCategories: [
           {
             name: "Privacy Policy",
-            url: "/legal/privacy-policy",
+            url: "/settings/legal/privacy-policy",
             icon: CornerDownRight,
           },
           {
             name: "Legal & Terms",
-            url: "/legal/terms-and-conditions",
+            url: "/settings/legal/terms-and-conditions",
             icon: CornerDownRight,
           },
           {
             name: "Return Policy",
-            url: "/legal/return-policy",
+            url: "/settings/legal/return-policy",
             icon: CornerDownRight,
           },
         ],
@@ -166,17 +184,17 @@ export const adminNavGroups = [
         subCategories: [
           {
             name: "Customer Support",
-            url: "/support/customer-support",
+            url: "/settings/support/customer-support",
             icon: CornerDownRight,
           },
           {
             name: "FAQ",
-            url: "/support/faq",
+            url: "/settings/support/faq",
             icon: CornerDownRight,
           },
           {
             name: "Shopping Guide",
-            url: "/support/shopping-guide",
+            url: "/settings/support/shopping-guide",
             icon: CornerDownRight,
           },
         ],
@@ -187,7 +205,7 @@ export const adminNavGroups = [
         subCategories: [
           {
             name: "About",
-            url: "/company/about",
+            url: "/settings/company/about",
             icon: CornerDownRight,
           },
         ],

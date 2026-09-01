@@ -74,7 +74,7 @@ export default function ProfileDropdown() {
             className="flex cursor-pointer items-center gap-2"
           >
             <UserCircle className="h-4 w-4" />
-            <span>Settings</span>
+            <span>Account Settings</span>
           </Link>
         </DropdownMenuItem>
 
