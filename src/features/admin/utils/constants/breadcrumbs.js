@@ -89,8 +89,8 @@ export const breadcrubms = {
     { label: "Manage Blog" },
   ],
 
-  domain: [{ label: "Home", href: "/" }, { label: "Domain" }],
-  subdomain: [{ label: "Home", href: "/" }, { label: "Subdomain" }],
+  domain: [{ label: "Home", href: Home_Url }, { label: "Domain" }],
+  subdomain: [{ label: "Home", href: Home_Url }, { label: "Subdomain" }],
 
   // payment
   stripePayment: [
@@ -189,4 +189,6 @@ export const breadcrubms = {
 
   // Company
   about: [{ label: "Home", href: Home_Url }, { label: "About" }],
+
+  seo: [{ label: "Home", href: Home_Url }, { label: "SEO & Meta" }],
 };

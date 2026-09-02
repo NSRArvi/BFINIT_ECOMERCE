@@ -19,13 +19,6 @@ export default function ThemeOverview() {
 
   const themeId = data?.data?.[0]?.theme_id;
 
-  const { data: latestData } = useGetQuery({
-    endpoint: `/api/v1/themes/storeTheme/get/${activeStore?.id}/${themeId}`,
-    enabled: !!activeStore?.id,
-    isTokenRequired: true,
-    queryKey: ["admin", "stores", activeStore?.id, "themes", themeId],
-  });
-
   const {
     themeName,
     themeDescription,

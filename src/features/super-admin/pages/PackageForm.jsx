@@ -16,7 +16,6 @@ import { Link, useParams } from "react-router";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import usePostMutation from "@/hooks/api/usePostMutation";
 import toast from "react-hot-toast";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
@@ -42,6 +41,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import SortablePackageDescItem from "../../admin/components/list/SortablePackageDescItem";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 
 export default function PackageForm() {
   const { id } = useParams();
@@ -100,7 +100,7 @@ export default function PackageForm() {
 
   const { mutate, isPending: isCreating } = usePostMutation({
     endpoint: "/api/v1/package/create",
-    newBaseUrl: true,
+    isTokenRequired: true,
   });
 
   const { mutate: update, isPending: isUpdating } = usePatchMutaion({

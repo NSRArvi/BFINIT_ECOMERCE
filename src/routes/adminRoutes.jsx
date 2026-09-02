@@ -8,7 +8,6 @@ import Brands from "@/features/admin/pages/Brands";
 import Inventory from "@/features/admin/pages/Inventory";
 import Orders from "@/features/admin/pages/Orders";
 import OrderDetails from "@/features/admin/pages/OrderDetails";
-import SeoForm from "@/features/admin/pages/SeoForm";
 import ManageBlog from "@/features/admin/pages/ManageBlog";
 import Stores from "@/features/admin/pages/Stores";
 import Customers from "@/features/admin/pages/Customers";
@@ -59,10 +58,6 @@ export const adminRoutes = {
     {
       path: "/orders/:orderId",
       element: <OrderDetails />,
-    },
-    {
-      path: "/seo-meta",
-      element: <SeoForm />,
     },
     {
       path: "/customers",

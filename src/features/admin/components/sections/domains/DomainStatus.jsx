@@ -35,9 +35,14 @@ const domainStatusDisplay = {
 };
 
 export default function DomainStatus({ domain }) {
-  const { domain: domainName, status, verified_at, created_at } = domain || {};
+  const {
+    domain: domainName,
+    domain_status,
+    domain_created_at,
+    domain_verified_at,
+  } = domain || {};
   const { label, variant, supportTitle, supportDescription } =
-    domainStatusDisplay[status];
+    domainStatusDisplay[domain_status];
 
   return (
     <div className="bg-card rounded-lg border p-5">
@@ -49,10 +54,10 @@ export default function DomainStatus({ domain }) {
           </div>
 
           <p className="text-muted-foreground text-xs">
-            {status === "verified" && verified_at
-              ? `Live since ${formatDate(verified_at)}`
-              : status === "pending"
-                ? `Requested ${formatDate(created_at)}`
+            {domain_status === "verified" && domain_verified_at
+              ? `Live since ${formatDate(domain_verified_at)}`
+              : domain_status === "pending"
+                ? `Requested ${formatDate(domain_created_at)}`
                 : null}
           </p>
         </div>

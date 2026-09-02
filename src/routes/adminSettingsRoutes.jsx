@@ -15,6 +15,7 @@ import CustomerSupport from "@/features/admin/pages/CustomerSupport";
 import FAQ from "@/features/admin/pages/FAQ";
 import ShoppingGuide from "@/features/admin/pages/ShoppingGuide";
 import AboutUs from "@/features/admin/pages/AboutUs";
+import SeoForm from "@/features/admin/pages/SeoForm";
 
 export const adminSettingsRoutes = {
   path: "/settings",
@@ -88,6 +89,10 @@ export const adminSettingsRoutes = {
     {
       path: "company/about",
       element: <AboutUs />,
+    },
+    {
+      path: "seo-meta",
+      element: <SeoForm />,
     },
   ],
 };

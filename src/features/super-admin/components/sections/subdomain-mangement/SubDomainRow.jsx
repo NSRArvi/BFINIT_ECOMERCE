@@ -61,11 +61,11 @@ export default function SubDomainRow({ subdomain }) {
 
   const {
     public_subdomain,
-    name,
-    contact_email,
+    store_name,
+    store_owner_email,
     subdomain_status,
-    created_at,
-    id,
+    subdomain_created_at,
+    store_id,
   } = subdomain || {};
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
@@ -74,7 +74,7 @@ export default function SubDomainRow({ subdomain }) {
   const { variant, icon: StatusIcon } = domainStatusConfig[subdomain_status];
 
   const { mutate, isPending } = usePatchMutation({
-    endpoint: `/api/v1/platform/domains/${id}/subdomain-verification`,
+    endpoint: `/api/v1/platform/domains/${store_id}/subdomain-verification`,
     isTokenRequired: true,
   });
 
@@ -105,9 +105,9 @@ export default function SubDomainRow({ subdomain }) {
     <>
       <TableRow>
         <TableCell className="border text-xs">{public_subdomain}</TableCell>
-        <TableCell className="border text-xs">{name}</TableCell>
+        <TableCell className="border text-xs">{store_name}</TableCell>
         <TableCell className="border text-xs tracking-wider tabular-nums">
-          {contact_email}
+          {store_owner_email}
         </TableCell>
         <TableCell className="w-28 border text-center text-xs capitalize">
           <Badge variant={variant}>
@@ -116,7 +116,7 @@ export default function SubDomainRow({ subdomain }) {
           </Badge>
         </TableCell>
         <TableCell className="w-32 border text-center text-xs">
-          {formatDate(created_at)}
+          {formatDate(subdomain_created_at)}
         </TableCell>
         <TableCell className="w-18 border text-center">
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>

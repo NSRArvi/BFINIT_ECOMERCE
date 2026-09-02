@@ -7,18 +7,17 @@ import { Button } from "@/components/ui/button";
 import DomainSkeleton from "../components/skeletons/DomainSkeleton";
 import SubdomainOwnership from "../components/sections/subdomain/SubdomainOwnership";
 import { Form } from "@/components/ui/form";
+import AddSubdomain from "../components/sections/subdomain/AddSubdomain";
+import SubdomainStatus from "../components/sections/subdomain/SubdomainStatus";
 import NewDomain from "../components/sections/domains/NewDomain";
 import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
-import DomainStatus from "../components/sections/domains/DomainStatus";
 import DNSConfiguration from "../components/sections/domains/DNSConfiguration";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
-import AddSubdomain from "../components/sections/subdomain/AddSubdomain";
-import SubdomainStatus from "../components/sections/subdomain/SubdomainStatus";
 
 export default function Subdomain() {
   const queryClient = useQueryClient();
@@ -44,7 +43,7 @@ export default function Subdomain() {
     isTokenRequired: true,
   });
 
-  const isSubdomainIntegrated = Boolean(data?.data?.id);
+  const isSubdomainIntegrated = Boolean(data?.data?.public_subdomain);
   const domainOwnership = useWatch({
     control: form.control,
     name: "domainOwnership",

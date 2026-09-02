@@ -35,8 +35,12 @@ const subdomainStatusConfig = {
 };
 
 export default function SubdomainStatus({ subdomain }) {
-  const { public_subdomain, subdomain_status, verified_at, created_at } =
-    subdomain || {};
+  const {
+    public_subdomain,
+    subdomain_status,
+    subdomain_verified_at,
+    subdomain_created_at,
+  } = subdomain || {};
   const { label, variant, supportTitle, supportDescription } =
     subdomainStatusConfig[subdomain_status];
 
@@ -50,10 +54,10 @@ export default function SubdomainStatus({ subdomain }) {
           </div>
 
           <p className="text-muted-foreground text-xs">
-            {subdomain_status === "verified" && verified_at
-              ? `Live since ${formatDate(verified_at)}`
+            {subdomain_status === "verified" && subdomain_verified_at
+              ? `Live since ${formatDate(subdomain_verified_at)}`
               : subdomain_status === "pending"
-                ? `Requested ${formatDate(created_at)}`
+                ? `Requested ${formatDate(subdomain_created_at)}`
                 : null}
           </p>
         </div>

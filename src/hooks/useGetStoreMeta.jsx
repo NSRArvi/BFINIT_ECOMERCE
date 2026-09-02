@@ -1,4 +1,4 @@
-import useGetQuery from "./api/useGetQuery";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useSelectedStore from "./useSelectedStore";
 
 export default function useGetStoreMeta(storeId) {

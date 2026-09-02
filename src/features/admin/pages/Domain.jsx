@@ -43,7 +43,7 @@ export default function Domain() {
     isTokenRequired: true,
   });
 
-  const isDomainIntegrated = Boolean(data?.data?.id);
+  const isDomainIntegrated = Boolean(data?.data?.domain);
   const domainOwnership = useWatch({
     control: form.control,
     name: "domainOwnership",

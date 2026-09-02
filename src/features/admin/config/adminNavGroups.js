@@ -86,12 +86,6 @@ export const adminNavGroups = [
     groupName: "marketing",
     links: [
       {
-        icon: Search,
-        name: "SEO & Meta",
-        url: "/seo-meta",
-      },
-
-      {
         icon: Newspaper,
         name: "Blogs",
         subCategories: [
@@ -209,6 +203,16 @@ export const adminSettingsNavGroups = [
             icon: CornerDownRight,
           },
         ],
+      },
+    ],
+  },
+  {
+    groupName: "Marketing",
+    links: [
+      {
+        icon: Search,
+        name: "SEO & Meta",
+        url: "/settings/seo-meta",
       },
     ],
   },

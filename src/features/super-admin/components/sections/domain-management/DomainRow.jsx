@@ -63,15 +63,15 @@ export default function DomainRow({ domain }) {
     domain: domain_name,
     store_name,
     store_owner_email,
-    status,
-    created_at,
+    domain_status,
+    domain_created_at,
     id,
   } = domain || {};
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isStatusDialogOpen, setIsStatusDialogOpen] = useState(false);
-  const [selectedStatus, setSelectedStatus] = useState(status);
+  const [selectedStatus, setSelectedStatus] = useState(domain_status);
 
-  const { variant, icon: StatusIcon } = domainStatusConfig[status];
+  const { variant, icon: StatusIcon } = domainStatusConfig[domain_status];
 
   const { mutate, isPending } = usePatchMutation({
     endpoint: `/api/v1/platform/domains/${id}/verify`,
@@ -98,7 +98,7 @@ export default function DomainRow({ domain }) {
 
   const handleOpenChange = (open) => {
     setIsStatusDialogOpen(open);
-    if (open) setSelectedStatus(status);
+    if (open) setSelectedStatus(domain_status);
   };
 
   return (
@@ -112,11 +112,11 @@ export default function DomainRow({ domain }) {
         <TableCell className="w-28 border text-center text-xs capitalize">
           <Badge variant={variant}>
             <StatusIcon />
-            {status}
+            {domain_status}
           </Badge>
         </TableCell>
         <TableCell className="w-32 border text-center text-xs">
-          {formatDate(created_at)}
+          {formatDate(domain_created_at)}
         </TableCell>
         <TableCell className="w-18 border text-center">
           <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
@@ -177,7 +177,7 @@ export default function DomainRow({ domain }) {
               Cancel
             </Button>
             <Button
-              disabled={isPending || selectedStatus === status}
+              disabled={isPending || selectedStatus === domain_status}
               onClick={handleConfirm}
               size="sm"
               className="min-w-[106px]"

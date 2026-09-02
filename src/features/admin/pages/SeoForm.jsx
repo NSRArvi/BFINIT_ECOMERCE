@@ -1,21 +1,17 @@
 import { Search } from "lucide-react";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import EmptyStoreState from "../components/EmptyStoreState";
-import PageHeader from "../components/PageHeader";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
+import PageHeader from "@/components/shared/PageHeader";
 import TitleDescriptionForm from "../components/sections/seo-form/TitleDescriptionForm";
 import useSelectedStore from "@/hooks/useSelectedStore";
-
-const SEO_BREADCRUMB_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "SEO & Meta" },
-];
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function SeoForm() {
-  const { selectedStore } = useSelectedStore();
+  const { activeStore } = useSelectedStore();
 
-  if (!selectedStore) {
+  if (!activeStore) {
     return (
-      <EmptyStoreState
+      <EmptyState
         title="Store Required"
         description="Create a store first to optimize your storefront for search engines."
       />
@@ -25,7 +21,7 @@ export default function SeoForm() {
   return (
     <section className="space-y-6">
       {/* Breadcrumb Navigation */}
-      <DynamicBreadcrumb items={SEO_BREADCRUMB_ITEMS} />
+      <DynamicBreadcrumb items={breadcrubms.seo} />
 
       {/* Page Header */}
       <PageHeader

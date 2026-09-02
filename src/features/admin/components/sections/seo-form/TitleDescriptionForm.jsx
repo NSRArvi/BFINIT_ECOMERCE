@@ -3,7 +3,7 @@ import { Link } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
-import { AlertCircle, ChevronLeft, Search } from "lucide-react";
+import { ChevronLeft } from "lucide-react";
 import {
   Form,
   FormControl,
@@ -17,11 +17,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Spinner } from "@/components/ui/spinner";
 import useAuth from "@/hooks/auth/useAuth";
-import usePostMutation from "@/hooks/api/usePostMutation";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useUpdateMutation from "@/hooks/api/useUpdateMutation";
 import SearchEnginePreview from "./SearchEnginePreview";
 import useGetStoreMeta from "@/hooks/useGetStoreMeta";
+import usePostMutation from "@/hooks-v2/api/usePostMutation";
 
 export default function TitleDescriptionForm() {
   const queryClient = useQueryClient();
@@ -65,8 +65,7 @@ export default function TitleDescriptionForm() {
   // add seo post hook
   const { mutate, isPending } = usePostMutation({
     endpoint: `/meta/create/${selectedStore?.storeId}`,
-    token: user?.token,
-    clientId: user?.data?.clientid,
+    isTokenRequired: true,
   });
 
   // update seo
