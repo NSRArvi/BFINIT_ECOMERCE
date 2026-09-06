@@ -114,14 +114,16 @@ export default function Login() {
             <p>
               By continuing, you agree to our{" "}
               <Link
-                to="/terms"
+                to="https://bfinit.com/terms-and-conditions"
+                target="_blank"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Terms
               </Link>{" "}
               and{" "}
               <Link
-                to="/privacy"
+                to="https://bfinit.com/privacy-policy"
+                target="_blank"
                 className="font-medium text-indigo-600 hover:text-indigo-500"
               >
                 Privacy Policy

@@ -1,12 +1,19 @@
 import { useEffect } from "react";
 import { Link } from "react-router";
-import { Plus, Store } from "lucide-react";
+import {
+  ChevronRight,
+  CircleFadingPlusIcon,
+  Plus,
+  SquarePlus,
+  Store,
+} from "lucide-react";
 import {
   AlertDialog,
   AlertDialogContent,
   AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
+  AlertDialogMedia,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
@@ -14,6 +21,7 @@ import useGetStores from "../../hooks/useGetStores";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import usePackageInfo from "../../hooks/usePackageInfo";
 import { BASE_URL } from "@/lib/api";
+import { Separator } from "@/components/ui/separator";
 
 export default function StoreSelectionModal() {
   const { activeStore, selectStore } = useSelectedStore();
@@ -63,36 +71,47 @@ export default function StoreSelectionModal() {
     content = (
       <AlertDialogContent className="gap-4">
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-sm font-semibold">
+          <AlertDialogMedia>
+            <Store />
+          </AlertDialogMedia>
+          <AlertDialogTitle className="text-sm font-medium">
             Select a store
           </AlertDialogTitle>
           <AlertDialogDescription className="text-xs">
-            Choose which store you'd like to manage
+            Switch between your existing stores or create a new one to get
+            started.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
         {/* stores list */}
-        <ul className="divide-y">
+        <ul className="space-y-3">
+          <li className="text-muted-foreground pb-1 text-xs font-medium">
+            Your stores
+          </li>
+
           {stores.map((store) => (
-            <li key={store.id}>
+            <li
+              key={store.id}
+              className="hover:bg-muted/30 border-border rounded border px-4 py-3 transition-all duration-200 ease-linear"
+            >
               <button
                 onClick={() => selectStore(store)}
-                className="hover:bg-muted flex w-full items-center gap-3 px-4 py-3 transition-colors"
+                className="flex w-full items-center gap-3"
               >
                 {/* logo */}
                 <div className="bg-background">
                   <img
                     src={`${BASE_URL}${store.logo}`}
                     alt={store.name}
-                    className="size-8 rounded border p-1"
+                    className="size-8 rounded border object-contain p-1"
                   />
                 </div>
-                <div className="text-left">
-                  <p className="line-clamp-1 text-sm font-medium">
-                    {store.name}
-                  </p>
-                  <p className="text-muted-foreground line-clamp-1 text-xs">
-                    {store.public_subdomain}.bfinit.com
+                <div className="space-y-0.5 text-left">
+                  <p className="text-xs font-medium">{store.name}</p>
+                  <p className="text-muted-foreground text-xs">
+                    {store.domain ||
+                      store.subdomain ||
+                      "Using default store URL"}
                   </p>
                 </div>
               </button>
@@ -101,16 +120,20 @@ export default function StoreSelectionModal() {
         </ul>
 
         {!isStoreLimitExceeded && (
-          <AlertDialogFooter className="border-t">
+          <AlertDialogFooter className="sm:flex-col">
+            <div className="flex w-full items-center gap-x-3">
+              <Separator className="flex-1" />
+              <span className="text-muted-foreground text-xs">OR</span>
+              <Separator className="flex-1" />
+            </div>
+
             <Button
-              asChild
+              size="sm"
               variant="ghost"
-              className="w-full gap-2 rounded-none"
+              className="text-muted-foreground hover:bg-transparent"
             >
-              <Link to="/stores/create">
-                <Plus className="size-4" />
-                Create new store
-              </Link>
+              Create a new store
+              <ChevronRight />
             </Button>
           </AlertDialogFooter>
         )}

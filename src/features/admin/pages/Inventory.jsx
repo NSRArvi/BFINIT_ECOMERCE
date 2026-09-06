@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import InventoryTable from "../components/sections/inventory/InventoryTable";
 import TablePagination from "@/components/shared/TablePagination";
 import { Spinner } from "@/components/ui/spinner";
+import UsageBadge from "../components/UsageBadge";
 import useDebounce from "@/hooks/useDebounce";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useSearchParamState from "@/hooks/useSearchParamState";
@@ -29,6 +30,13 @@ export default function Inventory() {
     if (debouncedSearch !== search) setSearch(debouncedSearch);
   }, [debouncedSearch, search, setSearch]);
 
+  const { data: usageData } = useGetQuery({
+    endpoint: `/api/v1/package-order/usage`,
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["admin", "usage"],
+  });
+
   const { data, isLoading, isFetching } = useGetQuery({
     endpoint: `/api/v1/product/search/${activeStore?.id}?page=${page}&limit=20${search ? `&search=${search}` : ""}`,
     enabled: !!activeStore?.id,
@@ -36,6 +44,10 @@ export default function Inventory() {
     queryKey: ["products", activeStore?.id, page, search],
     placeholderData: keepPreviousData,
   });
+
+  const productLimit = usageData?.data?.products?.limit;
+  const productUsed = usageData?.data?.products?.used;
+  const isAtLimit = productUsed >= productLimit;
 
   let content = null;
 
@@ -82,11 +94,15 @@ export default function Inventory() {
     <section className="space-y-6">
       <DynamicBreadcrumb items={breadcrubms.inventory} />
 
-      <PageHeader
-        icon={Package}
-        title="Inventory Management"
-        description="Monitor stock levels, update inventory and keep product availability up to date"
-      />
+      <div className="flex items-end justify-between">
+        <PageHeader
+          icon={Package}
+          title="Inventory Management"
+          description="Monitor stock levels, update inventory and keep product availability up to date"
+        />
+
+        <UsageBadge used={productUsed} limit={productLimit} label="products" />
+      </div>
 
       <div className="bg-card space-y-6 rounded-lg p-5">
         <div className="flex items-center justify-end gap-4">
@@ -106,11 +122,17 @@ export default function Inventory() {
             />
           </div>
 
-          <Button asChild size="sm" className="shrink-0">
-            <Link to="/products/inventory/add">
-              <Plus /> Add Product
-            </Link>
-          </Button>
+          {isAtLimit ? (
+            <Button asChild size="sm" className="shrink-0">
+              <Link to="/settings/billing">Upgrade plan</Link>
+            </Button>
+          ) : (
+            <Button asChild size="sm" className="shrink-0">
+              <Link to="/products/inventory/add">
+                <Plus /> Add product
+              </Link>
+            </Button>
+          )}
         </div>
 
         {content}

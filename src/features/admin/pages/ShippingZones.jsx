@@ -64,7 +64,7 @@ export default function ShippingZones() {
         }
         actionText={search ? "Clear Search" : "Add Shipping Zone"}
         onAction={search ? () => setSearchInput("") : undefined}
-        actionPath={search ? undefined : "/shipping-zones/add"}
+        actionPath={search ? undefined : "/settings/shipping-zones/add"}
       />
     );
   }

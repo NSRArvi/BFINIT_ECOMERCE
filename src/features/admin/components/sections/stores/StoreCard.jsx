@@ -11,7 +11,7 @@ import { getImgUrl } from "@/utils/getImgUrl";
 
 export default function StoreCard({ store = {} }) {
   const { activeStore, selectStore } = useSelectedStore();
-  const { name, public_subdomain, logo, id, is_active } = store;
+  const { name, domain, subdomain, logo, id, is_active } = store;
 
   const isCurrentStore = activeStore?.id === id;
 
@@ -43,7 +43,7 @@ export default function StoreCard({ store = {} }) {
           <div>
             <p className="text-sm leading-tight font-medium">{name}</p>
             <p className="text-muted-foreground text-xs">
-              {public_subdomain}.bfinit.com
+              {store.domain || store.subdomain || "Using default store URL"}
             </p>
           </div>
         </div>

@@ -1,24 +1,30 @@
+import { Link } from "react-router";
 import { Plus, Store } from "lucide-react";
+import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import EmptyState from "@/components/shared/EmptyState";
 import PageHeader from "../components/PageHeader";
 import StoreCard from "../components/sections/stores/StoreCard";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
-import useGetStores from "../hooks/useGetStores";
-import usePackageInfo from "../hooks/usePackageInfo";
-import { Link } from "react-router";
-import StoreCardSkeleton from "../components/skeletons/StoreCardSkeleton";
 import { Skeleton } from "@/components/ui/skeleton";
+import StoreCardSkeleton from "../components/skeletons/StoreCardSkeleton";
+import UsageBadge from "../components/UsageBadge";
+import useGetStores from "../hooks/useGetStores";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
 export default function Stores() {
-  const { data: packageInfo, isLoading: isPackageInfoLoading } =
-    usePackageInfo();
   const { data, isLoading } = useGetStores();
 
-  const stores = data?.data?.data ?? [];
-  const maxStoreLimit = packageInfo?.data?.package_upgrade?.package?.max_store;
-  const isStoreLimitExceeded = stores?.length >= maxStoreLimit;
+  const { data: usageData, isLoading: isUsageLoading } = useGetQuery({
+    endpoint: `/api/v1/package-order/usage`,
+    enabled: true,
+    isTokenRequired: true,
+    queryKey: ["admin", "usage"],
+  });
+
+  const storeLimit = usageData?.data?.stores?.limit;
+  const storeUsed = usageData?.data?.stores?.used;
+  const isAtLimit = storeUsed >= storeLimit;
 
   let content = null;
 
@@ -32,17 +38,17 @@ export default function Stores() {
     );
   }
 
-  if (!isLoading && stores?.length >= 1) {
+  if (!isLoading && storeUsed >= 1) {
     content = (
       <>
-        {stores?.map((store) => (
+        {data?.data?.data?.map((store) => (
           <StoreCard key={store?.id} store={store} />
         ))}
       </>
     );
   }
 
-  if (!isLoading && stores?.length === 0) {
+  if (!isLoading && storeUsed === 0) {
     return (
       <EmptyState
         icon={Store}
@@ -68,29 +74,21 @@ export default function Stores() {
           />
         </div>
 
-        {isLoading || isPackageInfoLoading ? (
+        {isLoading || isUsageLoading ? (
           <Skeleton className="h-7 w-40" />
         ) : (
           <div className="flex items-center gap-3">
-            <div className="flex flex-col gap-1">
-              <span className="text-muted-foreground text-xs">
-                {stores?.length} / {maxStoreLimit} stores used
-              </span>
-              <div className="bg-muted h-1.5 w-24 rounded-full">
-                <div
-                  className="bg-foreground h-1.5 rounded-full transition-all"
-                  style={{
-                    width: `${(stores?.length / maxStoreLimit) * 100}%`,
-                  }}
-                />
-              </div>
-            </div>
+            <UsageBadge used={storeUsed} limit={storeLimit} label="stores" />
 
-            {!isStoreLimitExceeded && (
+            {isAtLimit ? (
+              <Button size="sm" asChild className="text-xs">
+                <Link to="/settings/billing">Upgrade plan</Link>
+              </Button>
+            ) : (
               <Button size="sm" asChild className="text-xs">
                 <Link to="/stores/create">
                   <Plus />
-                  New Store
+                  New store
                 </Link>
               </Button>
             )}

@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { ChevronLeft, PackagePlus, Store } from "lucide-react";
 import toast from "react-hot-toast";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import EmptyState from "@/components/shared/EmptyState";
@@ -21,6 +22,7 @@ import { productSchema } from "../schemas/productSchema";
 
 export default function ProductForm() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { activeStore } = useSelectedStore();
 
   const form = useForm({
@@ -69,6 +71,7 @@ export default function ProductForm() {
       onSuccess: (data) => {
         if (!data?.success) return toast.error(data?.message);
         toast.success(data?.message);
+        queryClient.invalidateQueries(["admin", "usage"]);
         navigate("/products/inventory");
       },
       onError: (error) => {

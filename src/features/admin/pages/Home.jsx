@@ -3,31 +3,24 @@ import QuickNavs from "../components/sections/home/QuickNavs";
 import QuickTips from "../components/sections/home/QuickTips";
 import StoreLimitCard from "../components/sections/home/StoreLimitCard";
 import useAuth from "@/hooks/auth/useAuth";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useGetStores from "../hooks/useGetStores";
 import StoreCard from "../components/sections/stores/StoreCard";
 import StatCards from "../components/sections/home/StatCards";
 import RecentOrders from "../components/sections/home/RecentOrders";
 import ActionItems from "../components/sections/home/ActionItems";
+import usePackageInfo from "../hooks/usePackageInfo";
 
 export default function Home() {
   const { user } = useAuth();
-  // fetch client info
-  const { data: clientInfo } = useGetQuery({
-    endpoint: `/clients/${user?.data?.clientid}`,
-    token: user?.token,
-    queryKey: ["clientInfo", user?.data?.clientid],
-    enabled: !!user?.data?.clientid && !!user?.token,
-  });
 
-  // fetch stores details
   const { data: stores } = useGetStores();
+  const { data: packageInfo } = usePackageInfo();
 
-  const storeCount = stores?.data?.length > 0 ? stores?.data?.length : 0;
-  const storeLimit = user?.data?.storeLimit || 0;
+  const totalStoreCreated = stores?.data?.data?.length || 0;
+  const maxStoreLimit = packageInfo?.data?.package_upgrade?.package?.max_store;
 
   // progress of total store limit
-  const progressPercentage = (storeCount / storeLimit) * 100;
+  const progressPercentage = (totalStoreCreated / maxStoreLimit) * 100;
 
   return (
     <section className="mx-auto max-w-7xl">
@@ -38,8 +31,7 @@ export default function Home() {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="mb-2 text-xl font-bold">
-                Hi {clientInfo?.data?.clientFname}{" "}
-                {clientInfo?.data?.clientLname}! 👋
+                Hi {user?.data?.user?.name}! 👋
               </h1>
               <p className="text-sm text-gray-300">
                 Welcome back to your dashboard
@@ -50,7 +42,7 @@ export default function Home() {
             <div className="hidden sm:block">
               <div className="mb-3 text-right">
                 <div className="text-lg font-bold text-white">
-                  {storeCount}/{storeLimit}
+                  {totalStoreCreated}/{maxStoreLimit}
                 </div>
                 <div className="text-sm text-gray-300">stores created</div>
               </div>

@@ -2,6 +2,7 @@ import { Link, useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ChevronLeft, Store } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import Branding from "./Branding";
 import Location from "./Location";
 import SocialMedia from "./SocialMedia";
@@ -23,6 +24,7 @@ import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
 export default function StoreForm() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const isEditMode = !!id;
 
@@ -108,6 +110,7 @@ export default function StoreForm() {
     const onSuccess = (data) => {
       if (!data?.success) return toast.error(data?.message);
       toast.success(data?.message);
+      queryClient.invalidateQueries(["admin", "usage"]);
       navigate("/stores");
     };
 
