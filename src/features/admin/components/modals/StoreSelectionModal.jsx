@@ -17,19 +17,23 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import useAuth from "@/hooks/auth/useAuth";
 import useGetStores from "../../hooks/useGetStores";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import usePackageInfo from "../../hooks/usePackageInfo";
 import { BASE_URL } from "@/lib/api";
 import { Separator } from "@/components/ui/separator";
 
+const Empty_Stores = [];
+
 export default function StoreSelectionModal() {
+  const { token } = useAuth();
   const { activeStore, selectStore } = useSelectedStore();
 
   const { data: packageInfo } = usePackageInfo();
   const { data, isLoading } = useGetStores();
 
-  const stores = data?.data?.data ?? [];
+  const stores = data?.data?.data ?? Empty_Stores;
   const hasStores = stores?.length > 0;
   const maxStoreLimit = packageInfo?.data?.package_upgrade?.package?.max_store;
   const isStoreLimitExceeded = stores?.length >= maxStoreLimit;
@@ -38,10 +42,12 @@ export default function StoreSelectionModal() {
 
   // auto select single store
   useEffect(() => {
+    if (!token) return;
+
     if (!isLoading && stores.length === 1 && !activeStore) {
       selectStore(stores[0]);
     }
-  }, [isLoading, stores, activeStore]);
+  }, [token, isLoading, stores, activeStore, selectStore]);
 
   let content = null;
 
