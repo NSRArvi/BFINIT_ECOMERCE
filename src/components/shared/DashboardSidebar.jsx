@@ -22,6 +22,7 @@ export default function DashboardSidebar({
   const [showStoreMenu, setShowStoreMenu] = useState(false);
 
   const isSettingsRoute = location.pathname.startsWith("/settings");
+  const isAccountSettingsRoute = location.pathname.startsWith("/account");
 
   const toggleDropdown = (groupIndex, linkIndex) => {
     const dropdownKey = `${groupIndex}-${linkIndex}`;
@@ -45,7 +46,7 @@ export default function DashboardSidebar({
 
   if (isSuperAdmin) {
     sidebarFooterContent = null;
-  } else if (isSettingsRoute) {
+  } else if (isSettingsRoute || isAccountSettingsRoute) {
     sidebarFooterContent = (
       <Link
         to="/"

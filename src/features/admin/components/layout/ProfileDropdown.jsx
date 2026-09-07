@@ -8,6 +8,7 @@ import {
   ExternalLink,
   Store,
 } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -22,6 +23,7 @@ import useSelectedStore from "@/hooks/useSelectedStore";
 
 export default function ProfileDropdown() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const { user } = useAuth();
   const { clearStore } = useSelectedStore();
 
@@ -32,8 +34,9 @@ export default function ProfileDropdown() {
     ?.join("");
 
   const handleLogOut = () => {
-    localStorage.removeItem("authInfo");
     clearStore();
+    queryClient.removeQueries({ queryKey: ["stores"] });
+    localStorage.removeItem("authInfo");
     toast.success("Logged out successfully");
     navigate("/login");
   };
@@ -70,7 +73,7 @@ export default function ProfileDropdown() {
         {/* Account Management */}
         <DropdownMenuItem asChild>
           <Link
-            to="/accounts"
+            to="/account"
             className="flex cursor-pointer items-center gap-2"
           >
             <UserCircle className="h-4 w-4" />

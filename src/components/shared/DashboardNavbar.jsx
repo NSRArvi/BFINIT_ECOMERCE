@@ -10,6 +10,7 @@ export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
   const { isSuperAdmin } = useAuth();
 
   const isSettingsRoute = location.pathname.startsWith("/settings");
+  const isAccountSettingsRoute = location.pathname.startsWith("/account");
   const homePageUrl = isSuperAdmin ? "/super-admin/packages" : "/";
 
   return (
@@ -29,7 +30,7 @@ export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
       </Link>
 
       {/* desktop store switcher */}
-      {!isSettingsRoute && <StoreSwitcherDropdown />}
+      {!isSettingsRoute && !isAccountSettingsRoute && <StoreSwitcherDropdown />}
 
       {/* profile dropdown */}
       <ProfileDropdown />
