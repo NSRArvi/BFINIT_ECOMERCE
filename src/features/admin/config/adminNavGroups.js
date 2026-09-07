@@ -14,6 +14,7 @@ import {
   Building2,
   Users,
   Truck,
+  ReceiptText,
 } from "lucide-react";
 
 export const adminNavGroups = [
@@ -213,6 +214,29 @@ export const adminSettingsNavGroups = [
         icon: Search,
         name: "SEO & Meta",
         url: "/settings/seo-meta",
+      },
+    ],
+  },
+];
+
+export const adminAccountSettingsNavGroups = [
+  // {
+  //   groupName: "Account",
+  //   links: [
+  //     {
+  //       icon: User,
+  //       name: "Profile",
+  //       url: "/account/profile",
+  //     },
+  //   ],
+  // },
+  {
+    groupName: "Billing",
+    links: [
+      {
+        icon: ReceiptText,
+        name: "Billing",
+        url: "/account/billing",
       },
     ],
   },

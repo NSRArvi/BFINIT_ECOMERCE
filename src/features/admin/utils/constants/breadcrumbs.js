@@ -191,4 +191,12 @@ export const breadcrubms = {
   about: [{ label: "Home", href: Home_Url }, { label: "About" }],
 
   seo: [{ label: "Home", href: Home_Url }, { label: "SEO & Meta" }],
+
+  // Account Settings
+  billing: [{ label: "Home", href: Home_Url }, { label: "Billing" }],
+  billingPlans: [
+    { label: "Home", href: Home_Url },
+    { label: "Billing", href: "/account/billing" },
+    { label: "Plans" },
+  ],
 };
