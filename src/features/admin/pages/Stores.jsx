@@ -10,17 +10,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import StoreCardSkeleton from "../components/skeletons/StoreCardSkeleton";
 import UsageBadge from "../components/UsageBadge";
 import useGetStores from "../hooks/useGetStores";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import usePackageUsage from "../hooks/usePackageUsage";
 
 export default function Stores() {
   const { data, isLoading } = useGetStores();
 
-  const { data: usageData, isLoading: isUsageLoading } = useGetQuery({
-    endpoint: `/api/v1/package-order/usage`,
-    enabled: true,
-    isTokenRequired: true,
-    queryKey: ["admin", "usage"],
-  });
+  const { data: usageData, isLoading: isUsageLoading } = usePackageUsage();
 
   const storeLimit = usageData?.data?.stores?.limit;
   const storeUsed = usageData?.data?.stores?.used;

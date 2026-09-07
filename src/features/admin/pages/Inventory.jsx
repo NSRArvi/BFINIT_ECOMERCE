@@ -15,6 +15,7 @@ import useDebounce from "@/hooks/useDebounce";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useSearchParamState from "@/hooks/useSearchParamState";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import usePackageUsage from "../hooks/usePackageUsage";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Inventory() {
@@ -30,12 +31,7 @@ export default function Inventory() {
     if (debouncedSearch !== search) setSearch(debouncedSearch);
   }, [debouncedSearch, search, setSearch]);
 
-  const { data: usageData } = useGetQuery({
-    endpoint: `/api/v1/package-order/usage`,
-    enabled: true,
-    isTokenRequired: true,
-    queryKey: ["admin", "usage"],
-  });
+  const { data: usageData } = usePackageUsage();
 
   const { data, isLoading, isFetching } = useGetQuery({
     endpoint: `/api/v1/product/search/${activeStore?.id}?page=${page}&limit=20${search ? `&search=${search}` : ""}`,
