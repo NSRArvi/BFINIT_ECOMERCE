@@ -24,7 +24,7 @@ export function timeAgo(isoDate) {
 
 export const formatDate = (date) => {
   return new Date(date).toLocaleDateString("en-GB", {
-    day: "2-digit",
+    day: "numeric",
     month: "short",
     year: "numeric",
   });

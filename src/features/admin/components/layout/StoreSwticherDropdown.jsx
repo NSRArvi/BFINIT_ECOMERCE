@@ -50,7 +50,7 @@ export default function StoreSwitcherDropdown() {
   if (!isLoading && activeStore) {
     btnContent = (
       <>
-        <div className="bg-muted border-border flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-md border">
+        <div className="bg-muted border-border flex size-6 shrink-0 items-center justify-center overflow-hidden rounded border">
           <img
             src={getImgUrl(activeStore?.logo)}
             alt={activeStore?.name}
@@ -77,12 +77,12 @@ export default function StoreSwitcherDropdown() {
               key={store.id}
               onClick={() => selectStore(store)}
               className={cn(
-                "flex cursor-pointer items-center gap-3 rounded-md px-2.5 py-2 transition-colors",
+                "flex cursor-pointer items-center gap-3 rounded px-2.5 py-2 transition-colors",
                 activeStore?.id === store.id && "bg-accent cursor-default",
               )}
             >
               {/* Store Logo */}
-              <div className="border-border bg-muted flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-md border">
+              <div className="border-border bg-muted flex size-7 shrink-0 items-center justify-center overflow-hidden rounded border">
                 <img
                   src={getImgUrl(store.logo)}
                   loading="lazy"
@@ -116,7 +116,7 @@ export default function StoreSwitcherDropdown() {
           <DropdownMenuItem asChild>
             <Link
               to="/stores"
-              className="group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5"
+              className="group flex cursor-pointer items-center gap-2 rounded px-2.5 py-1.5"
             >
               <Settings className="text-muted-foreground group-hover:text-foreground size-4 shrink-0 transition-colors" />
               <span className="text-muted-foreground group-hover:text-foreground text-xs transition-colors">
@@ -129,7 +129,7 @@ export default function StoreSwitcherDropdown() {
             <DropdownMenuItem asChild>
               <Link
                 to="/stores/create"
-                className="group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5"
+                className="group flex cursor-pointer items-center gap-2 rounded px-2.5 py-1.5"
               >
                 <Plus className="text-muted-foreground group-hover:text-foreground size-4 shrink-0" />
                 <span className="text-muted-foreground group-hover:text-foreground text-xs">
@@ -148,7 +148,7 @@ export default function StoreSwitcherDropdown() {
     content = (
       <div className="px-3 py-1">
         <div className="px-2.5 py-4 text-center">
-          <div className="bg-muted mx-auto mb-2.5 flex size-9 items-center justify-center rounded-md border">
+          <div className="bg-muted mx-auto mb-2.5 flex size-9 items-center justify-center rounded border">
             <Store className="text-muted-foreground size-4" />
           </div>
           <p className="text-sm font-medium">No stores yet</p>
@@ -162,7 +162,7 @@ export default function StoreSwitcherDropdown() {
         <DropdownMenuItem asChild>
           <Link
             to="/stores/create"
-            className="group flex cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5"
+            className="group flex cursor-pointer items-center gap-2 rounded px-2.5 py-1.5"
           >
             <Plus className="text-muted-foreground group-hover:text-foreground size-4 shrink-0 transition-colors" />
             <span className="text-muted-foreground group-hover:text-foreground text-xs transition-colors">
@@ -181,7 +181,7 @@ export default function StoreSwitcherDropdown() {
           disabled={isLoading}
           variant="outline"
           size="sm"
-          className="group hover:bg-accent hidden cursor-pointer items-center gap-2.5 rounded-lg px-3 py-2 shadow-none transition-all lg:flex"
+          className="group hover:bg-accent hidden cursor-pointer items-center gap-2.5 rounded-md px-3 py-2 shadow-none transition-all lg:flex"
         >
           {btnContent}
         </Button>
