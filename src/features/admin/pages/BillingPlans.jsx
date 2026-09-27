@@ -17,7 +17,7 @@ export default function BillingPlans() {
   const [billingCycle, setBillingCycle] = useState("monthly");
 
   const { data, isLoading, isFetching } = useGetQuery({
-    endpoint: `/api/v1/package/get-all/${billingCycle === "monthly" ? 1 : 12}`,
+    endpoint: `/api/v1/package/get-all-active-without-trial/${billingCycle === "monthly" ? 1 : 12}`,
     enabled: true,
     queryKey: ["packages", billingCycle],
     placeholderData: keepPreviousData,

@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Send, CheckCircle2, RefreshCw } from "lucide-react";
 import { Link } from "react-router";
+import { Send, CheckCircle2, RefreshCw } from "lucide-react";
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -56,7 +56,7 @@ export default function ContactForm() {
 
   return (
     <div className="lg:col-span-3">
-      <div className="border-border bg-card rounded-lg border p-6 shadow-sm sm:p-8">
+      <div className="border-border bg-card rounded-lg border p-6 sm:p-8">
         {submitted ? (
           <div className="flex flex-col items-center justify-center py-16 text-center">
             <div className="bg-success/10 mb-4 flex h-14 w-14 items-center justify-center rounded-full">

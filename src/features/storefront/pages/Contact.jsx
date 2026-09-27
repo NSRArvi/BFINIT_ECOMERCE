@@ -1,12 +1,17 @@
 import { useParams } from "react-router";
-import Hero from "../../components/storefront/sections/contact/Hero";
-import ContactInfo from "../../components/storefront/sections/contact/ContactInfo";
-import ContactForm from "../../components/storefront/sections/contact/ContactForm";
-import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
+import Hero from "../components/contact/Hero";
+import ContactInfo from "../components/contact/ContactInfo";
+import ContactForm from "../components/contact/ContactForm";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
 export default function Contact() {
   const { storeId } = useParams();
-  const { data } = useGetStorePreference(storeId);
+
+  const { data } = useGetQuery({
+    endpoint: `/api/v1/stores/${storeId}/info`,
+    enabled: !!storeId,
+    queryKey: ["store", storeId],
+  });
 
   return (
     <div className="bg-background">
@@ -17,7 +22,7 @@ export default function Contact() {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 sm:py-16 lg:px-8">
         <div className="grid grid-cols-1 gap-8 lg:grid-cols-5 lg:gap-12">
           {/* Contact Information Sidebar */}
-          <ContactInfo data={data} />
+          <ContactInfo data={data?.data} />
 
           {/* Contact Form */}
           <ContactForm />

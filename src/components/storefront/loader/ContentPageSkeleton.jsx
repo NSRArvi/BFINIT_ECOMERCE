@@ -1,6 +1,6 @@
 import { Skeleton } from "@/components/ui/skeleton";
 
-export function ContentPageSkeleton({ title }) {
+export default function ContentPageSkeleton({ title }) {
   return (
     <div>
       {/* Hero Skeleton */}

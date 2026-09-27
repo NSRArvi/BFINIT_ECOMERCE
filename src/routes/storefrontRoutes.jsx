@@ -1,5 +1,4 @@
 import StorefrontLayout from "@/layouts/StorefrontLayout";
-import Contact from "@/pages/storefront/Contact";
 import ContentPage from "@/pages/storefront/ContentPage";
 import Home from "@/features/storefront/pages/Home";
 import ProductDetails from "@/features/storefront/pages/ProductDetails";
@@ -16,6 +15,7 @@ import Checkout from "@/features/storefront/pages/Checkout";
 import CustomerAuthProvider from "@/features/storefront/providers/CustomerAuthProvider";
 import OrderDetails from "@/features/storefront/pages/OrderDetails";
 import Shop from "@/features/storefront/pages/Shop";
+import Contact from "@/features/storefront/pages/Contact";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -48,7 +48,7 @@ export const storeFrontRoutes = {
     {
       path: "about",
       element: (
-        <ContentPage title="About Us" apiEndpoint="/store/publicAboutData" />
+        <ContentPage title="About Us" apiEndpoint="/api/v1/general/about-all" />
       ),
     },
     {
@@ -78,37 +78,51 @@ export const storeFrontRoutes = {
     {
       path: "support/customer-support",
       element: (
-        <ContentPage title="Customer Support" apiEndpoint="/store/storehelp" />
+        <ContentPage
+          title="Customer Support"
+          apiEndpoint="/api/v1/general/customerSupport-all"
+        />
       ),
     },
     {
       path: "support/return-policy",
       element: (
-        <ContentPage title="Return Policy" apiEndpoint="/store/return&refund" />
+        <ContentPage
+          title="Return Policy"
+          apiEndpoint="/api/v1/general/returnPolicies-all"
+        />
       ),
     },
     {
       path: "support/terms-and-conditions",
       element: (
-        <ContentPage title="Legal & Terms" apiEndpoint="/store//storeterms" />
+        <ContentPage
+          title="Legal & Terms"
+          apiEndpoint="/api/v1/general/termsAndCondition-all"
+        />
       ),
     },
     {
       path: "support/shopping-guide",
       element: (
-        <ContentPage title="Shopping Guide" apiEndpoint="/store/howtobuy" />
+        <ContentPage
+          title="Shopping Guide"
+          apiEndpoint="/api/v1/general/shoppingGuide-all"
+        />
       ),
     },
     {
       path: "support/faq",
-      element: <ContentPage title="FAQ" apiEndpoint="/faq/public" />,
+      element: (
+        <ContentPage title="FAQ" apiEndpoint="/api/v1/general/faq-all" />
+      ),
     },
     {
       path: "support/privacy",
       element: (
         <ContentPage
           title="Privacy Policy"
-          apiEndpoint="/privacypolicy/public"
+          apiEndpoint="/api/v1/general/privacyPolicy-all"
         />
       ),
     },

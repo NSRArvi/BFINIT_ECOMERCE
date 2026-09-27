@@ -1,34 +1,20 @@
-import { resolveDefaultCountry } from "@/features/storefront/utils/country";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { Mail, Phone, MapPin } from "lucide-react";
-import { useParams } from "react-router";
+import { resolveDefaultCountry } from "@/features/storefront/utils/country";
 
 export default function ContactInfo({ data = {} }) {
-  const { storeId } = useParams();
-
-  const { data: countries } = useGetQuery({
-    endpoint: "/api/v1/country",
-    enabled: true,
-    queryKey: ["countries"],
-  });
-
-  const { data: storeData } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
-
   const defaultCountry = resolveDefaultCountry(
-    countries,
-    storeData?.data?.default_country_id,
+    data?.countries,
+    data?.default_country_id,
   );
 
-  const { storePhone, storeTelephone, storeEmail, storeAddress, country } =
-    data;
+  const {
+    contact_phone,
+    contact_telephone,
+    contact_email,
+    default_country_address,
+  } = data;
 
-  const fullAddress = country
-    ? storeAddress + country
-    : `${data?.storeAddress}, ${defaultCountry?.country_name}`;
+  const fullAddress = `${default_country_address}, ${defaultCountry?.name}`;
   const encodedAddress = encodeURIComponent(fullAddress);
   const mapUrl = `https://www.google.com/maps?q=${encodedAddress}`;
 
@@ -48,17 +34,19 @@ export default function ContactInfo({ data = {} }) {
           <div className="flex flex-col gap-y-1">
             <h3 className="text-sm font-medium">Phone</h3>
             <a
-              href={`tel:${storePhone}`}
+              href={`tel:${defaultCountry?.country_code}${contact_phone}`}
               className="text-muted-foreground hover:text-foreground text-sm leading-6"
             >
-              {storePhone}
+              {defaultCountry?.country_code}
+              {contact_phone}
             </a>
-            {storeTelephone && (
+            {contact_telephone && (
               <a
-                href={`tel:${storeTelephone}`}
+                href={`tel:${defaultCountry?.country_code}${contact_telephone}`}
                 className="text-muted-foreground hover:text-foreground text-sm leading-6"
               >
-                {storeTelephone}
+                {defaultCountry?.country_code}
+                {contact_telephone}
               </a>
             )}
           </div>
@@ -72,10 +60,10 @@ export default function ContactInfo({ data = {} }) {
           <div>
             <h3 className="mb-0.5 text-sm font-medium">Email</h3>
             <a
-              href={`mailto:${storeEmail}`}
+              href={`mailto:${contact_email}`}
               className="text-muted-foreground hover:text-foreground text-sm leading-6"
             >
-              {storeEmail}
+              {contact_email}
             </a>
           </div>
         </div>
