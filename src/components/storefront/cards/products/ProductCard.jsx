@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
-import { ShoppingCart, Eye, Image } from "lucide-react";
+import { ShoppingCart, Image } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import VariantSelectorModal from "../../modals/VariantSelectorModal";
 import useBasePath from "@/hooks/useBasePath";
@@ -33,22 +33,22 @@ export default function ProductCard({ product = {}, isEditing = false }) {
 
   return (
     <>
-      <div className="group bg-card border-border hover:border-primary/50 relative flex flex-col overflow-hidden rounded-lg border transition-all duration-300">
+      <div className="group bg-card border-border relative flex flex-col overflow-hidden rounded-none border">
         <div className="bg-muted relative aspect-square overflow-hidden">
           {image ? (
             <Link
               onClick={isEditing ? editorLinkClick : undefined}
               to={`${basePath}/shop/${slug}`}
-              className="h-full w-full"
+              className="block h-full w-full"
             >
               <img
                 src={getImgUrl(image)}
                 alt={name}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </Link>
           ) : (
-            <div className="bg-muted flex aspect-square w-full items-center justify-center rounded-lg">
+            <div className="bg-muted flex aspect-square w-full items-center justify-center">
               <Image
                 className="text-muted-foreground/20 h-20 w-20"
                 strokeWidth={0.5}
@@ -63,69 +63,50 @@ export default function ProductCard({ product = {}, isEditing = false }) {
           )}
 
           {is_discount && (
-            <div className="bg-destructive text-destructive-foreground absolute top-3 right-3 rounded-md px-2.5 py-1 text-xs font-semibold">
+            <div className="bg-destructive text-destructive-foreground absolute top-0 left-0 rounded-none px-2.5 py-1 text-xs font-semibold tracking-wide">
               -{discountPercent}%
             </div>
           )}
-
-          {/* Quick Action Buttons */}
-          <div className="absolute top-1/2 left-1/2 flex -translate-x-1/2 -translate-y-1/2 gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-            <Button
-              size="icon"
-              variant="secondary"
-              className="bg-background/95 hover:bg-primary hover:text-primary-foreground h-9 w-9 rounded-full backdrop-blur-sm"
-            >
-              <Link
-                onClick={isEditing ? editorLinkClick : undefined}
-                to={`${basePath}/shop/${slug}`}
-              >
-                <Eye />
-              </Link>
-            </Button>
-          </div>
         </div>
 
-        <div className="flex flex-1 flex-col p-4">
+        <div className="border-border flex flex-1 flex-col gap-1 border-t p-3">
           <Link
             onClick={isEditing ? editorLinkClick : undefined}
             to={`${basePath}/shop/${slug}`}
-            className="group-hover:text-primary mb-2 line-clamp-2 text-sm leading-snug font-semibold transition-colors"
+            className="line-clamp-2 text-sm leading-snug font-medium underline-offset-4 group-hover:underline"
           >
             {name}
           </Link>
 
           {short_description && (
-            <p className="text-muted-foreground mb-3 line-clamp-2 text-xs leading-relaxed">
+            <p className="text-muted-foreground line-clamp-2 text-xs leading-relaxed">
               {short_description}
             </p>
           )}
 
-          <div className="mt-auto flex items-center justify-between gap-2">
-            <div className="flex flex-col">
-              <div className="flex items-baseline gap-2">
-                <span className="text-lg font-bold">
-                  {formatPrice(
-                    is_discount ? discount_value : price,
-                    currencySymbol,
-                  )}
-                </span>
-                {is_discount && (
-                  <span className="text-muted-foreground text-xs line-through">
-                    {formatPrice(price, currencySymbol)}
-                  </span>
-                )}
-              </div>
-            </div>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={isEditing ? editorLinkClick : handleAddToCart}
-              className="hover:bg-primary hover:text-primary-foreground hover:border-primary h-9 gap-1.5 px-3 text-xs font-medium transition-all active:scale-95"
-            >
-              <ShoppingCart className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Add</span>
-            </Button>
+          <div className="mt-1 flex items-baseline gap-2">
+            <span className="text-sm font-semibold">
+              {formatPrice(
+                is_discount ? discount_value : price,
+                currencySymbol,
+              )}
+            </span>
+            {is_discount && (
+              <span className="text-muted-foreground text-xs line-through">
+                {formatPrice(price, currencySymbol)}
+              </span>
+            )}
           </div>
+
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={isEditing ? editorLinkClick : handleAddToCart}
+            className="hover:bg-foreground hover:text-background hover:border-foreground mt-3 h-9 w-full gap-1.5 rounded-none text-xs font-medium tracking-wide transition-colors active:scale-[0.99]"
+          >
+            <ShoppingCart className="h-3.5 w-3.5" />
+            <span>Add</span>
+          </Button>
         </div>
       </div>
 

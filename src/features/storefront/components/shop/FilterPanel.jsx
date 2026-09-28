@@ -2,7 +2,6 @@ import BrandFilter from "./filter/BrandFilter";
 import CategoryFilter from "./filter/CategoryFilter";
 import CollectionsFilter from "./filter/CollectionsFilter";
 import PriceRange from "./filter/PriceRange";
-import { Separator } from "@/components/ui/separator";
 import useFilterParams from "../../hooks/useFilterParams";
 
 export default function FilterPanel({ maxPriceRange }) {
@@ -23,13 +22,10 @@ export default function FilterPanel({ maxPriceRange }) {
       </div>
 
       <PriceRange maxPriceRange={maxPriceRange} />
-      <Separator />
 
       <CategoryFilter />
-      <Separator />
 
       <BrandFilter />
-      <Separator />
 
       <CollectionsFilter />
     </div>

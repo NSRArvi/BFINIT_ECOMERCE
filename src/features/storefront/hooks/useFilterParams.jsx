@@ -19,7 +19,8 @@ export default function useFilterParams() {
   const setValue = (key, value) => {
     setSearchParams((prev) => {
       const next = new URLSearchParams(prev);
-      next.set(key, value);
+      value ? next.set(key, value) : next.delete(key);
+      if (key !== "page") next.delete("page");
       return next;
     });
   };

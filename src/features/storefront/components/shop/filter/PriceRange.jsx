@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Separator } from "@/components/ui/separator";
 import { Slider } from "@/components/ui/slider";
 import useCountry from "@/hooks/useCountry";
 import useFilterParams from "@/features/storefront/hooks/useFilterParams";
@@ -25,31 +26,39 @@ export default function PriceRange({ maxPriceRange }) {
     });
   };
 
+  if (!maxPriceRange) {
+    return null;
+  }
+
   return (
-    <div className="space-y-4">
-      <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
-        Price Range
-      </p>
-      <Slider
-        onValueChange={setPriceRange}
-        onValueCommit={onDragRelease}
-        value={priceRange}
-        min={0}
-        max={maxPriceRange}
-        step={100}
-        className="mt-2"
-      />
-      <div className="flex items-center justify-between text-sm">
-        <span className="border-border border px-2 py-1 font-medium">
-          {selectedCountry?.abbreviation}
-          {priceRange[0]}
-        </span>
-        <span className="text-muted-foreground">to</span>
-        <span className="border-border border px-2 py-1 font-medium">
-          {selectedCountry?.abbreviation}
-          {priceRange[1]}
-        </span>
+    <>
+      <div className="space-y-4">
+        <p className="text-muted-foreground text-xs font-medium tracking-wide uppercase">
+          Price Range
+        </p>
+        <Slider
+          onValueChange={setPriceRange}
+          onValueCommit={onDragRelease}
+          value={priceRange}
+          min={0}
+          max={maxPriceRange}
+          step={100}
+          className="mt-2"
+        />
+        <div className="flex items-center justify-between text-sm">
+          <span className="border-border border px-2 py-1 font-medium">
+            {selectedCountry?.abbreviation}
+            {priceRange[0]}
+          </span>
+          <span className="text-muted-foreground">to</span>
+          <span className="border-border border px-2 py-1 font-medium">
+            {selectedCountry?.abbreviation}
+            {priceRange[1]}
+          </span>
+        </div>
       </div>
-    </div>
+
+      <Separator />
+    </>
   );
 }

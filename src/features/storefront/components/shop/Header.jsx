@@ -19,6 +19,7 @@ import {
 import useFilterParams from "../../hooks/useFilterParams";
 
 const SORT_OPTIONS = [
+  { value: "default", label: "Default" },
   { value: "newest", label: "Newest" },
   { value: "price-low-to-high", label: "Price: Low to High" },
   { value: "price-high-to-low", label: "Price: High to Low" },
@@ -27,7 +28,7 @@ const SORT_OPTIONS = [
 
 export default function Header({ products }) {
   const { getValue, setValue, activeFilterCount } = useFilterParams();
-  const sort = getValue("sort");
+  const sort = getValue("sort", "default");
 
   return (
     <div className="border-border mb-8 flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-end sm:justify-between">
@@ -69,7 +70,12 @@ export default function Header({ products }) {
         </Sheet>
 
         {/* Sort */}
-        <Select value={sort} onValueChange={(val) => setValue("sort", val)}>
+        <Select
+          value={sort}
+          onValueChange={(val) =>
+            setValue("sort", val === "default" ? null : val)
+          }
+        >
           <SelectTrigger className="w-[180px] rounded-none">
             <SelectValue placeholder="Sort by" />
           </SelectTrigger>
