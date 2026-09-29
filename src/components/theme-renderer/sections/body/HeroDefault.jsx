@@ -45,7 +45,7 @@ export default function HeroDefault({ content, isEditing = false }) {
 
           <Button
             asChild
-            className="border-primary-foreground group hover:text-primary hover:bg-primary-foreground w-fit rounded-md border bg-transparent px-8 py-4 font-medium"
+            className="border-primary-foreground group hover:text-primary hover:bg-primary-foreground w-fit rounded-none border bg-transparent px-8 py-4 font-medium"
           >
             <Link
               onClick={isEditing ? editorLinkClick : undefined}

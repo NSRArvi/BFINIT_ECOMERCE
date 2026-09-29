@@ -89,18 +89,7 @@ export const adminNavGroups = [
       {
         icon: Newspaper,
         name: "Blogs",
-        subCategories: [
-          {
-            name: "Add Blog",
-            url: "/blogs/add",
-            icon: CornerDownRight,
-          },
-          {
-            name: "Manage Blog",
-            url: "/blogs/manage",
-            icon: CornerDownRight,
-          },
-        ],
+        url: "/blogs",
       },
     ],
   },
@@ -112,7 +101,7 @@ export const adminSettingsNavGroups = [
     links: [
       {
         icon: Globe,
-        name: "Domain",
+        name: "Domains",
         subCategories: [
           {
             name: "Domain",

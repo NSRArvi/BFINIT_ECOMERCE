@@ -5,7 +5,7 @@ import ProductDetails from "@/features/storefront/pages/ProductDetails";
 import CartProvider from "@/features/storefront/providers/CartProvider";
 import NotFound from "@/pages/storefront/NotFound";
 import Orders from "@/features/storefront/pages/Orders";
-import Blogs from "@/pages/storefront/Blogs";
+import Blogs from "@/features/storefront/pages/Blogs";
 import BlogDetails from "@/pages/storefront/BlogDetails";
 import CountryProvider from "@/providers/CountryProvider";
 import Cart from "@/features/storefront/pages/Cart";

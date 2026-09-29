@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router";
-import { FileText, Plus, Search } from "lucide-react";
+import { Newspaper, Plus, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,8 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
-import PageHeader from "../components/PageHeader";
 import EmptyStoreState from "../components/EmptyStoreState";
 import BlogTableRow from "../components/sections/manage-blog/BlogTableRow";
 import useSelectedStore from "@/hooks/useSelectedStore";
@@ -21,6 +19,8 @@ import { breadcrubms } from "../utils/constants/breadcrumbs";
 import BlogTableRowSkeleton from "../components/skeletons/BlogTableRowSkeleton";
 import useDebounce from "@/hooks/useDebounce";
 import EmptyState from "@/components/shared/EmptyState";
+import PageHeader from "@/components/shared/PageHeader";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 
 export default function ManageBlog() {
   const { activeStore } = useSelectedStore();
@@ -99,7 +99,7 @@ export default function ManageBlog() {
     content = (
       <EmptyState
         className="min-h-[calc(100dvh-300px)]"
-        icon={FileText}
+        icon={Newspaper}
         title={debouncedSearch ? "No matching blogs found" : "No blogs yet"}
         description={
           debouncedSearch
@@ -121,9 +121,9 @@ export default function ManageBlog() {
 
       {/* Page Header */}
       <PageHeader
-        icon={FileText}
-        title="Manage Blogs"
-        description="View and manage all blog posts for"
+        icon={Newspaper}
+        title="Blogs"
+        description="Create, edit and publish blog posts for your store"
       />
 
       <div className="bg-card space-y-6 rounded-lg py-5">

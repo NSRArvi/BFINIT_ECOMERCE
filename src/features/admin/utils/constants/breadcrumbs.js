@@ -12,7 +12,6 @@ export const breadcrubms = {
       dropdown: [
         { label: "Sub Category", href: "/products/sub-category" },
         { label: "Brands", href: "/products/brands" },
-        { label: "Add Product", href: "/products/add-product" },
         { label: "Inventory", href: "/products/inventory" },
       ],
     },
@@ -25,7 +24,6 @@ export const breadcrubms = {
       dropdown: [
         { label: "Category", href: "/products/category" },
         { label: "Brands", href: "/products/brands" },
-        { label: "Add Product", href: "/products/add-product" },
         { label: "Inventory", href: "/products/inventory" },
       ],
     },
@@ -38,7 +36,6 @@ export const breadcrubms = {
       dropdown: [
         { label: "Category", href: "/products/category" },
         { label: "Sub Category", href: "/products/sub-category" },
-        { label: "Add Product", href: "/products/add-product" },
         { label: "Inventory", href: "/products/inventory" },
       ],
     },
@@ -52,7 +49,6 @@ export const breadcrubms = {
         { label: "Category", href: "/products/category" },
         { label: "Sub Category", href: "/products/sub-category" },
         { label: "Brands", href: "/products/brands" },
-        { label: "Add Product", href: "/products/add-product" },
       ],
     },
     { label: "Inventory" },
@@ -76,41 +72,51 @@ export const breadcrubms = {
     { label: "Home", href: Home_Url },
     {
       label: "Blogs",
-      dropdown: [{ label: "Manage Blog", href: "/blogs/manage" }],
+      href: "/blogs",
     },
     { label: "Add Blog" },
   ],
-  manageBlogs: [
+  manageBlogs: [{ label: "Home", href: Home_Url }, { label: "Blogs" }],
+
+  domain: [
     { label: "Home", href: Home_Url },
     {
-      label: "Blogs",
-      dropdown: [{ label: "Add Blog", href: "/blogs/add" }],
+      label: "Domains",
+      dropdown: [{ label: "Subdomain", href: "/settings/subdomain" }],
     },
-    { label: "Manage Blog" },
+    { label: "Domain" },
   ],
 
-  domain: [{ label: "Home", href: Home_Url }, { label: "Domain" }],
-  subdomain: [{ label: "Home", href: Home_Url }, { label: "Subdomain" }],
+  subdomain: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Domains",
+      dropdown: [{ label: "Domain", href: "/settings/domain" }],
+    },
+    { label: "Subdomain" },
+  ],
 
   // payment
   stripePayment: [
     { label: "Home", href: Home_Url },
     {
       label: "Payments",
-      dropdown: [{ label: "Bank", href: "/payments/bank" }],
+      dropdown: [{ label: "Bank", href: "/settings/payments/manage-bank" }],
     },
     { label: "Stripe" },
   ],
+
   bankPayment: [
     { label: "Home", href: Home_Url },
     {
       label: "Payments",
-      dropdown: [{ label: "Stripe", href: "/payments/stripe" }],
+      dropdown: [{ label: "Stripe", href: "/settings/payments/stripe" }],
     },
     { label: "Bank" },
   ],
 
   shippingZones: [{ label: "Home", href: Home_Url }, { label: "Shipping" }],
+
   addShippingZone: [
     { label: "Home", href: Home_Url },
     { label: "Add Shipping Zone" },
@@ -123,8 +129,11 @@ export const breadcrubms = {
     {
       label: "Legal",
       dropdown: [
-        { label: "Legal & Terms", href: "/legal/terms-and-conditions" },
-        { label: "Return Policy", href: "/legal/return-policy" },
+        {
+          label: "Legal & Terms",
+          href: "/settings/legal/terms-and-conditions",
+        },
+        { label: "Return Policy", href: "/settings/legal/return-policy" },
       ],
     },
     { label: "Privacy Policy" },
@@ -134,8 +143,8 @@ export const breadcrubms = {
     {
       label: "Legal",
       dropdown: [
-        { label: "Privacy Policy", href: "/legal/privacy-policy" },
-        { label: "Return Policy", href: "/legal/return-policy" },
+        { label: "Privacy Policy", href: "/settings/legal/privacy-policy" },
+        { label: "Return Policy", href: "/settings/legal/return-policy" },
       ],
     },
     { label: "Terms & Conditions" },
@@ -145,8 +154,11 @@ export const breadcrubms = {
     {
       label: "Legal",
       dropdown: [
-        { label: "Privacy Policy", href: "/legal/privacy-policy" },
-        { label: "Legal & Terms", href: "/legal/terms-and-conditions" },
+        { label: "Privacy Policy", href: "/settings/legal/privacy-policy" },
+        {
+          label: "Legal & Terms",
+          href: "/settings/legal/terms-and-conditions",
+        },
       ],
     },
     { label: "Return Policy" },
@@ -158,8 +170,8 @@ export const breadcrubms = {
     {
       label: "Support",
       dropdown: [
-        { label: "FAQ", href: "/support/faq" },
-        { label: "Shopping Guide", href: "/support/shopping-guide" },
+        { label: "FAQ", href: "/settings/support/faq" },
+        { label: "Shopping Guide", href: "/settings/support/shopping-guide" },
       ],
     },
     { label: "Customer Support" },
@@ -169,8 +181,11 @@ export const breadcrubms = {
     {
       label: "Support",
       dropdown: [
-        { label: "Customer Support", href: "/support/customer-support" },
-        { label: "Shopping Guide", href: "/support/shopping-guide" },
+        {
+          label: "Customer Support",
+          href: "/settings/support/customer-support",
+        },
+        { label: "Shopping Guide", href: "/settings/support/shopping-guide" },
       ],
     },
     { label: "Faq" },
@@ -180,15 +195,22 @@ export const breadcrubms = {
     {
       label: "Support",
       dropdown: [
-        { label: "Customer Support", href: "/support/customer-support" },
-        { label: "FAQ", href: "/support/faq" },
+        {
+          label: "Customer Support",
+          href: "/settings/support/customer-support",
+        },
+        { label: "FAQ", href: "/settings/support/faq" },
       ],
     },
     { label: "Shopping Guide" },
   ],
 
   // Company
-  about: [{ label: "Home", href: Home_Url }, { label: "About" }],
+  about: [
+    { label: "Home", href: Home_Url },
+    { label: "Company", href: "/settings/company/about" },
+    { label: "About" },
+  ],
 
   seo: [{ label: "Home", href: Home_Url }, { label: "SEO & Meta" }],
 
@@ -199,4 +221,6 @@ export const breadcrubms = {
     { label: "Billing", href: "/account/billing" },
     { label: "Plans" },
   ],
+
+  customers: [{ label: "Home", href: "/" }, { label: "Customers" }],
 };

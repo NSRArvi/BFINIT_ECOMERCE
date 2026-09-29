@@ -72,7 +72,7 @@ export const adminRoutes = {
       element: <BlogForm />,
     },
     {
-      path: "/blogs/manage",
+      path: "/blogs",
       element: <ManageBlog />,
     },
     {

@@ -141,7 +141,7 @@ export default function BlogForm({ data }) {
       updateMutate(payload, {
         onSuccess: () => {
           toast.success("Blog updated successfully!");
-          navigate("/blogs/manage");
+          navigate("/blogs");
         },
         onError: () => {
           toast.error("Failed to update blog. Please try again.");
@@ -159,7 +159,7 @@ export default function BlogForm({ data }) {
       createMutate(payload, {
         onSuccess: () => {
           toast.success("Blog published successfully!");
-          navigate("/blogs/manage");
+          navigate("/blogs");
         },
         onError: () => {
           toast.error("Failed to publish blog. Please try again.");

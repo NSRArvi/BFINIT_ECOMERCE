@@ -26,7 +26,6 @@ export const breadcrubms = {
   orders: [{ label: "Home", href: "/" }, { label: "Orders" }],
 
   /** Breadcrumb for customers listing */
-  customers: [{ label: "Home", href: "/" }, { label: "Customers" }],
 
   // ============================================================================
   // Super Admin

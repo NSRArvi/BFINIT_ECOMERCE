@@ -3,7 +3,6 @@ import EmptyStoreState from "../components/EmptyStoreState";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import { Users } from "lucide-react";
 import PageHeader from "../components/PageHeader";
-import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import CustomerTable from "../components/sections/customers/CustomerTable";
 import { useState } from "react";
 import EmptyState from "../components/EmptyState";
@@ -11,6 +10,7 @@ import CustomersToolsSkeleton from "../components/skeletons/CustomersToolsSkelet
 import CustomersTableSkeleton from "../components/skeletons/CustomersTableSkeleton";
 import useDebounce from "@/hooks/useDebounce";
 import CustomerToolbar from "../components/sections/customers/CustomerToolbar";
+import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Customers() {
   const { selectedStore } = useSelectedStore();
