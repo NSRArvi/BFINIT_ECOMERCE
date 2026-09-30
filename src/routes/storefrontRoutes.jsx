@@ -6,7 +6,7 @@ import CartProvider from "@/features/storefront/providers/CartProvider";
 import NotFound from "@/pages/storefront/NotFound";
 import Orders from "@/features/storefront/pages/Orders";
 import Blogs from "@/features/storefront/pages/Blogs";
-import BlogDetails from "@/pages/storefront/BlogDetails";
+import BlogDetails from "@/features/storefront/pages/BlogDetails";
 import CountryProvider from "@/providers/CountryProvider";
 import Cart from "@/features/storefront/pages/Cart";
 import Signup from "@/features/storefront/pages/Signup";
@@ -16,6 +16,7 @@ import CustomerAuthProvider from "@/features/storefront/providers/CustomerAuthPr
 import OrderDetails from "@/features/storefront/pages/OrderDetails";
 import Shop from "@/features/storefront/pages/Shop";
 import Contact from "@/features/storefront/pages/Contact";
+import PrivateRoute from "./PrivateRoute";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -58,9 +59,9 @@ export const storeFrontRoutes = {
     {
       path: "checkout",
       element: (
-        // <PrivateRoute role="customer">
-        <Checkout />
-        // </PrivateRoute>
+        <PrivateRoute role="customer">
+          <Checkout />
+        </PrivateRoute>
       ),
     },
     {
@@ -137,17 +138,17 @@ export const storeFrontRoutes = {
     {
       path: "orders",
       element: (
-        // <PrivateRoute role="customer">
-        <Orders />
-        // </PrivateRoute>
+        <PrivateRoute role="customer">
+          <Orders />
+        </PrivateRoute>
       ),
     },
     {
       path: "orders/:orderId",
       element: (
-        // <PrivateRoute role="customer">
-        <OrderDetails />
-        // </PrivateRoute>
+        <PrivateRoute role="customer">
+          <OrderDetails />
+        </PrivateRoute>
       ),
     },
   ],

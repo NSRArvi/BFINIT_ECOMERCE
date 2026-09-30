@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router";
+import { Link, useLocation, useNavigate, useParams } from "react-router";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,10 +14,11 @@ import useCustomerAuth from "../hooks/useCustomerAuth";
 
 export default function Login() {
   const { storeId } = useParams();
-  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const { saveAuthInfo } = useCustomerAuth();
   const basePath = useBasePath();
+
   const [showPassword, setShowPassword] = useState(false);
 
   const {
@@ -53,7 +54,7 @@ export default function Login() {
           };
 
           saveAuthInfo(authInfo);
-          navigate(searchParams.get("redirect") || `${basePath}/`);
+          navigate(location?.state?.from || `${basePath}/`);
           return;
         }
         setError("root", { message: "Invalid email or password" });

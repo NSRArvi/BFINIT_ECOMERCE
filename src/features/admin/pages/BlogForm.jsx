@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
-import { Link, useNavigate } from "react-router";
+import { useRef } from "react";
+import { Link, useNavigate, useParams } from "react-router";
+import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { ChevronLeft, PenSquare, Upload, X } from "lucide-react";
-import { useForm } from "react-hook-form";
 import SunEditor from "suneditor-react";
 import {
   Form,
@@ -16,52 +16,47 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import PageHeader from "@/components/shared/PageHeader";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { getImgUrl } from "@/utils/getImgUrl";
-import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
-import PageHeader from "@/components/shared/PageHeader";
 import { breadcrubms } from "@/features/admin/utils/constants/breadcrumbs";
+import { sunEditorOptions } from "@/config/sunEditorOptions";
 
-export default function BlogForm({ data }) {
-  const { activeStore } = useSelectedStore();
+export default function BlogForm() {
+  const { id } = useParams();
   const navigate = useNavigate();
+  const { activeStore } = useSelectedStore();
+
+  const isEditMode = !!id;
+
+  const { data, isLoading: isBlogDetailsLoading } = useGetQuery({
+    endpoint: `/api/v1/general/blog/${activeStore?.id}/${id}`,
+    enabled: !!activeStore?.id && !!id,
+    isTokenRequired: true,
+    queryKey: ["blog", activeStore?.id, id],
+  });
+
+  const blogDetails = data?.data;
 
   const imgRef = useRef();
   const sunEditorRef = useRef();
 
   const form = useForm({
-    defaultValues: {
-      blogImages: null,
-      title: "",
-      short_description: "",
-      description: "",
+    values: {
+      blogImages: blogDetails?.image
+        ? { preview: getImgUrl(blogDetails.image), isExisting: true }
+        : null,
+      title: blogDetails?.title ?? "",
+      short_description: blogDetails?.short_description ?? "",
+      description: blogDetails?.description ?? "",
     },
   });
-  const { handleSubmit, reset } = form;
 
-  // Track original image URL for deletion on update
-  const originalImageUrl = useRef(null);
-
-  useEffect(() => {
-    if (data?.id) {
-      const { image, short_description, description, title } = data;
-
-      // Store original image URL for later deletion
-      originalImageUrl.current = image;
-
-      reset({
-        blogImages: {
-          preview: getImgUrl(image),
-          isExisting: true, // Flag to identify existing image
-        },
-        title,
-        short_description,
-        description,
-      });
-    }
-  }, [data, reset]);
+  const { handleSubmit } = form;
 
   const handleFileInput = (e, onChange) => {
     const files = e.target.files;
@@ -91,10 +86,6 @@ export default function BlogForm({ data }) {
     onChange(imageData);
   };
 
-  const handleDescriptionChange = (content) => {
-    form.setValue("description", content);
-  };
-
   const removeImage = (onChange, currentImage) => {
     if (currentImage && currentImage.preview && !currentImage.isExisting) {
       URL.revokeObjectURL(currentImage.preview);
@@ -105,16 +96,18 @@ export default function BlogForm({ data }) {
     onChange(null);
   };
 
-  // Create mutation
+  const handleDescriptionChange = (content) => {
+    form.setValue("description", content);
+  };
+
   const { mutate: createMutate, isPending: isCreatePending } = usePostMutation({
     endpoint: "/api/v1/general/blog",
     isTokenRequired: true,
   });
 
-  // Update mutation
   const { mutate: updateMutate, isPending: isUpdatePending } = usePatchMutation(
     {
-      endpoint: `/api/v1/general/blog/${activeStore?.id}/${data?.id}`,
+      endpoint: `/api/v1/general/blog/${activeStore?.id}/${blogDetails?.id}`,
       isTokenRequired: true,
     },
   );
@@ -126,16 +119,10 @@ export default function BlogForm({ data }) {
     payload.append("description", description);
     payload.append("short_description", short_description);
 
-    // Check if we're updating
-    if (data?.id) {
-      // Only append new image if user selected one
+    if (blogDetails?.id) {
       if (blogImages?.file) {
         payload.append("image", blogImages.file);
-        // Include original image URL for deletion as a stringified array
-        payload.append(
-          "deleteImageUrl",
-          JSON.stringify([originalImageUrl.current]),
-        );
+        payload.append("deleteImageUrl", JSON.stringify([blogDetails.image]));
       }
 
       updateMutate(payload, {
@@ -148,7 +135,6 @@ export default function BlogForm({ data }) {
         },
       });
     } else {
-      // Create new blog
       if (!blogImages?.file) {
         toast.error("Please add a blog image");
         return;
@@ -168,7 +154,9 @@ export default function BlogForm({ data }) {
     }
   };
 
-  const isPending = isCreatePending || isUpdatePending;
+  const isLoading = isBlogDetailsLoading || isCreatePending || isUpdatePending;
+  const btnLabel = isEditMode ? "Update Blog" : "Publish Blog";
+  const btnLoadingLabel = isEditMode ? "Updating..." : "Publishing...";
 
   return (
     <section className="space-y-6">
@@ -185,12 +173,11 @@ export default function BlogForm({ data }) {
           onSubmit={handleSubmit(onSubmit)}
           className="bg-card space-y-6 space-x-4 rounded-lg border p-5 md:space-y-6 md:space-x-6"
         >
-          {/* image */}
           <FormField
             control={form.control}
             name="blogImages"
             rules={{
-              required: data?.id ? false : "Please add a blog image",
+              required: blogDetails?.id ? false : "Please add a blog image",
             }}
             render={({ field }) => (
               <FormItem>
@@ -247,7 +234,7 @@ export default function BlogForm({ data }) {
                         </div>
                       </div>
                     )}
-                    {/* hidden file input */}
+
                     <input
                       ref={imgRef}
                       onChange={(e) => handleFileInput(e, field.onChange)}
@@ -263,9 +250,7 @@ export default function BlogForm({ data }) {
             )}
           />
 
-          {/* title & short description */}
           <div>
-            {/* title */}
             <FormField
               control={form.control}
               name="title"
@@ -327,7 +312,6 @@ export default function BlogForm({ data }) {
             </div>
           </div>
 
-          {/* description */}
           <FormField
             control={form.control}
             name="description"
@@ -344,53 +328,10 @@ export default function BlogForm({ data }) {
                     ref={sunEditorRef}
                     onChange={handleDescriptionChange}
                     name="description"
+                    setContents={field.value || ""}
+                    setOptions={sunEditorOptions}
                     height="220px"
                     placeholder="Write your blog content here..."
-                    setContents={field.value || ""}
-                    setOptions={{
-                      buttonList: [
-                        [
-                          "undo",
-                          "redo",
-                          "formatBlock",
-                          "bold",
-                          "italic",
-                          "underline",
-                          "strike",
-                        ],
-                        [
-                          "fontSize",
-                          "fontColor",
-                          "hiliteColor",
-                          "removeFormat",
-                        ],
-                        ["align", "list", "outdent", "indent", "lineHeight"],
-                        [
-                          "blockquote",
-                          "horizontalRule",
-                          "table",
-                          "link",
-                          "image",
-                          "video",
-                        ],
-                        ["fullScreen", "showBlocks", "preview"],
-                      ],
-                      charCounter: true,
-                      charCounterLabel: "Characters:",
-
-                      formats: [
-                        "p",
-                        "div",
-                        "h1",
-                        "h2",
-                        "h3",
-                        "h4",
-                        "h5",
-                        "h6",
-                        "blockquote",
-                      ],
-                      fontSize: [8, 10, 12, 14, 16, 18, 20, 24, 28, 32, 36],
-                    }}
                   />
                 </FormControl>
                 <FormMessage className="text-xs" />
@@ -398,29 +339,25 @@ export default function BlogForm({ data }) {
             )}
           />
 
-          {/* back & submit buttons */}
           <div className="flex flex-col-reverse gap-4 lg:flex-row lg:justify-between">
             <Button variant="outline" size="sm" asChild className="text-xs">
-              <Link to="/blogs/manage">
-                <ChevronLeft /> Back to Blogs
+              <Link to="/">
+                <ChevronLeft /> Back to Home
               </Link>
             </Button>
 
             <Button
-              disabled={isPending}
+              disabled={isLoading}
               type="submit"
               size="sm"
               className="min-w-28 text-xs"
             >
-              {isPending ? (
+              {isCreatePending || isUpdatePending ? (
                 <>
-                  <Spinner size="3.5" />
-                  {data?.id ? "Updating..." : "Publishing..."}
+                  <Spinner /> {btnLoadingLabel}
                 </>
-              ) : data?.id ? (
-                "Update Blog"
               ) : (
-                "Publish Blog"
+                btnLabel
               )}
             </Button>
           </div>

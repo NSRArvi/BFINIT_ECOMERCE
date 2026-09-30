@@ -26,6 +26,15 @@ const navLinks = [
   { name: "Contact", href: "/contact" },
 ];
 
+function getInitials(name = "") {
+  return name
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((n) => n[0]?.toUpperCase())
+    .join("");
+}
+
 export default function MainHeader({ content = {}, isEditing = false }) {
   const { storeId } = useParams();
   const basePath = useBasePath();
@@ -178,70 +187,62 @@ export default function MainHeader({ content = {}, isEditing = false }) {
                 <Search size={18} />
               </Button>
 
-              {/* Account Popover */}
-              <Popover
-                open={accountDropdownOpen}
-                onOpenChange={setAccountDropdownOpen}
-              >
-                <PopoverTrigger asChild className="hidden lg:flex">
-                  <Button
+              {customer ? (
+                <Popover
+                  open={accountDropdownOpen}
+                  onOpenChange={setAccountDropdownOpen}
+                >
+                  <PopoverTrigger asChild className="hidden lg:flex">
+                    <Button
+                      onClick={isEditing ? editorLinkClick : undefined}
+                      variant="ghost"
+                      size="icon"
+                      aria-label="Account"
+                      className="h-9 w-9 rounded-full"
+                    >
+                      <span className="bg-foreground text-background flex size-6 items-center justify-center rounded-full text-[10px] font-medium">
+                        {getInitials(customer.user.name)}
+                      </span>
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-56 p-2" align="end">
+                    <div className="px-2 py-2">
+                      <p className="text-sm font-medium">
+                        {customer.user.name}
+                      </p>
+                      <p className="text-muted-foreground truncate text-xs">
+                        {customer.user.email}
+                      </p>
+                    </div>
+                    <Separator className="my-2" />
+                    <Link
+                      to={`${basePath}/orders`}
+                      className="hover:bg-accent block rounded-sm px-2 py-2 text-sm transition-colors"
+                      onClick={() => setAccountDropdownOpen(false)}
+                    >
+                      Orders
+                    </Link>
+                    <Separator className="my-2" />
+                    <Button
+                      variant="ghost"
+                      onClick={handleLogout}
+                      className="h-auto w-full justify-start px-2 py-2 text-sm font-normal"
+                    >
+                      Sign Out
+                    </Button>
+                  </PopoverContent>
+                </Popover>
+              ) : (
+                <Button variant="ghost" size="icon" asChild className="h-9 w-9">
+                  <Link
                     onClick={isEditing ? editorLinkClick : undefined}
-                    variant="ghost"
-                    size="icon"
-                    aria-label="Account"
-                    className="h-9 w-9"
+                    to={`${basePath}/login`}
+                    aria-label="Login"
                   >
                     <User size={18} />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-56 p-2" align="end">
-                  {customer ? (
-                    <>
-                      <div className="px-2 py-2">
-                        <p className="text-sm font-medium">
-                          {customer.user.name}
-                        </p>
-                        <p className="text-muted-foreground truncate text-xs">
-                          {customer.user.email}
-                        </p>
-                      </div>
-                      <Separator className="my-2" />
-                      <Link
-                        to={`${basePath}/orders`}
-                        className="hover:bg-accent block rounded-sm px-2 py-2 text-sm transition-colors"
-                        onClick={() => setAccountDropdownOpen(false)}
-                      >
-                        Orders
-                      </Link>
-                      <Separator className="my-2" />
-                      <Button
-                        variant="ghost"
-                        onClick={handleLogout}
-                        className="h-auto w-full justify-start px-2 py-2 text-sm font-normal"
-                      >
-                        Sign Out
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Link
-                        to={`${basePath}/login`}
-                        className="hover:bg-accent block rounded-sm px-2 py-2 text-sm transition-colors"
-                        onClick={() => setAccountDropdownOpen(false)}
-                      >
-                        Sign In
-                      </Link>
-                      <Link
-                        to={`${basePath}/signup`}
-                        className="hover:bg-accent block rounded-sm px-2 py-2 text-sm transition-colors"
-                        onClick={() => setAccountDropdownOpen(false)}
-                      >
-                        Create Account
-                      </Link>
-                    </>
-                  )}
-                </PopoverContent>
-              </Popover>
+                  </Link>
+                </Button>
+              )}
 
               {/* Cart with Badge */}
               <Button
