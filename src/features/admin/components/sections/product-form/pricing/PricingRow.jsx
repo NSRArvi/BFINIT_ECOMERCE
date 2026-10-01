@@ -65,7 +65,9 @@ export default function PricingRow({
   isMultipleCountries,
   removePricing,
 }) {
-  const [generatedSnapshot, setGeneratedSnapshot] = useState(null);
+  const [generatedSnapshot, setGeneratedSnapshot] = useState(() =>
+    createOptionSnapshot(form.getValues(`pricing.${index}.options`)),
+  );
 
   const isVariantsEnabled = useWatch({
     control: form.control,

@@ -109,9 +109,11 @@ export default function Details({ form }) {
                 Category <span className="text-destructive">*</span>
               </FieldLabel>
               <Select
-                name={field.name}
                 value={field.value ? String(field.value) : ""}
-                onValueChange={(value) => field.onChange(Number(value))}
+                onValueChange={(value) => {
+                  if (!value) return;
+                  field.onChange(Number(value));
+                }}
                 disabled={!isCategoriesLoading && categories.length === 0}
               >
                 <SelectTrigger
@@ -166,9 +168,11 @@ export default function Details({ form }) {
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Subcategory</FieldLabel>
               <Select
-                name={field.name}
                 value={field.value ? String(field.value) : ""}
-                onValueChange={(value) => field.onChange(Number(value))}
+                onValueChange={(value) => {
+                  if (!value) return;
+                  field.onChange(Number(value));
+                }}
                 disabled={
                   !selectedCategoryId ||
                   (!isSubcategoriesLoading &&
@@ -204,9 +208,11 @@ export default function Details({ form }) {
             <Field data-invalid={fieldState.invalid}>
               <FieldLabel htmlFor={field.name}>Brand</FieldLabel>
               <Select
-                name={field.name}
                 value={field.value ? String(field.value) : ""}
-                onValueChange={(value) => field.onChange(Number(value))}
+                onValueChange={(value) => {
+                  if (!value) return;
+                  field.onChange(Number(value));
+                }}
                 disabled={!isBrandsLoading && brands.length === 0}
               >
                 <SelectTrigger

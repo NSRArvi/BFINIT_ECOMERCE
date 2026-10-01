@@ -48,6 +48,10 @@ export const adminRoutes = {
       element: <ProductForm />,
     },
     {
+      path: "/products/inventory/:id",
+      element: <ProductForm />,
+    },
+    {
       path: "/products/inventory",
       element: <Inventory />,
     },

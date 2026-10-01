@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Controller } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useWatch } from "react-hook-form";
 import { ImagePlus, X } from "lucide-react";
 import { Field, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -18,10 +18,24 @@ export default function VariantImageField({
   pricingIndex,
   variantIndex,
 }) {
-  const inputRef = useRef(null);
-  const [preview, setPreview] = useState(null);
-
   const fieldName = `pricing.${pricingIndex}.variants.${variantIndex}.image`;
+
+  const inputRef = useRef(null);
+  const image = useWatch({ control: form.control, name: fieldName });
+
+  const [objectUrl, setObjectUrl] = useState(null);
+
+  useEffect(() => {
+    if (!(image instanceof File)) {
+      setObjectUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(image);
+    setObjectUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [image]);
+
+  const preview = typeof image === "string" ? image : objectUrl;
 
   const handleInputClick = () => {
     inputRef?.current?.click();
@@ -47,8 +61,6 @@ export default function VariantImageField({
     }
 
     form.clearErrors(fieldName);
-    if (preview) URL.revokeObjectURL(preview);
-    setPreview(URL.createObjectURL(file));
     field.onChange(file);
   };
 
@@ -59,8 +71,6 @@ export default function VariantImageField({
 
   const handleRemove = (e, field) => {
     e.stopPropagation();
-    if (preview) URL.revokeObjectURL(preview);
-    setPreview(null);
     field.onChange(null);
     if (inputRef.current) inputRef.current.value = "";
   };

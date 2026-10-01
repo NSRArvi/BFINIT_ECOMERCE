@@ -1,5 +1,5 @@
-import { useRef, useState } from "react";
-import { Controller } from "react-hook-form";
+import { useEffect, useRef, useState } from "react";
+import { Controller, useWatch } from "react-hook-form";
 import { ImagePlus, Pencil } from "lucide-react";
 import {
   Field,
@@ -20,8 +20,22 @@ const imgFileAcceptedTypes = [
 
 export default function ThumbnailImageField({ form }) {
   const inputRef = useRef(null);
-  const [preview, setPreview] = useState(null);
+  const image = useWatch({ control: form.control, name: "image" });
+
+  const [objectUrl, setObjectUrl] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
+
+  useEffect(() => {
+    if (!(image instanceof File)) {
+      setObjectUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(image);
+    setObjectUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [image]);
+
+  const preview = typeof image === "string" ? image : objectUrl;
 
   const handleInputClick = () => {
     inputRef?.current?.click();
@@ -47,8 +61,6 @@ export default function ThumbnailImageField({ form }) {
     }
 
     form.clearErrors("image");
-    if (preview) URL.revokeObjectURL(preview);
-    setPreview(URL.createObjectURL(file));
     field.onChange(file);
   };
 

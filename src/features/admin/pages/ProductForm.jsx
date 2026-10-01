@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import { useForm } from "react-hook-form";
-import { ChevronLeft, PackagePlus, Store } from "lucide-react";
+import { ChevronLeft, PackagePlus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -14,49 +14,32 @@ import Images from "../components/sections/product-form/Images";
 import Pricing from "../components/sections/product-form/Pricing";
 import { Spinner } from "@/components/ui/spinner";
 import useSelectedStore from "@/hooks/useSelectedStore";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 import { buildProductPayload } from "../utils/productHelper";
+import { EMPTY_PRODUCT } from "../utils/constants/productDefaults";
+import { transformProductToFormValues } from "../utils/transformProductToFormValues";
 import { productSchema } from "../schemas/productSchema";
 
 export default function ProductForm() {
+  const { id } = useParams();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { activeStore } = useSelectedStore();
 
+  const { data, isLoading } = useGetQuery({
+    endpoint: `/api/v1/product/store/${activeStore?.id}/${id}`,
+    enabled: !!id && !!activeStore?.id,
+    isTokenRequired: true,
+    queryKey: ["product", activeStore?.id, id],
+  });
+
   const form = useForm({
     resolver: zodResolver(productSchema),
-    defaultValues: {
-      name: "",
-      category_id: undefined,
-      sub_category_id: undefined,
-      brand_id: undefined,
-      tags: [],
-      short_description: "",
-      description: "",
-      is_hot_deal: false,
-      is_new_arrival: false,
-      is_featured: false,
-      is_best_selling: false,
-      is_flash_deal: false,
-      flash_deal_start_date: null,
-      flash_deal_end_date: null,
-      image: null,
-      images: [],
-      pricing: [
-        {
-          country_id: undefined,
-          price: undefined,
-          discount_value: undefined,
-          stock: undefined,
-          variants_enabled: false,
-          use_default_pricing: false,
-          options: [],
-          variants: [],
-        },
-      ],
-    },
+    defaultValues: EMPTY_PRODUCT,
+    values: data?.data ? transformProductToFormValues(data?.data) : undefined,
   });
 
   const { mutate, isPending } = usePostMutation({
@@ -101,7 +84,7 @@ export default function ProductForm() {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <fieldset disabled={isPending} className="space-y-6">
+          <fieldset disabled={isLoading || isPending} className="space-y-6">
             <Details form={form} />
             <Status form={form} />
             <Images form={form} />
@@ -115,7 +98,7 @@ export default function ProductForm() {
               </Button>
 
               <Button
-                disabled={isPending}
+                disabled={isLoading || isPending}
                 type="submit"
                 size="sm"
                 className="min-w-[101px]"

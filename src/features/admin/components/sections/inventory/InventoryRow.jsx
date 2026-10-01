@@ -112,7 +112,7 @@ export default function InventoryRow({ product }) {
               </DropdownMenuItem>
 
               <DropdownMenuItem asChild>
-                <Link to="/products/inventory">
+                <Link to={`/products/inventory/${id}`}>
                   <Pencil />
                   Edit
                 </Link>

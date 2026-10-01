@@ -49,7 +49,10 @@ const variantSchema = z
     price: z.number().optional(),
     discount_value: z.number().optional(),
     stock: z.number({ error: "Stock is required!" }),
-    image: z.instanceof(File).nullable().optional(),
+    image: z
+      .union([z.instanceof(File), z.string()])
+      .nullable()
+      .optional(),
     is_active: z.boolean(),
     is_discount: z.boolean(),
   })
@@ -157,8 +160,10 @@ export const productSchema = z
     is_flash_deal: z.boolean(),
     flash_deal_start_date: z.string().nullable(),
     flash_deal_end_date: z.string().nullable(),
-    image: z.instanceof(File, { error: "Thumbnail image is required!" }),
-    images: z.array(z.instanceof(File)).optional(),
+    image: z.union([z.instanceof(File), z.string().min(1)], {
+      error: "Thumbnail image is required!",
+    }),
+    images: z.array(z.union([z.instanceof(File), z.string()])).optional(),
     pricing: z.array(pricingSchema),
   })
   .superRefine((data, ctx) => {
