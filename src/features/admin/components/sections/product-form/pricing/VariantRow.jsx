@@ -4,6 +4,7 @@ import { Switch } from "@/components/ui/switch";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { Field, FieldError } from "@/components/ui/field";
 import VariantImageField from "../images/VariantImageField";
+import { cn } from "@/lib/utils";
 
 export default function VariantRow({
   form,
@@ -31,7 +32,7 @@ export default function VariantRow({
 
   const handleInputChange = (e, field) => {
     const val = e.target.value;
-    field.onChange(val === "" ? undefined : Number(val));
+    field.onChange(val === "" ? null : Number(val));
   };
 
   return (
@@ -63,20 +64,27 @@ export default function VariantRow({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <div className="border-input focus-within:border-primary focus-within:ring-primary/20 flex h-8 w-full items-center gap-1.5 rounded-md border px-3 focus-within:ring-1">
+              <div
+                className={cn(
+                  "border-input focus-within:border-primary focus-within:ring-primary/20 flex h-8 w-full items-center gap-1.5 rounded-md border px-3 focus-within:ring-1",
+                  fieldState.invalid &&
+                    "focus-within:border-destructive focus-within:ring-destructive/20",
+                )}
+              >
                 <span className="text-muted-foreground shrink-0 text-xs">
                   {currencySymbol}
                 </span>
                 <Input
                   {...field}
-                  onChange={(e) => handleInputChange(e, field)}
                   value={
                     useDefaultPricing
                       ? (countryPrice ?? "")
                       : (field.value ?? "")
                   }
-                  disabled={useDefaultPricing}
+                  onChange={(e) => handleInputChange(e, field)}
                   type="number"
+                  min={0}
+                  disabled={useDefaultPricing}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
                   placeholder="0.00"
@@ -95,7 +103,13 @@ export default function VariantRow({
           control={form.control}
           render={({ field, fieldState }) => (
             <Field data-invalid={fieldState.invalid}>
-              <div className="border-input focus-within:border-primary focus-within:ring-primary/20 flex h-8 w-full items-center gap-1.5 rounded-md border px-3 text-xs focus-within:ring-1">
+              <div
+                className={cn(
+                  "border-input focus-within:border-primary focus-within:ring-primary/20 flex h-8 w-full items-center gap-1.5 rounded-md border px-3 focus-within:ring-1",
+                  fieldState.invalid &&
+                    "focus-within:border-destructive focus-within:ring-destructive/20",
+                )}
+              >
                 <span className="text-muted-foreground shrink-0">
                   {currencySymbol}
                 </span>
@@ -107,6 +121,7 @@ export default function VariantRow({
                       ? (countryDiscountValue ?? "")
                       : (field.value ?? "")
                   }
+                  min={0}
                   disabled={useDefaultPricing}
                   type="number"
                   id={field.name}
@@ -132,6 +147,7 @@ export default function VariantRow({
                 onChange={(e) => handleInputChange(e, field)}
                 value={field.value ?? ""}
                 type="number"
+                min={0}
                 placeholder="0"
                 aria-invalid={fieldState.invalid}
                 className="h-8 md:text-xs"

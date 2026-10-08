@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Switch } from "@/components/ui/switch";
 import OptionRow from "./OptionRow";
 import Variants from "./Variants";
+import { cn } from "@/lib/utils";
 
 function generateVariantCombinations(options) {
   if (!options || options.length === 0) return [];
@@ -144,7 +145,28 @@ export default function PricingRow({
 
   const handleRemoveOption = (index) => {
     removeOption(index);
+
+    if (optionFields.length <= 1) {
+      replaceVariants([]);
+      setGeneratedSnapshot([]);
+      form.clearErrors(`pricing.${index}.options`);
+    }
   };
+
+  const variantKey = (optionValues) =>
+    Object.entries(optionValues ?? {})
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([k, v]) => `${k}:${v}`)
+      .join("|");
+
+  const findParent = (oldVariants, optionValues) =>
+    oldVariants.find((old) => {
+      const entries = Object.entries(old.optionValues ?? {});
+      return (
+        entries.length > 0 &&
+        entries.every(([k, v]) => String(optionValues[k]) === String(v))
+      );
+    });
 
   const handleGenerateVariants = () => {
     if (!watchedOptions || watchedOptions.length === 0) return [];
@@ -155,17 +177,35 @@ export default function PricingRow({
 
     if (validOptions.length === 0) return [];
 
-    const newVariants = combinations.map((combo) => ({
-      optionValues: combo.optionValues,
-      sku: combo.labels.join("-").toUpperCase().replace(/\s+/g, ""),
-      price: undefined,
-      discount_value: undefined,
-      stock: undefined,
-      image: null,
-      is_active: true,
-      is_discount: false,
-      labels: combo.labels.join(" / "),
-    }));
+    const oldVariants = form.getValues(`pricing.${index}.variants`) ?? [];
+
+    const oldByKey = new Map(
+      (form.getValues(`pricing.${index}.variants`) ?? []).map((v) => [
+        variantKey(v.optionValues),
+        v,
+      ]),
+    );
+
+    const newVariants = combinations.map((combo) => {
+      const labels = combo.labels.join(" / ");
+      const exact = oldByKey.get(variantKey(combo.optionValues));
+      if (exact) return { ...exact, optionValues: combo.optionValues, labels };
+
+      const parent = findParent(oldVariants, combo.optionValues);
+
+      return {
+        optionValues: combo.optionValues,
+        sku: combo.labels.join("-").toUpperCase().replace(/\s+/g, ""),
+        price: parent?.price,
+        discount_value: parent?.discount_value,
+        is_discount: parent?.is_discount ?? false,
+        stock: undefined,
+        image: parent?.image ?? null,
+        is_active: parent?.is_active ?? true,
+        labels,
+      };
+    });
+
     replaceVariants(newVariants);
     setGeneratedSnapshot(createOptionSnapshot(watchedOptions));
     form.clearErrors(`pricing.${index}.options`);
@@ -173,13 +213,21 @@ export default function PricingRow({
 
   const handleInputChange = (e, field) => {
     const val = e.target.value;
-    field.onChange(val === "" ? undefined : Number(val));
+    field.onChange(val === "" ? null : Number(val));
   };
 
   const handleToggleChange = (checked, field) => {
     field.onChange(checked);
 
-    if (!optionFields.length > 0) {
+    if (!checked) {
+      removeOption();
+      replaceVariants([]);
+      setGeneratedSnapshot([]);
+      form.clearErrors(`pricing.${index}.options`);
+      return;
+    }
+
+    if (optionFields.length === 0) {
       handleAddOption();
     }
   };
@@ -227,15 +275,22 @@ export default function PricingRow({
                   Price <span className="text-destructive">*</span>
                 </FieldLabel>
 
-                <div className="border-input focus-within:border-primary focus-within:ring-primary/20 flex h-9 w-full items-center gap-1.5 rounded-md border px-3 text-sm focus-within:ring-1">
+                <div
+                  className={cn(
+                    "border-input focus-within:border-primary focus-within:ring-primary/20 flex h-9 w-full items-center gap-1.5 rounded-md border px-3 text-sm focus-within:ring-1",
+                    fieldState.invalid &&
+                      "focus-within:border-destructive focus-within:ring-destructive/20",
+                  )}
+                >
                   <span className="text-muted-foreground shrink-0">
                     {country?.abbreviation}
                   </span>
                   <Input
                     {...field}
-                    onChange={(e) => handleInputChange(e, field)}
                     value={field.value ?? ""}
+                    onChange={(e) => handleInputChange(e, field)}
                     type="number"
+                    min={0}
                     id={field.name}
                     aria-invalid={fieldState.invalid}
                     placeholder="0.00"
@@ -255,7 +310,13 @@ export default function PricingRow({
               <Field data-invalid={fieldState.invalid}>
                 <FieldLabel htmlFor={field.name}>Sale Price</FieldLabel>
 
-                <div className="border-input focus-within:border-primary focus-within:ring-primary/20 flex h-9 w-full items-center gap-1.5 rounded-md border px-3 text-sm focus-within:ring-1">
+                <div
+                  className={cn(
+                    "border-input focus-within:border-primary focus-within:ring-primary/20 flex h-9 w-full items-center gap-1.5 rounded-md border px-3 text-sm focus-within:ring-1",
+                    fieldState.invalid &&
+                      "focus-within:border-destructive focus-within:ring-destructive/20",
+                  )}
+                >
                   <span className="text-muted-foreground shrink-0">
                     {country?.abbreviation}
                   </span>
@@ -264,6 +325,7 @@ export default function PricingRow({
                     onChange={(e) => handleInputChange(e, field)}
                     value={field.value ?? ""}
                     type="number"
+                    min={0}
                     id={field.name}
                     aria-invalid={fieldState.invalid}
                     placeholder="0.00"
@@ -290,6 +352,7 @@ export default function PricingRow({
                   onChange={(e) => handleInputChange(e, field)}
                   value={field.value ?? ""}
                   type="number"
+                  min={0}
                   id={field.name}
                   aria-invalid={fieldState.invalid}
                   placeholder="0"

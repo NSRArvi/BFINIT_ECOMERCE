@@ -26,6 +26,8 @@ import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { cn } from "@/lib/utils";
 import { sunEditorOptions } from "@/config/sunEditorOptions";
 
+const NONE_VALUE = "none";
+
 export default function Details({ form }) {
   const { activeStore } = useSelectedStore();
 
@@ -171,7 +173,7 @@ export default function Details({ form }) {
                 value={field.value ? String(field.value) : ""}
                 onValueChange={(value) => {
                   if (!value) return;
-                  field.onChange(Number(value));
+                  field.onChange(value === NONE_VALUE ? null : Number(value));
                 }}
                 disabled={
                   !selectedCategoryId ||
@@ -187,6 +189,9 @@ export default function Details({ form }) {
                 </SelectTrigger>
 
                 <SelectContent>
+                  {field.value && (
+                    <SelectItem value={NONE_VALUE}>None</SelectItem>
+                  )}
                   {availableSubcategories?.map((subCategory) => (
                     <SelectItem
                       key={subCategory?.id}
@@ -211,7 +216,7 @@ export default function Details({ form }) {
                 value={field.value ? String(field.value) : ""}
                 onValueChange={(value) => {
                   if (!value) return;
-                  field.onChange(Number(value));
+                  field.onChange(value === NONE_VALUE ? null : Number(value));
                 }}
                 disabled={!isBrandsLoading && brands.length === 0}
               >
@@ -231,6 +236,9 @@ export default function Details({ form }) {
                 </SelectTrigger>
 
                 <SelectContent>
+                  {field.value && (
+                    <SelectItem value={NONE_VALUE}>None</SelectItem>
+                  )}
                   {brands?.map((brand) => (
                     <SelectItem key={brand?.id} value={String(brand?.id)}>
                       {brand?.name}

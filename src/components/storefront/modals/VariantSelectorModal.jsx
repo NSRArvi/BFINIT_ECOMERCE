@@ -36,17 +36,9 @@ export default function VariantSelectorModal({
     }
   }, [options]);
 
-  const thumbnailImage = useMemo(() => {
-    let resolvedImage = image;
-
-    for (const option of options ?? []) {
-      const valueId = selectedOptions[option.id];
-      const value = option.values?.find((v) => v.id === valueId);
-      if (value?.image) resolvedImage = value.image;
-    }
-
-    return resolvedImage;
-  }, [image, options, selectedOptions]);
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedOptions]);
 
   const selectedOptionLabels = useMemo(() => {
     if (!options?.length) return {};
@@ -66,6 +58,8 @@ export default function VariantSelectorModal({
       ),
     );
   }, [selectedOptions, options, variants]);
+
+  const thumbnailImage = matchedVariant?.image ?? image;
 
   const activePrice = matchedVariant?.price;
   const activeDiscount =

@@ -49,6 +49,23 @@ export default function ProductDetailsPage() {
   const [quantity, setQuantity] = useState(1);
   const [selectedOptions, setSelectedOptions] = useState({});
 
+  const matchedVariant = useMemo(() => {
+    return variants?.find((variant) =>
+      options?.every(
+        (option) =>
+          variant?.optionValues?.[option.id] === selectedOptions?.[option.id],
+      ),
+    );
+  }, [selectedOptions, options, variants]);
+
+  const variantImage = variants_enabled ? matchedVariant?.image : null;
+  const thumbnailImage = variantImage ?? image;
+
+  const gallery = useMemo(() => {
+    const main = thumbnailImage ? [{ id: "main", image: thumbnailImage }] : [];
+    return [...main, ...(images ?? [])];
+  }, [thumbnailImage, images]);
+
   // auto select first value of each option
   useEffect(() => {
     if (options?.length) {
@@ -60,37 +77,13 @@ export default function ProductDetailsPage() {
     }
   }, [options]);
 
-  const thumbnailImage = useMemo(() => {
-    let resolvedImage = image;
-
-    if (options?.length > 0) {
-      for (const option of options) {
-        const valueId = selectedOptions[option.id];
-        const value = option.values.find((v) => v.id === valueId);
-        if (value?.image) resolvedImage = value.image;
-      }
-    }
-
-    return resolvedImage;
-  }, [image, options, selectedOptions]);
-
-  const gallery = useMemo(() => {
-    const main = thumbnailImage ? [{ id: "main", image: thumbnailImage }] : [];
-    return [...main, ...(images ?? [])];
-  }, [thumbnailImage, images]);
-
   useEffect(() => {
     setActiveImage(0);
   }, [thumbnailImage]);
 
-  const matchedVariant = useMemo(() => {
-    return variants?.find((variant) =>
-      options?.every(
-        (option) =>
-          variant?.optionValues?.[option.id] === selectedOptions?.[option.id],
-      ),
-    );
-  }, [selectedOptions, options, variants]);
+  useEffect(() => {
+    setQuantity(1);
+  }, [selectedOptions]);
 
   const selectedOptionLabels = useMemo(() => {
     if (!options?.length) return {};

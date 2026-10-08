@@ -26,6 +26,19 @@ export default function Variants({
   variants,
   currencySymbol,
 }) {
+  const handleCheckedChange = (field, checked) => {
+    field.onChange(checked);
+    if (checked) {
+      const variants = form.getValues(`pricing.${pricingIndex}.variants`) ?? [];
+      form.clearErrors(
+        variants.flatMap((_, i) => [
+          `pricing.${pricingIndex}.variants.${i}.price`,
+          `pricing.${pricingIndex}.variants.${i}.discount_value`,
+        ]),
+      );
+    }
+  };
+
   return (
     <div className="mt-5 space-y-4">
       <div className="flex items-center justify-between">
@@ -49,7 +62,9 @@ export default function Variants({
                   id={`pricing.${pricingIndex}.use_default_pricing`}
                   name={`pricing.${pricingIndex}.use_default_pricing`}
                   checked={field.value}
-                  onCheckedChange={field.onChange}
+                  onCheckedChange={(checked) =>
+                    handleCheckedChange(field, checked)
+                  }
                 />
               </Field>
             )}

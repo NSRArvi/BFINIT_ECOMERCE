@@ -15,48 +15,34 @@ function transformOptions(options) {
     }));
 }
 
-function transformVariants(variants, options, rawOptions) {
-  return (variants ?? []).map((v) => {
-    const fallbackImage = rawOptions
-      ?.map((opt) =>
-        opt.values?.find(
-          (val) => String(val.id) === String(v.optionValues?.[opt.id]),
-        ),
-      )
-      .find((val) => val?.image)?.image;
-
-    const image = v.image ?? fallbackImage;
-
-    return {
-      id: v.id,
-      optionValues: Object.fromEntries(
-        Object.entries(v.optionValues ?? {}).map(([k, val]) => [
-          k,
-          String(val),
-        ]),
-      ),
-      labels: options
-        .map((opt) => {
-          const valueId = String(v.optionValues?.[opt.id]);
-          return opt.values.find((val) => val.id === valueId)?.name;
-        })
-        .filter(Boolean)
-        .join(" / "),
-      sku: v.sku ?? "",
-      price: v.price,
-      discount_value: v.is_discount ? v.discount_value : undefined,
-      stock: v.stock,
-      image: image ? getImgUrl(image) : null,
-      is_active: v.is_active ?? true,
-      is_discount: v.is_discount ?? false,
-    };
-  });
+function transformVariants(variants, options) {
+  return (variants ?? []).map((v) => ({
+    id: v.id,
+    optionValues: Object.fromEntries(
+      Object.entries(v.optionValues ?? {}).map(([k, val]) => [k, String(val)]),
+    ),
+    labels: options
+      .map((opt) => {
+        const valueId = String(v.optionValues?.[opt.id]);
+        return opt.values.find((val) => val.id === valueId)?.name;
+      })
+      .filter(Boolean)
+      .join(" / "),
+    sku: v.sku ?? "",
+    price: v.price,
+    discount_value: v.is_discount ? v.discount_value : undefined,
+    stock: v.stock,
+    image: v.image ? getImgUrl(v.image) : null,
+    is_active: v.is_active ?? true,
+    is_discount: v.is_discount ?? false,
+  }));
 }
 
 function transformPricing(pricing) {
   const options = transformOptions(pricing?.options);
 
   return {
+    id: pricing?.id,
     country_id: pricing?.country_id,
     price: pricing?.price,
     discount_value: pricing?.is_discount ? pricing?.discount_value : undefined,
@@ -66,7 +52,7 @@ function transformPricing(pricing) {
     options: pricing?.options?.length > 0 ? options : [],
     variants:
       pricing?.variants?.length > 0
-        ? transformVariants(pricing?.variants, options, pricing?.options)
+        ? transformVariants(pricing?.variants, options)
         : [],
   };
 }

@@ -44,11 +44,23 @@ const optionSchema = z
 
 const variantSchema = z
   .object({
+    id: z.number().optional(),
     optionValues: z.record(z.string(), z.string()),
     sku: z.string().trim().min(1, "SKU is required!"),
-    price: z.number().optional(),
-    discount_value: z.number().optional(),
-    stock: z.number({ error: "Stock is required!" }),
+    price: z
+      .number()
+      .positive("Price must be greater than 0!")
+      .nullable()
+      .optional(),
+    discount_value: z
+      .number()
+      .positive("Sale price must be greater than 0!")
+      .nullable()
+      .optional(),
+    stock: z
+      .number({ error: "Stock is required!" })
+      .int("Whole numbers only!")
+      .min(0, "Stock can't be negative!"),
     image: z
       .union([z.instanceof(File), z.string()])
       .nullable()
@@ -72,16 +84,36 @@ const variantSchema = z
 
 const pricingSchema = z
   .object({
+    id: z.number().optional(),
     country_id: z.number({ error: "Country is required!" }),
-    price: z.number({ error: "Price is required!" }),
-    discount_value: z.number().optional(),
-    stock: z.number({ error: "Stock is required!" }),
+    price: z
+      .number({ error: "Price is required!" })
+      .positive("Price must be greater than 0!"),
+    discount_value: z
+      .number()
+      .positive("Sale price must be greater than 0!")
+      .nullable()
+      .optional(),
+    stock: z
+      .number({ error: "Stock is required!" })
+      .int("Whole numbers only!")
+      .min(0, "Stock can't be negative!"),
     variants_enabled: z.boolean(),
     use_default_pricing: z.boolean(),
     options: z.array(optionSchema).optional(),
     variants: z.array(variantSchema).optional(),
   })
   .superRefine((data, ctx) => {
+    if (data.discount_value != null && data.discount_value >= data.price) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Sale price must be lower than price!",
+        path: ["discount_value"],
+      });
+    }
+
+    if (!data.variants_enabled) return;
+
     if (!data.use_default_pricing) {
       data.variants?.forEach((variant, i) => {
         if (variant.price == null) {
@@ -94,20 +126,19 @@ const pricingSchema = z
       });
     }
 
-    if (data.discount_value != null && data.discount_value >= data.price) {
-      ctx.addIssue({
-        code: "custom",
-        message: "Sale price must be lower than price!",
-        path: ["discount_value"],
-      });
-    }
-
     const completeOptions =
       data.options?.filter(
         (opt) => opt.name.trim() !== "" && opt.values.length > 0,
       ) ?? [];
 
-    if (completeOptions.length === 0) return;
+    if (completeOptions.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Add an option and generate variants, or turn off variants.",
+        path: ["options"],
+      });
+      return;
+    }
 
     if (!data.variants || data.variants.length === 0) {
       ctx.addIssue({
@@ -148,8 +179,8 @@ export const productSchema = z
   .object({
     name: z.string().trim().min(1, "Product Name is required!"),
     category_id: z.number({ error: "Category is required!" }),
-    sub_category_id: z.number().optional(),
-    brand_id: z.number().optional(),
+    sub_category_id: z.number().nullable().optional(),
+    brand_id: z.number().nullable().optional(),
     tags: z.array(z.string()).optional(),
     short_description: z.string().optional(),
     description: z.string().optional(),

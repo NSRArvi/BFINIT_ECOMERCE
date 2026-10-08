@@ -18,10 +18,14 @@ import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import usePostMutation from "@/hooks-v2/api/usePostMutation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
-import { buildProductPayload } from "../utils/productHelper";
+import {
+  buildProductPayload,
+  buildProductUpdatePayload,
+} from "../utils/productHelper";
 import { EMPTY_PRODUCT } from "../utils/constants/productDefaults";
 import { transformProductToFormValues } from "../utils/transformProductToFormValues";
 import { productSchema } from "../schemas/productSchema";
+import usePutMutation from "@/hooks-v2/api/usePutMutation";
 
 export default function ProductForm() {
   const { id } = useParams();
@@ -29,17 +33,23 @@ export default function ProductForm() {
   const queryClient = useQueryClient();
   const { activeStore } = useSelectedStore();
 
-  const { data, isLoading } = useGetQuery({
-    endpoint: `/api/v1/product/store/${activeStore?.id}/${id}`,
-    enabled: !!id && !!activeStore?.id,
-    isTokenRequired: true,
-    queryKey: ["product", activeStore?.id, id],
-  });
+  const { data: productData, isLoading: isProductDetailsLoading } = useGetQuery(
+    {
+      endpoint: `/api/v1/product/store/${activeStore?.id}/${id}`,
+      enabled: !!id && !!activeStore?.id,
+      isTokenRequired: true,
+      queryKey: ["product", activeStore?.id, id],
+    },
+  );
+
+  const isEditMode = !!id && !!productData?.data?.id;
 
   const form = useForm({
     resolver: zodResolver(productSchema),
     defaultValues: EMPTY_PRODUCT,
-    values: data?.data ? transformProductToFormValues(data?.data) : undefined,
+    values: productData?.data
+      ? transformProductToFormValues(productData?.data)
+      : undefined,
   });
 
   const { mutate, isPending } = usePostMutation({
@@ -47,10 +57,19 @@ export default function ProductForm() {
     isTokenRequired: true,
   });
 
-  const onSubmit = (data) => {
-    const payload = buildProductPayload(data, activeStore?.id);
+  const { mutate: update, isPending: isUpdating } = usePutMutation({
+    endpoint: `/api/v1/product/store/${activeStore?.id}/${id}`,
+    isTokenRequired: true,
+  });
 
-    mutate(payload, {
+  const onSubmit = (data) => {
+    const payload = isEditMode
+      ? buildProductUpdatePayload(data, activeStore?.id, productData?.data)
+      : buildProductPayload(data, activeStore?.id);
+
+    const action = isEditMode ? update : mutate;
+
+    action(payload, {
       onSuccess: (data) => {
         if (!data?.success) return toast.error(data?.message);
         toast.success(data?.message);
@@ -62,6 +81,8 @@ export default function ProductForm() {
       },
     });
   };
+
+  const isLoading = isPending || isUpdating;
 
   if (!activeStore) {
     return (
@@ -83,8 +104,11 @@ export default function ProductForm() {
       />
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
-          <fieldset disabled={isLoading || isPending} className="space-y-6">
+        <form noValidate onSubmit={form.handleSubmit(onSubmit)}>
+          <fieldset
+            disabled={isProductDetailsLoading || isPending}
+            className="space-y-6"
+          >
             <Details form={form} />
             <Status form={form} />
             <Images form={form} />
@@ -98,12 +122,12 @@ export default function ProductForm() {
               </Button>
 
               <Button
-                disabled={isLoading || isPending}
+                disabled={isLoading || isProductDetailsLoading}
                 type="submit"
                 size="sm"
                 className="min-w-[101px]"
               >
-                {isPending ? (
+                {isLoading ? (
                   <>
                     <Spinner /> Saving...
                   </>
