@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import { Bitcoin, Building2, CreditCard } from "lucide-react";
+import { Bitcoin, Building2, CreditCard, Gift } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
@@ -11,6 +11,7 @@ const paymentConfig = {
   stripe: { label: "Stripe", icon: CreditCard },
   bank_transfer: { label: "Bank Transfer", icon: Building2 },
   solana: { label: "Crypto", icon: Bitcoin },
+  trial: { label: "Free Trial", icon: Gift },
 };
 
 export default function OrderRow({ order }) {
@@ -23,7 +24,17 @@ export default function OrderRow({ order }) {
 
   const method = paymentConfig[packageInvoice?.payment_method];
   const MethodIcon = method?.icon;
-  const statusVariant = orderStatusVariantConfig[packageInvoice?.status];
+
+  const isTrial = packageInvoice?.payment_method === "trial";
+  const trialExpired = isTrial && order.status === "expired";
+
+  const statusLabel = isTrial
+    ? trialExpired
+      ? "expired"
+      : "active"
+    : packageInvoice?.status;
+
+  const statusVariant = orderStatusVariantConfig[statusLabel];
 
   return (
     <TableRow>
@@ -55,7 +66,7 @@ export default function OrderRow({ order }) {
       </TableCell>
 
       <TableCell className="max-w-xs truncate border text-xs font-medium">
-        €{formatDecimal(packageInvoice?.payment_amount)}
+        {isTrial ? "Free" : `€${formatDecimal(packageInvoice?.payment_amount)}`}
       </TableCell>
 
       <TableCell className="border">
@@ -67,7 +78,7 @@ export default function OrderRow({ order }) {
 
       <TableCell className="border">
         <Badge variant={statusVariant} className="capitalize">
-          {packageInvoice?.status}
+          {statusLabel}
         </Badge>
       </TableCell>
 
