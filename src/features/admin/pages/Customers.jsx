@@ -1,5 +1,3 @@
-import useSelectedStore from "@/hooks/useSelectedStore";
-import EmptyStoreState from "../components/EmptyStoreState";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import { Users } from "lucide-react";
 import PageHeader from "../components/PageHeader";
@@ -13,8 +11,6 @@ import CustomerToolbar from "../components/sections/customers/CustomerToolbar";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Customers() {
-  const { selectedStore } = useSelectedStore();
-
   const isLoading = false;
   const customersData = [];
 
@@ -36,15 +32,6 @@ export default function Customers() {
   const hasCustomers = filteredCustomers?.length > 0;
 
   let content = null;
-
-  if (!selectedStore) {
-    return (
-      <EmptyStoreState
-        title="No Store Selected"
-        description="Select a store to view and manage your customer accounts and information."
-      />
-    );
-  }
 
   if (isLoading) {
     content = (

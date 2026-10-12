@@ -1,6 +1,5 @@
 import { SiStripe } from "react-icons/si";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
-import EmptyState from "@/components/shared/EmptyState";
 import PageHeader from "@/components/shared/PageHeader";
 import StripeConnectCard from "../components/sections/stripe/StripeConnectCard";
 import StripeConnectedCard from "../components/sections/stripe/StripeConnectedCard";
@@ -23,15 +22,7 @@ export default function Payments() {
 
   let content = null;
 
-  if (!activeStore) {
-    content = (
-      <EmptyState
-        className="min-h-[calc(100dvh-300px)]"
-        title="No Store Selected"
-        description="Create a store before setting up payment methods for your customers."
-      />
-    );
-  } else if (isLoading) {
+  if (isLoading) {
     content = <StripeConnectSkeleton />;
   } else if (!data?.data?.is_ready) {
     content = (

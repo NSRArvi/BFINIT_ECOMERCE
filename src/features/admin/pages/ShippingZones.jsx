@@ -69,14 +69,6 @@ export default function ShippingZones() {
     );
   }
 
-  if (!activeStore)
-    return (
-      <EmptyState
-        title="No Store Selected"
-        description="Select or create a store to configure shipping zones and delivery rates"
-      />
-    );
-
   return (
     <section className="space-y-6">
       <DynamicBreadcrumb items={breadcrubms.shippingZones} />

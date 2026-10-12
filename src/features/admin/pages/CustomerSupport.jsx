@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { ChevronLeft, CircleHelp, Store } from "lucide-react";
+import { ChevronLeft, CircleHelp } from "lucide-react";
 import SunEditor from "suneditor-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
-import EmptyState from "@/components/shared/EmptyState";
 import InfoBanner from "../components/sections/support/InfoBanner";
 import PageHeader from "@/components/shared/PageHeader";
 import QuickTips from "../components/sections/support/QuickTips";
@@ -109,18 +108,6 @@ export default function CustomerSupport() {
 
   const btnLabel = isEditMode ? "Save Changes" : "Customer Support";
   const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        icon={Store}
-        title="Create Your First Store"
-        description="Create a store before creating your Customer Support page."
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   return (
     <section className="space-y-6">

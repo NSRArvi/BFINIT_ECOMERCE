@@ -10,7 +10,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import EmptyStoreState from "../components/EmptyStoreState";
 import BlogTableRow from "../components/sections/manage-blog/BlogTableRow";
 import useSelectedStore from "@/hooks/useSelectedStore";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
@@ -44,15 +43,6 @@ export default function ManageBlog() {
       if (!searchTerm) return true;
       return blog.title.toLowerCase().includes(searchTerm.toLowerCase());
     }) ?? [];
-
-  if (!activeStore) {
-    return (
-      <EmptyStoreState
-        title="No Store Selected"
-        description="Create a store to start writing and managing blog content for your audience."
-      />
-    );
-  }
 
   let content = null;
 

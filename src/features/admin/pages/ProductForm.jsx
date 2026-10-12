@@ -5,7 +5,6 @@ import toast from "react-hot-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
-import EmptyState from "@/components/shared/EmptyState";
 import { Form } from "@/components/ui/form";
 import PageHeader from "@/components/shared/PageHeader";
 import Details from "../components/sections/product-form/Details";
@@ -83,15 +82,6 @@ export default function ProductForm() {
   };
 
   const isLoading = isPending || isUpdating;
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        title="No Store Selected"
-        description="You need an active store to add and manage products"
-      />
-    );
-  }
 
   return (
     <section className="space-y-6">

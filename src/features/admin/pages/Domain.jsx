@@ -9,7 +9,6 @@ import DomainSkeleton from "../components/skeletons/DomainSkeleton";
 import DomainOwnership from "../components/sections/domains/DomainOwnership";
 import { Form } from "@/components/ui/form";
 import NewDomain from "../components/sections/domains/NewDomain";
-import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
 import DomainStatus from "../components/sections/domains/DomainStatus";
@@ -71,17 +70,6 @@ export default function Domain() {
       });
     }
   };
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        title="Store Required"
-        description="Create a store first before connecting a custom domain."
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   let content = null;
 

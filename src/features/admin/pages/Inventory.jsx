@@ -78,14 +78,6 @@ export default function Inventory() {
     );
   }
 
-  if (!activeStore)
-    return (
-      <EmptyState
-        title="No Store Selected"
-        description="Create a store to start tracking and managing your product inventory."
-      />
-    );
-
   return (
     <section className="space-y-6">
       <DynamicBreadcrumb items={breadcrubms.inventory} />

@@ -1,5 +1,7 @@
 import { Navigate } from "react-router";
 import PrivateRoute from "./PrivateRoute";
+import StoreRequiredRoute from "./StoreRequiredRoute";
+import ActiveSubscriptionRoute from "./ActiveSubscriptionRoute";
 import AdminSettingsLayout from "@/layouts/AdminSettingsLayout";
 import Domain from "@/features/admin/pages/Domain";
 import Subdomain from "@/features/admin/pages/Subdomain";
@@ -21,78 +23,85 @@ export const adminSettingsRoutes = {
   path: "/settings",
   element: (
     <PrivateRoute role="user">
-      <AdminSettingsLayout />
+      <ActiveSubscriptionRoute>
+        <AdminSettingsLayout />
+      </ActiveSubscriptionRoute>
     </PrivateRoute>
   ),
   children: [
     { index: true, element: <Navigate to="domain" replace /> },
     {
-      path: "domain",
-      element: <Domain />,
-    },
-    {
-      path: "subdomain",
-      element: <Subdomain />,
-    },
-    {
-      path: "payments/stripe",
-      element: <StripePayments />,
-    },
-    {
-      path: "payments/manage-bank",
-      element: <ManageBank />,
-    },
-    {
-      path: "payments/bank/add",
-      element: <BankForm />,
-    },
-    {
-      path: "payments/bank/edit/:id",
-      element: <BankForm />,
-    },
-    {
-      path: "shipping-zones",
-      element: <ShippingZones />,
-    },
-    {
-      path: "shipping-zones/add",
-      element: <ShippingZoneForm />,
-    },
-    {
-      path: "shipping-zones/edit/:id/:storeId",
-      element: <ShippingZoneForm />,
-    },
-    {
-      path: "legal/privacy-policy",
-      element: <PrivacyPolicy />,
-    },
-    {
-      path: "legal/terms-and-conditions",
-      element: <TermsAndConditions />,
-    },
-    {
-      path: "legal/return-policy",
-      element: <ReturnPolicy />,
-    },
-    {
-      path: "support/customer-support",
-      element: <CustomerSupport />,
-    },
-    {
-      path: "support/faq",
-      element: <FAQ />,
-    },
-    {
-      path: "support/shopping-guide",
-      element: <ShoppingGuide />,
-    },
-    {
-      path: "company/about",
-      element: <AboutUs />,
-    },
-    {
-      path: "seo-meta",
-      element: <SeoForm />,
+      element: <StoreRequiredRoute />,
+      children: [
+        {
+          path: "domain",
+          element: <Domain />,
+        },
+        {
+          path: "subdomain",
+          element: <Subdomain />,
+        },
+        {
+          path: "payments/stripe",
+          element: <StripePayments />,
+        },
+        {
+          path: "payments/manage-bank",
+          element: <ManageBank />,
+        },
+        {
+          path: "payments/bank/add",
+          element: <BankForm />,
+        },
+        {
+          path: "payments/bank/edit/:id",
+          element: <BankForm />,
+        },
+        {
+          path: "shipping-zones",
+          element: <ShippingZones />,
+        },
+        {
+          path: "shipping-zones/add",
+          element: <ShippingZoneForm />,
+        },
+        {
+          path: "shipping-zones/edit/:id/:storeId",
+          element: <ShippingZoneForm />,
+        },
+        {
+          path: "legal/privacy-policy",
+          element: <PrivacyPolicy />,
+        },
+        {
+          path: "legal/terms-and-conditions",
+          element: <TermsAndConditions />,
+        },
+        {
+          path: "legal/return-policy",
+          element: <ReturnPolicy />,
+        },
+        {
+          path: "support/customer-support",
+          element: <CustomerSupport />,
+        },
+        {
+          path: "support/faq",
+          element: <FAQ />,
+        },
+        {
+          path: "support/shopping-guide",
+          element: <ShoppingGuide />,
+        },
+        {
+          path: "company/about",
+          element: <AboutUs />,
+        },
+        {
+          path: "seo-meta",
+          element: <SeoForm />,
+        },
+      ],
     },
   ],
 };

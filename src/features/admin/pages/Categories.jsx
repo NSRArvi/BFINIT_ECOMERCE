@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FolderOpen, FolderPlus, Store } from "lucide-react";
+import { FolderOpen, FolderPlus } from "lucide-react";
 import { useSearchParams } from "react-router";
 import CategoryToolbar from "../components/sections/category/CategoryToolbar";
 import CategoryItem from "../components/sections/category/CategoryItem";
@@ -41,18 +41,6 @@ export default function Categories() {
     }) ?? [];
 
   let content = null;
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        icon={Store}
-        title="No Store Selected"
-        description="Create a store before organizing your products into categories"
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   if (isLoading) {
     content = (

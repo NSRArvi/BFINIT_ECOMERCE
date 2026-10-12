@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { ChevronLeft, Info, Store } from "lucide-react";
+import { ChevronLeft, Info } from "lucide-react";
 import SunEditor from "suneditor-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
-import EmptyState from "@/components/shared/EmptyState";
 import InfoBanner from "../components/sections/support/InfoBanner";
 import PageHeader from "@/components/shared/PageHeader";
 import QuickTips from "../components/sections/support/QuickTips";
@@ -110,18 +109,6 @@ export default function AboutUs() {
 
   const btnLabel = isEditMode ? "Save Changes" : "Create About Us";
   const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        icon={Store}
-        title="Create Your First Store"
-        description="Create a store before creating your About Us page."
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   return (
     <section className="space-y-6">

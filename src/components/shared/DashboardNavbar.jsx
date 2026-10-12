@@ -3,11 +3,13 @@ import { Menu, X } from "lucide-react";
 import ProfileDropdown from "@/features/admin/components/layout/ProfileDropdown";
 import StoreSwitcherDropdown from "@/features/admin/components/layout/StoreSwticherDropdown";
 import useAuth from "@/hooks/auth/useAuth";
+import useSubscription from "@/features/admin/hooks/useSubscription";
 import logo from "@/assets/logo/bfinit.png";
 
 export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
   const location = useLocation();
   const { isSuperAdmin } = useAuth();
+  const { isExpired } = useSubscription();
 
   const isSettingsRoute = location.pathname.startsWith("/settings");
   const isAccountSettingsRoute = location.pathname.startsWith("/account");
@@ -30,7 +32,9 @@ export default function DashboardNavbar({ showSideNav, setShowSideNav }) {
       </Link>
 
       {/* desktop store switcher */}
-      {!isSettingsRoute && !isAccountSettingsRoute && <StoreSwitcherDropdown />}
+      {!isSettingsRoute && !isAccountSettingsRoute && !isExpired && (
+        <StoreSwitcherDropdown />
+      )}
 
       {/* profile dropdown */}
       <ProfileDropdown />

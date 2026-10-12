@@ -5,11 +5,13 @@ import OrderDetailsPackageCard from "../../cards/OrderDetailsPackageCard";
 import BankTransferDetails from "./BankTransferDetails";
 import CryptoPaymentDetails from "./CryptoPaymentDetails";
 import StripePaymentDetails from "./StripePaymentDetails";
+import TrialDetails from "./TrialDetails";
 
 const paymentComponents = {
   bank_transfer: BankTransferDetails,
   stripe: StripePaymentDetails,
   solana: CryptoPaymentDetails,
+  trial: TrialDetails,
 };
 
 export default function OrderDetailGrid({ orderDetails }) {

@@ -10,7 +10,6 @@ import { Form } from "@/components/ui/form";
 import AddSubdomain from "../components/sections/subdomain/AddSubdomain";
 import SubdomainStatus from "../components/sections/subdomain/SubdomainStatus";
 import NewDomain from "../components/sections/domains/NewDomain";
-import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import PageHeader from "@/components/shared/PageHeader";
 import DNSConfiguration from "../components/sections/domains/DNSConfiguration";
@@ -71,17 +70,6 @@ export default function Subdomain() {
       });
     }
   };
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        title="Store Required"
-        description="Create a store first before connecting a custom domain."
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   let content = null;
 

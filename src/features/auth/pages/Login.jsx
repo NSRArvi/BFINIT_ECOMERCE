@@ -28,19 +28,21 @@ export default function Login() {
   };
 
   return (
-    <section className="font-inter flex min-h-screen flex-col justify-center bg-gray-50 py-10 md:py-0">
+    <section className="font-inter bg-muted flex min-h-screen flex-col justify-center py-10 md:py-0">
       <div className="mx-auto w-full max-w-md px-4">
         {/* Brand Identity Section */}
         <div className="mb-8 flex flex-col items-center">
           <img src={bfinitLogo} alt="Brand Logo" className="h-8" />
-          <p className="mt-2 text-sm text-gray-600">Multivendor Dashboard</p>
+          <p className="text-muted-foreground mt-2 text-sm">
+            Multivendor Dashboard
+          </p>
         </div>
 
         {/* Login Card */}
-        <div className="rounded-xl border border-gray-200 bg-white p-8">
+        <div className="border-border bg-card text-card-foreground rounded-xl border p-8">
           <div className="mb-6 text-center">
-            <h1 className="text-2xl font-bold text-gray-900">Welcome back</h1>
-            <p className="mt-1 text-sm text-gray-500">
+            <h1 className="text-foreground text-2xl font-bold">Welcome back</h1>
+            <p className="text-muted-foreground mt-1 text-sm">
               Sign in to your vendor account
             </p>
           </div>
@@ -49,7 +51,7 @@ export default function Login() {
             <div>
               <label
                 htmlFor="email"
-                className="mb-1 block text-sm font-medium text-gray-700"
+                className="text-foreground mb-1 block text-sm font-medium"
               >
                 Email address
               </label>
@@ -58,7 +60,7 @@ export default function Login() {
                 id="email"
                 name="email"
                 required
-                className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none"
+                className="border-input bg-background text-foreground placeholder:text-muted-foreground block w-full rounded-lg border px-4 py-2.5 text-sm outline-none"
                 placeholder="your@email.com"
               />
             </div>
@@ -67,13 +69,13 @@ export default function Login() {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="mb-1 block text-sm font-medium text-gray-700"
+                  className="text-foreground mb-1 block text-sm font-medium"
                 >
                   Password
                 </label>
                 <Link
                   to="/forgot-password"
-                  className="text-xs font-medium text-indigo-600 hover:text-indigo-500"
+                  className="text-primary hover:text-primary/80 text-xs font-medium"
                 >
                   Forgot?
                 </Link>
@@ -85,12 +87,12 @@ export default function Login() {
                   name="password"
                   required
                   placeholder="Enter your password"
-                  className="block w-full rounded-lg border border-gray-200 px-4 py-2.5 pr-10 text-sm outline-none"
+                  className="border-input bg-background text-foreground placeholder:text-muted-foreground block w-full rounded-lg border px-4 py-2.5 pr-10 text-sm outline-none"
                 />
                 <button
                   type="button"
                   onClick={handleTogglePassword}
-                  className="absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer bg-transparent text-gray-400 hover:text-gray-500"
+                  className="text-muted-foreground hover:text-foreground absolute top-1/2 right-3 -translate-y-1/2 cursor-pointer bg-transparent"
                 >
                   {showPass ? <Eye size={20} /> : <EyeClosed size={20} />}
                 </button>
@@ -100,9 +102,9 @@ export default function Login() {
             <Button
               type="submit"
               disabled={isPending}
-              className={`flex min-h-10 w-full justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-colors ${
+              className={`bg-primary text-primary-foreground flex min-h-10 w-full justify-center rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
                 !isPending
-                  ? "cursor-pointer hover:bg-indigo-700"
+                  ? "hover:bg-primary/90 cursor-pointer"
                   : "cursor-not-allowed opacity-70"
               }`}
             >
@@ -110,13 +112,13 @@ export default function Login() {
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-xs text-gray-500">
+          <div className="text-muted-foreground mt-6 text-center text-xs">
             <p>
               By continuing, you agree to our{" "}
               <Link
                 to="https://bfinit.com/terms-and-conditions"
                 target="_blank"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className="text-primary hover:text-primary/80 font-medium"
               >
                 Terms
               </Link>{" "}
@@ -124,7 +126,7 @@ export default function Login() {
               <Link
                 to="https://bfinit.com/privacy-policy"
                 target="_blank"
-                className="font-medium text-indigo-600 hover:text-indigo-500"
+                className="text-primary hover:text-primary/80 font-medium"
               >
                 Privacy Policy
               </Link>
@@ -133,13 +135,13 @@ export default function Login() {
           </div>
         </div>
 
-        <div className="mt-8 text-center text-sm text-gray-500">
+        <div className="text-muted-foreground mt-8 text-center text-sm">
           <p>
             No account?{" "}
             <Link
               to="https://bfinit.com/bfinit-ecomerce-platform"
-              target="_blanck"
-              className="font-medium text-indigo-600 hover:text-indigo-500"
+              target="_blank"
+              className="text-primary hover:text-primary/80 font-medium"
             >
               Buy a Pack to start
             </Link>

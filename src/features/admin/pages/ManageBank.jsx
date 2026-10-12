@@ -35,18 +35,6 @@ export default function ManageBank() {
       return account.bank_name.toLowerCase().includes(searchTerm.toLowerCase());
     }) ?? [];
 
-  if (!activeStore) {
-    return (
-      <EmptyState
-        icon={Landmark}
-        title="No Store Selected"
-        description="Create a store to start managing bank accounts and payment methods"
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
-
   let content = null;
 
   if (isLoading) {

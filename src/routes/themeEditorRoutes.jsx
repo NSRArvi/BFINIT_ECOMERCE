@@ -6,20 +6,23 @@ import ThemeEditorLayout from "@/features/admin/theme-editor/layout/ThemeEditorL
 import ThemeEditorProvider from "@/features/admin/theme-editor/providers/ThemeEditorProvider";
 import CustomerAuthProvider from "@/features/storefront/providers/CustomerAuthProvider";
 import CartProvider from "@/features/storefront/providers/CartProvider";
+import ActiveSubscriptionRoute from "./ActiveSubscriptionRoute";
 
 export const themeEditorRoutes = {
   path: "/stores/:storeId/theme-editor/:themeId",
   element: (
     <PrivateRoute role="user">
-      <CountryProvider>
-        <ThemeEditorProvider>
-          <CustomerAuthProvider>
-            <CartProvider>
-              <ThemeEditorLayout />
-            </CartProvider>
-          </CustomerAuthProvider>
-        </ThemeEditorProvider>
-      </CountryProvider>
+      <ActiveSubscriptionRoute>
+        <CountryProvider>
+          <ThemeEditorProvider>
+            <CustomerAuthProvider>
+              <CartProvider>
+                <ThemeEditorLayout />
+              </CartProvider>
+            </CustomerAuthProvider>
+          </ThemeEditorProvider>
+        </CountryProvider>
+      </ActiveSubscriptionRoute>
     </PrivateRoute>
   ),
   children: [

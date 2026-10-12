@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import { ChevronLeft, Shield, Store } from "lucide-react";
+import { ChevronLeft, Shield } from "lucide-react";
 import SunEditor from "suneditor-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
-import EmptyState from "@/components/shared/EmptyState";
 import InfoBanner from "@/features/admin/components/sections/support/InfoBanner";
 import PageHeader from "@/components/shared/PageHeader";
 import QuickTips from "@/features/admin/components/sections/support/QuickTips";
@@ -107,18 +106,6 @@ export default function PrivacyPolicy() {
 
   const btnLabel = isEditMode ? "Save Changes" : "Create Privacy Policy";
   const btnLoadingLabel = isEditMode ? "Saving..." : "Creating...";
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        icon={Store}
-        title="Create Your First Store"
-        description="Create a store before creating your Privacy Policy page."
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   return (
     <section className="space-y-6">

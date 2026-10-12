@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FolderOpen, FolderPlus, Store } from "lucide-react";
+import { FolderOpen, FolderPlus } from "lucide-react";
 import { useSearchParams } from "react-router";
 import BrandToolbar from "../components/sections/brands/BrandToolbar";
 import BrandItem from "../components/sections/brands/BrandItem";
@@ -41,18 +41,6 @@ export default function Brands() {
     }) ?? [];
 
   let content = null;
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        icon={Store}
-        title="No Store Selected"
-        description="Create a store before organizing your products into Brands"
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   if (isLoading) {
     content = (

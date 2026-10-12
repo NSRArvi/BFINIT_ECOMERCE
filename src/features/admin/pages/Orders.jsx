@@ -1,8 +1,6 @@
 import { ShoppingCart } from "lucide-react";
 import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
 import PageHeader from "../components/PageHeader";
-import useSelectedStore from "@/hooks/useSelectedStore";
-import EmptyStoreState from "../components/EmptyStoreState";
 import { breadcrubms } from "@/utils/constants/breadcrumbs";
 import OrdersTableSkeleton from "../components/skeletons/OrdersTableSkeleton";
 import OrdersTable from "../components/sections/orders/OrdersTable";
@@ -14,8 +12,6 @@ import EmptyState from "../components/EmptyState";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 
 export default function Orders() {
-  const { activeStore } = useSelectedStore();
-
   const { data, isLoading } = useGetQuery({
     endpoint: "/api/v1/order",
     enabled: true,
@@ -41,15 +37,6 @@ export default function Orders() {
     }) ?? [];
 
   let content = null;
-
-  if (!activeStore) {
-    return (
-      <EmptyStoreState
-        title="No Orders Yet"
-        description="Create your store to start receiving and managing customer orders."
-      />
-    );
-  }
 
   if (isLoading) {
     content = (

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router";
-import { FolderTree, Plus, Store } from "lucide-react";
+import { FolderTree, Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/shared/EmptyState";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
@@ -29,18 +29,6 @@ export default function Subcategories() {
   const subcategories = data?.data ?? [];
 
   let content = null;
-
-  if (!activeStore) {
-    return (
-      <EmptyState
-        icon={Store}
-        title="No Store Selected"
-        description="Create a store before adding subcategories to organize your product catalog"
-        actionText="Create Store"
-        actionPath="/stores/create"
-      />
-    );
-  }
 
   if (isLoading) {
     content = (

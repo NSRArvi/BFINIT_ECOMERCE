@@ -169,7 +169,7 @@ export default function DashboardSidebar({
       )}
 
       {/* current selected store info for admin settings layout */}
-      {isSettingsRoute && (
+      {isSettingsRoute && activeStore && (
         <div className="mb-1 flex items-center gap-2.5 border-b px-4 pt-1 pb-4">
           <img
             src={getImgUrl(activeStore?.logo)}

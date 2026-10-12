@@ -1,5 +1,6 @@
 import AdminLayout from "@/layouts/AdminLayout";
 import PrivateRoute from "./PrivateRoute";
+import StoreRequiredRoute from "./StoreRequiredRoute";
 import Home from "@/features/admin/pages/Home";
 import Themes from "@/features/admin/pages/Themes";
 import Categories from "@/features/admin/pages/Categories";
@@ -28,68 +29,73 @@ export const adminRoutes = {
       element: <Home />,
     },
     {
-      path: "/themes",
-      element: <Themes />,
-    },
-    {
-      path: "/products/category",
-      element: <Categories />,
-    },
-    {
-      path: "/products/sub-category",
-      element: <Subcategories />,
-    },
-    {
-      path: "/products/brands",
-      element: <Brands />,
-    },
-    {
-      path: "/products/inventory/add",
-      element: <ProductForm />,
-    },
-    {
-      path: "/products/inventory/:id",
-      element: <ProductForm />,
-    },
-    {
-      path: "/products/inventory",
-      element: <Inventory />,
-    },
-    {
-      path: "/orders",
-      element: <Orders />,
-    },
-    {
-      path: "/orders/:orderId",
-      element: <OrderDetails />,
-    },
-    {
-      path: "/customers",
-      element: <Customers />,
-    },
-    {
-      path: "/blogs/add",
-      element: <BlogForm />,
-    },
-    {
-      path: "/blogs/edit/:id",
-      element: <BlogForm />,
-    },
-    {
-      path: "/blogs",
-      element: <ManageBlog />,
-    },
-    {
-      path: "/stores",
-      element: <Stores />,
-    },
-    {
       path: "stores/create",
       element: <StoreForm />,
     },
     {
       path: "stores/edit/:id",
       element: <StoreForm />,
+    },
+    {
+      element: <StoreRequiredRoute />,
+      children: [
+        {
+          path: "/stores",
+          element: <Stores />,
+        },
+        {
+          path: "/themes",
+          element: <Themes />,
+        },
+        {
+          path: "/products/category",
+          element: <Categories />,
+        },
+        {
+          path: "/products/sub-category",
+          element: <Subcategories />,
+        },
+        {
+          path: "/products/brands",
+          element: <Brands />,
+        },
+        {
+          path: "/products/inventory",
+          element: <Inventory />,
+        },
+        {
+          path: "/products/inventory/add",
+          element: <ProductForm />,
+        },
+        {
+          path: "/products/inventory/:id",
+          element: <ProductForm />,
+        },
+        {
+          path: "/orders",
+          element: <Orders />,
+        },
+        {
+          path: "/customers",
+          element: <Customers />,
+        },
+        {
+          path: "/blogs",
+          element: <ManageBlog />,
+        },
+        {
+          path: "/blogs/add",
+          element: <BlogForm />,
+        },
+        {
+          path: "/blogs/edit/:id",
+          element: <BlogForm />,
+        },
+      ],
+    },
+    {
+      path: "/orders/:orderId",
+      element: <OrderDetails />,
     },
   ],
 };
