@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { CreditCard } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
 import OrderRow from "../components/sections/billing/OrderRow";
@@ -18,6 +19,7 @@ import { breadcrubms } from "../utils/constants/breadcrumbs";
 import { formatDate } from "@/utils/formatDate";
 import { formatDecimal } from "@/utils/format/formatDecimal";
 import { cn } from "@/lib/utils";
+import { orderStatusVariantConfig } from "@/config/orderStatusVariantConfig";
 
 const tableHeaders = [
   { label: "Invoice", className: "text-left" },
@@ -39,16 +41,25 @@ export default function Billing() {
     queryKey: ["orders"],
   });
 
+  const isTrial =
+    packageInfo?.data?.package_upgrade?.package?.package_type_label?.toLowerCase() ===
+    "trial";
+  const isExpired = packageInfo?.data?.package_order?.status === "expired";
+  const isYearly =
+    packageInfo?.data?.package_upgrade?.subscriptionPeriod?.duration === 12;
+
   const expireDate = packageInfo?.data?.package_upgrade?.expire_at;
   const monthlyPrice =
     packageInfo?.data?.package_upgrade?.subscriptionPeriod?.price;
-
   const storeLimit = usageData?.data?.stores?.limit;
   const storeUsed = usageData?.data?.stores?.used;
   const productLimit = usageData?.data?.products?.limit;
   const productUsed = usageData?.data?.products?.used;
 
   const orders = data?.data ?? [];
+
+  const btnLabel = isExpired ? "Renew plan" : "Upgrade plan";
+  const durationLabel = isYearly ? "year" : "month";
 
   return (
     <section className="space-y-6">
@@ -65,17 +76,33 @@ export default function Billing() {
           <div className="space-y-2">
             <div className="space-y-1">
               <p className="text-muted-foreground text-xs">Current plan</p>
-              <p className="text-sm font-medium">
-                {packageInfo?.data?.package_upgrade?.package?.package_name}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm font-medium">
+                  {packageInfo?.data?.package_upgrade?.package?.package_name}
+                </p>
+                {isExpired && (
+                  <Badge variant={orderStatusVariantConfig.expired}>
+                    Expired
+                  </Badge>
+                )}
+              </div>
             </div>
+
             <p className="text-muted-foreground text-xs">
-              <span>€{formatDecimal(monthlyPrice, "€")}/mo</span> <span>·</span>{" "}
-              <span>Renews {formatDate(expireDate)}</span>
+              <span>
+                {isTrial
+                  ? "Free trial"
+                  : `€${formatDecimal(monthlyPrice)}/${durationLabel}`}
+              </span>{" "}
+              <span>·</span>{" "}
+              <span>
+                {isExpired ? "Expired on" : "Expires"} {formatDate(expireDate)}
+              </span>
             </p>
           </div>
+
           <Button asChild size="sm">
-            <Link to="/account/billing/plans">Upgrade plan</Link>
+            <Link to="/account/billing/plans">{btnLabel}</Link>
           </Button>
         </div>
       </div>

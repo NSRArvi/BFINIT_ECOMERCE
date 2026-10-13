@@ -8,20 +8,14 @@ import useCart from "@/hooks/useCart";
 import useCountry from "@/hooks/useCountry";
 import { useState } from "react";
 import CurrencySwitchWarningModal from "../../../../storefront/modals/CurrencySwitchWarningModal";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
-import { useParams } from "react-router";
 import { resolveDefaultCountry } from "@/features/storefront/utils/country";
+import useStoreInfo from "@/features/storefront/hooks/useStoreInfo";
 
 export default function FooterCountrySwitcher() {
-  const { storeId } = useParams();
   const { selectedCountry, saveCountry } = useCountry();
   const { cartItems, clearCart } = useCart();
 
-  const { data: storeData } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
+  const { data: storeData } = useStoreInfo();
 
   const countries = storeData?.data?.countries;
   const defaultCountry = resolveDefaultCountry(

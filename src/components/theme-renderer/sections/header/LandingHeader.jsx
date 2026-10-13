@@ -1,12 +1,11 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
 import { Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import LandingHeaderMobile from "./LandingHeaderMobile";
 import useBasePath from "@/hooks/useBasePath";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { editorLinkClick } from "@/utils/themeEditor";
 import { getImgUrl } from "@/utils/getImgUrl";
+import useStoreInfo from "@/features/storefront/hooks/useStoreInfo";
 
 const navLinks = [
   { name: "Home", href: "" },
@@ -15,14 +14,9 @@ const navLinks = [
 ];
 
 export default function LandingHeader({ content, isEditing = false }) {
-  const { storeId } = useParams();
   const basePath = useBasePath();
 
-  const { data: storeData } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
+  const { data: storeData } = useStoreInfo();
 
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 

@@ -7,8 +7,8 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import useCountry from "@/hooks/useCountry";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { getImgUrl } from "@/utils/getImgUrl";
+import useStoreInfo from "../hooks/useStoreInfo";
 
 export default function CountrySelector() {
   const { storeId } = useParams();
@@ -21,11 +21,7 @@ export default function CountrySelector() {
   const [isOpen, setIsOpen] = useState(false);
   const [query, setQuery] = useState("");
 
-  const { data: storeData, isLoading } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
+  const { data: storeData, isLoading } = useStoreInfo();
 
   const countries = storeData?.data?.countries || [];
 

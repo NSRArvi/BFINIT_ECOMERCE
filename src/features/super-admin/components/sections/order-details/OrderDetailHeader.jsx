@@ -1,5 +1,5 @@
 import { Badge } from "@/components/ui/badge";
-import { orderStatusVariantConfig } from "@/features/super-admin/utils/constants/orderStatusVariantConfig";
+import { orderStatusVariantConfig } from "@/config/orderStatusVariantConfig";
 import { getTrialInfo } from "@/features/super-admin/utils/trial";
 import { formatDate } from "@/utils/formatDate";
 

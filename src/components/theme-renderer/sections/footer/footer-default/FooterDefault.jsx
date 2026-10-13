@@ -19,6 +19,7 @@ import { getImgUrl } from "@/utils/getImgUrl";
 import { editorLinkClick } from "@/utils/themeEditor";
 import useThemeEditor from "@/features/admin/theme-editor/hooks/useThemeEditor";
 import { resolveDefaultCountry } from "@/features/storefront/utils/country";
+import useStoreInfo from "@/features/storefront/hooks/useStoreInfo";
 
 const logos = [
   { src: "/images/logo/visa.png", alt: "Visa" },
@@ -41,11 +42,7 @@ export default function FooterDefault({ content }) {
     queryKey: ["countries"],
   });
 
-  const { data: storeData } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
+  const { data: storeData } = useStoreInfo();
 
   const { data: socialMedia } = useGetQuery({
     endpoint: `/api/v1/general/socialMedia/${storeId}`,

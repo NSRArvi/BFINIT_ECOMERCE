@@ -30,6 +30,7 @@ export default function PlanCard({
   const [expanded, setExpanded] = useState(false);
 
   const isCurrent = id === currentPackage?.package_upgrade?.package?.id;
+  const isExpired = currentPackage?.package_order?.status === "expired";
   const isUpgrade =
     max_store > currentPackage?.package_upgrade?.package?.max_storage ||
     product_limit > currentPackage?.package_upgrade?.package?.product_limit ||
@@ -41,6 +42,21 @@ export default function PlanCard({
     ? description
     : description.slice(0, VISIBLE_COUNT);
   const hasMore = description.length > VISIBLE_COUNT;
+
+  let btnLabel = null;
+  let btnVariant = "default";
+
+  if (isCurrent && !isExpired) {
+    btnLabel = "Current Plan";
+    btnVariant = "outline";
+  } else if (isCurrent && isExpired) {
+    btnLabel = "Renew";
+  } else if (isUpgrade) {
+    btnLabel = "Upgrade";
+  } else if (!isUpgrade) {
+    btnLabel = "Downgrade";
+    btnVariant = "outline";
+  }
 
   return (
     <div
@@ -133,16 +149,16 @@ export default function PlanCard({
 
         <Separator className="my-4" />
 
-        {isCurrent ? (
+        {isCurrent && !isExpired ? (
           <Button disabled variant="outline" size="sm" className="rounded">
             <span className="flex items-center gap-1.5">Current plan</span>
           </Button>
         ) : (
-          <Button asChild size="sm" className="rounded">
+          <Button asChild size="sm" variant={btnVariant} className="rounded">
             <Link
               to={`https://bfinit.com/checkout/packages/${id}/${billingCycle === "yearly" ? 12 : 1}`}
             >
-              {isUpgrade ? "Upgrade" : "Downgrade"}
+              {btnLabel}
             </Link>
           </Button>
         )}

@@ -7,10 +7,17 @@ import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import SectionRenderer from "@/components/theme-renderer/config/SectionRenderer";
 import useCountry from "@/hooks/useCountry";
 import CountrySelector from "@/features/storefront/components/CountrySelector";
+import StoreUnavailable from "@/features/storefront/pages/StoreUnavailable";
 
 export default function StorefrontLayout() {
   const { storeId } = useParams();
   const { selectedCountry } = useCountry();
+
+  const { data: storeStatus, isLoading: isStoreStatusLoading } = useGetQuery({
+    endpoint: `/api/v1/package-order/last-package-active/${storeId}`,
+    enabled: !!storeId,
+    queryKey: ["storeStatus", storeId],
+  });
 
   const { data, isLoading } = useGetQuery({
     endpoint: `/api/v1/themes/storeTheme/getThemeForStore/${storeId}`,
@@ -27,7 +34,11 @@ export default function StorefrontLayout() {
     }
   }, [storeMeta]); */
 
-  if (isLoading) return <StorefrontLoader />;
+  if (isLoading || isStoreStatusLoading) return <StorefrontLoader />;
+
+  if (storeStatus?.data?.is_expired) {
+    return <StoreUnavailable />;
+  }
 
   return (
     <main>

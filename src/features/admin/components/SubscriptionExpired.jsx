@@ -67,7 +67,7 @@ export default function SubscriptionExpired({ reason = "expired", expiredAt }) {
 
   const handleLogOut = () => {
     clearStore();
-    queryClient.removeQueries({ queryKey: ["stores"] });
+    queryClient.clear();
     localStorage.removeItem("authInfo");
     toast.success("Logged out successfully");
     navigate("/login");

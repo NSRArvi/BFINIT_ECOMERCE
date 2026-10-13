@@ -1,6 +1,6 @@
 import PrivateRoute from "./PrivateRoute";
 import Home from "@/features/storefront/pages/Home";
-import NotFound from "@/pages/storefront/NotFound";
+import NotFound from "@/features/storefront/pages/NotFound";
 import CountryProvider from "@/providers/CountryProvider";
 import ThemeEditorLayout from "@/features/admin/theme-editor/layout/ThemeEditorLayout";
 import ThemeEditorProvider from "@/features/admin/theme-editor/providers/ThemeEditorProvider";

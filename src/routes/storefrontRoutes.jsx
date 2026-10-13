@@ -3,7 +3,6 @@ import ContentPage from "@/pages/storefront/ContentPage";
 import Home from "@/features/storefront/pages/Home";
 import ProductDetails from "@/features/storefront/pages/ProductDetails";
 import CartProvider from "@/features/storefront/providers/CartProvider";
-import NotFound from "@/pages/storefront/NotFound";
 import Orders from "@/features/storefront/pages/Orders";
 import Blogs from "@/features/storefront/pages/Blogs";
 import BlogDetails from "@/features/storefront/pages/BlogDetails";
@@ -17,6 +16,7 @@ import OrderDetails from "@/features/storefront/pages/OrderDetails";
 import Shop from "@/features/storefront/pages/Shop";
 import Contact from "@/features/storefront/pages/Contact";
 import PrivateRoute from "./PrivateRoute";
+import StoreUnavailable from "@/features/storefront/pages/StoreUnavailable";
 
 export const storeFrontRoutes = {
   path: "/stores/:storeId",
@@ -32,7 +32,7 @@ export const storeFrontRoutes = {
   children: [
     {
       path: "*",
-      element: <NotFound />,
+      element: <StoreUnavailable />,
     },
     {
       index: true,

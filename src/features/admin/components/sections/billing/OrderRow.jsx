@@ -1,15 +1,9 @@
-import { Bitcoin, Building2, CreditCard } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatDate } from "@/utils/formatDate";
 import { formatDecimal } from "@/utils/format/formatDecimal";
-import { orderStatusVariantConfig } from "@/features/super-admin/utils/constants/orderStatusVariantConfig";
-
-const paymentConfig = {
-  stripe: { label: "Stripe", icon: CreditCard },
-  bank_transfer: { label: "Bank Transfer", icon: Building2 },
-  solana: { label: "Crypto", icon: Bitcoin },
-};
+import { orderStatusVariantConfig } from "@/config/orderStatusVariantConfig";
+import { paymentMethodConfig } from "@/config/paymentMethodConfig";
 
 const invoiceTypeCopy = {
   initial: "First purchase",
@@ -21,9 +15,18 @@ const invoiceTypeCopy = {
 export default function OrderRow({ order }) {
   const { package: packageInfo, packageInvoice } = order ?? {};
 
-  const method = paymentConfig[packageInvoice?.payment_method];
+  const isTrial = packageInvoice?.payment_method === "trial";
+  const trialExpired = isTrial && order.status === "expired";
+
+  const statusLabel = isTrial
+    ? trialExpired
+      ? "expired"
+      : "active"
+    : packageInvoice?.status;
+
+  const statusVariant = orderStatusVariantConfig[statusLabel];
+  const method = paymentMethodConfig[packageInvoice?.payment_method];
   const MethodIcon = method?.icon;
-  const statusVariant = orderStatusVariantConfig[packageInvoice?.status];
 
   return (
     <TableRow>
@@ -39,7 +42,11 @@ export default function OrderRow({ order }) {
       </TableCell>
 
       <TableCell className="w-28 border text-right text-xs">
-        <p>€{formatDecimal(packageInvoice?.payment_amount)}</p>
+        <p>
+          {Number(packageInvoice?.payment_amount) === 0
+            ? "Free"
+            : `€${formatDecimal(packageInvoice?.payment_amount)}`}
+        </p>
       </TableCell>
 
       <TableCell className="w-32 border text-xs">
@@ -55,7 +62,7 @@ export default function OrderRow({ order }) {
 
       <TableCell className="w-24 border text-center text-xs">
         <Badge variant={statusVariant} className="capitalize">
-          {packageInvoice?.status}
+          {statusLabel}
         </Badge>
       </TableCell>
     </TableRow>

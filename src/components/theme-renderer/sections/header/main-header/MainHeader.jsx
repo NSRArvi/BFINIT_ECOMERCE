@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useParams } from "react-router";
+import { Link } from "react-router";
 import { Search, ShoppingCart, User, Menu } from "lucide-react";
 import {
   Popover,
@@ -14,10 +14,10 @@ import useCart from "@/hooks/useCart";
 import MainHeaderMobile from "./MainHeaderMobile";
 import SearchOverlay from "./SearchOverlay";
 import CountrySwitcher from "./CountrySwitcher";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import { getImgUrl } from "@/utils/getImgUrl";
 import { editorLinkClick } from "@/utils/themeEditor";
 import useCustomerAuth from "@/features/storefront/hooks/useCustomerAuth";
+import useStoreInfo from "@/features/storefront/hooks/useStoreInfo";
 
 const navLinks = [
   { name: "Home", href: "" },
@@ -36,16 +36,11 @@ function getInitials(name = "") {
 }
 
 export default function MainHeader({ content = {}, isEditing = false }) {
-  const { storeId } = useParams();
   const basePath = useBasePath();
   const { totalItems } = useCart();
   const { customer, handleLogout } = useCustomerAuth();
 
-  const { data: storeData } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
+  const { data: storeData } = useStoreInfo();
 
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);

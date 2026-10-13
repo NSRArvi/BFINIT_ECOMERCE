@@ -1,18 +1,11 @@
 import { Link } from "react-router";
-import { Bitcoin, Building2, CreditCard, Gift } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { TableCell, TableRow } from "@/components/ui/table";
 import { formatDate } from "@/utils/formatDate";
 import { formatDecimal } from "@/utils/format/formatDecimal";
-import { orderStatusVariantConfig } from "@/features/super-admin/utils/constants/orderStatusVariantConfig";
-
-const paymentConfig = {
-  stripe: { label: "Stripe", icon: CreditCard },
-  bank_transfer: { label: "Bank Transfer", icon: Building2 },
-  solana: { label: "Crypto", icon: Bitcoin },
-  trial: { label: "Free Trial", icon: Gift },
-};
+import { orderStatusVariantConfig } from "@/config/orderStatusVariantConfig";
+import { paymentMethodConfig } from "@/config/paymentMethodConfig";
 
 export default function OrderRow({ order }) {
   const {
@@ -22,7 +15,7 @@ export default function OrderRow({ order }) {
     subscriptionPeriod,
   } = order;
 
-  const method = paymentConfig[packageInvoice?.payment_method];
+  const method = paymentMethodConfig[packageInvoice?.payment_method];
   const MethodIcon = method?.icon;
 
   const isTrial = packageInvoice?.payment_method === "trial";

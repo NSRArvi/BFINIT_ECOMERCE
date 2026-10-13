@@ -1,21 +1,16 @@
 import { X } from "lucide-react";
-import { Link, useParams } from "react-router";
+import { Link } from "react-router";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import useBasePath from "@/hooks/useBasePath";
 import CountrySwitcher from "./CountrySwitcher";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import useCustomerAuth from "@/features/storefront/hooks/useCustomerAuth";
+import useStoreInfo from "@/features/storefront/hooks/useStoreInfo";
 
 export default function MainHeaderMobile({ navLinks, setMobileMenuOpen }) {
-  const { storeId } = useParams();
   const { customer, handleLogout } = useCustomerAuth();
 
-  const { data: storeData } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
+  const { data: storeData } = useStoreInfo();
 
   const countries = storeData?.data?.countries;
 

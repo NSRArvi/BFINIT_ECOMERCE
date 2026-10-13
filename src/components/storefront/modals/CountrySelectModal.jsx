@@ -2,19 +2,15 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import useCountry from "@/hooks/useCountry";
-import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import useStoreInfo from "@/features/storefront/hooks/useStoreInfo";
 
 export default function CountrySelectModal({ isEditing = false }) {
   const { storeId } = useParams();
   const { selectedCountry, saveCountry, setSelectedCountry } = useCountry();
 
-  const [isOpen, setIsOpen] = useState(true);
+  const { data: storeData, isLoading } = useStoreInfo();
 
-  const { data: storeData, isLoading } = useGetQuery({
-    endpoint: `/api/v1/stores/${storeId}/info`,
-    enabled: !!storeId,
-    queryKey: ["store", storeId],
-  });
+  const [isOpen, setIsOpen] = useState(true);
 
   const countries = storeData?.data?.countries || [];
 
