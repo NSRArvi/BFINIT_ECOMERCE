@@ -79,6 +79,7 @@ const transformPricing = (pricing, startIndex) => {
     return {
       ...rest,
       variants_enabled: hasVariants,
+      use_default_pricing,
       options: hasVariants ? options : [],
       price,
       discount_value: discount_value || 0,
