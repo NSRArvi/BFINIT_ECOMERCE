@@ -1,12 +1,18 @@
-export const updateStoreMeta = (meta) => {
-  // update title
-  document.title = meta.Title || "Online Store";
+import { getImgUrl } from "./getImgUrl";
 
-  // update meta description
+export const updateStoreSeo = (seo, store) => {
   let metaDescription = document.querySelector('meta[name="description"]');
-  metaDescription.setAttribute(
-    "content",
-    meta.Description ||
-      "Discover quality products with fast shipping and secure checkout. Shop now for the best deals and excellent customer service.",
-  );
+  const favicon = document.querySelector("link[rel~='icon']");
+
+  document.title = seo.title || store?.name || "Online Store";
+
+  if (seo?.description) {
+    metaDescription.setAttribute("content", seo.description);
+  } else {
+    metaDescription.remove();
+  }
+
+  if (favicon) {
+    favicon.href = getImgUrl(store?.favicon) || "/favicon.ico";
+  }
 };

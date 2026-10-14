@@ -1,17 +1,20 @@
 import { useEffect } from "react";
 import { Outlet, ScrollRestoration, useParams } from "react-router";
 import StorefrontLoader from "@/components/storefront/loader/StorefrontLoader";
-import useGetStoreMeta from "@/hooks/useGetStoreMeta";
-import { updateStoreMeta } from "@/utils/meta";
+import useStoreSeo from "@/hooks/useStoreSeo";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
 import SectionRenderer from "@/components/theme-renderer/config/SectionRenderer";
 import useCountry from "@/hooks/useCountry";
 import CountrySelector from "@/features/storefront/components/CountrySelector";
 import StoreUnavailable from "@/features/storefront/pages/StoreUnavailable";
+import useStoreInfo from "@/features/storefront/hooks/useStoreInfo";
+import { updateStoreSeo } from "@/utils/meta";
 
 export default function StorefrontLayout() {
   const { storeId } = useParams();
   const { selectedCountry } = useCountry();
+
+  const { data: storeInfo, isLoading: isStoreInfoLoading } = useStoreInfo();
 
   const { data: storeStatus, isLoading: isStoreStatusLoading } = useGetQuery({
     endpoint: `/api/v1/package-order/last-package-active/${storeId}`,
@@ -25,14 +28,13 @@ export default function StorefrontLayout() {
     queryKey: ["sections", storeId],
   });
 
-  /* const { data: storeMeta, isLoading: isMetaLoading } =
-    useGetStoreMeta(storeId);
+  const { data: seo, isLoading: isSeoLoading } = useStoreSeo();
 
   useEffect(() => {
-    if (storeMeta?.data?.length > 0) {
-      updateStoreMeta(storeMeta?.data?.[0]);
+    if (!isSeoLoading && !isStoreInfoLoading && seo?.data?.id) {
+      updateStoreSeo(seo?.data, storeInfo?.data);
     }
-  }, [storeMeta]); */
+  }, [isSeoLoading, isStoreInfoLoading, seo, storeInfo]);
 
   if (isLoading || isStoreStatusLoading) return <StorefrontLoader />;
 

@@ -2,10 +2,10 @@ import { Link } from "react-router";
 import {
   Loader2,
   Store,
-  ChevronDown,
   Plus,
   Check,
   Settings,
+  ChevronsUpDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -62,7 +62,7 @@ export default function StoreSwitcherDropdown() {
           {activeStore?.name || "Select store"}
         </span>
 
-        <ChevronDown className="text-muted-foreground h-4 w-4 shrink-0 transition-transform group-data-[state=open]:rotate-180" />
+        <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
       </>
     );
   }
