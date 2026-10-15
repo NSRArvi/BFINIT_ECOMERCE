@@ -118,7 +118,7 @@ export default function Login() {
               <Link
                 to="https://bfinit.com/terms-and-conditions"
                 target="_blank"
-                className="text-primary hover:text-primary/80 font-medium"
+                className="text-primary hover:text-primary/80"
               >
                 Terms
               </Link>{" "}
@@ -126,7 +126,7 @@ export default function Login() {
               <Link
                 to="https://bfinit.com/privacy-policy"
                 target="_blank"
-                className="text-primary hover:text-primary/80 font-medium"
+                className="text-primary hover:text-primary/80"
               >
                 Privacy Policy
               </Link>

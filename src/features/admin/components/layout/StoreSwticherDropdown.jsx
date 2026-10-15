@@ -50,7 +50,7 @@ export default function StoreSwitcherDropdown() {
   if (!isLoading && activeStore) {
     btnContent = (
       <>
-        <div className="bg-muted border-border flex size-6 shrink-0 items-center justify-center overflow-hidden rounded border">
+        <div className="bg-muted flex size-5 shrink-0 items-center justify-center overflow-hidden rounded-md border">
           <img
             src={getImgUrl(activeStore?.logo)}
             alt={activeStore?.name}
@@ -58,11 +58,11 @@ export default function StoreSwitcherDropdown() {
           />
         </div>
 
-        <span className="max-w-[120px] truncate text-sm font-medium">
+        <span className="max-w-[120px] truncate text-xs font-normal">
           {activeStore?.name || "Select store"}
         </span>
 
-        <ChevronsUpDown className="text-muted-foreground size-4 shrink-0" />
+        <ChevronsUpDown className="text-muted-foreground size-3.5 shrink-0" />
       </>
     );
   }
@@ -71,20 +71,21 @@ export default function StoreSwitcherDropdown() {
   if (!isLoading && hasStores) {
     content = (
       <>
-        <div className="max-h-72 overflow-y-auto p-1.5">
+        <div className="max-h-72 space-y-2 overflow-y-auto p-1.5">
           {stores.map((store) => (
             <DropdownMenuItem
               key={store.id}
               onClick={() => selectStore(store)}
               className={cn(
-                "flex cursor-pointer items-center gap-3 rounded px-2.5 py-2 transition-colors",
+                "flex cursor-pointer items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors",
                 activeStore?.id === store.id && "bg-accent cursor-default",
               )}
             >
               {/* Store Logo */}
-              <div className="border-border bg-muted flex size-7 shrink-0 items-center justify-center overflow-hidden rounded border">
+              <div className="bg-muted flex size-6 shrink-0 items-center justify-center overflow-hidden rounded-md border">
                 <img
                   src={getImgUrl(store.logo)}
+                  alt=""
                   loading="lazy"
                   className="h-full w-full object-contain"
                 />
@@ -92,20 +93,13 @@ export default function StoreSwitcherDropdown() {
 
               {/* Store Info */}
               <div className="min-w-0 flex-1">
-                <span className="block truncate text-sm leading-tight font-medium">
-                  {store.name}
-                </span>
+                <span className="block truncate text-xs">{store.name}</span>
                 {store.public_subdomain && (
-                  <span className="text-muted-foreground mt-0.5 block truncate text-[11px] leading-tight">
+                  <span className="text-muted-foreground block truncate text-[10px]">
                     {store.public_subdomain}.bfinit.com
                   </span>
                 )}
               </div>
-
-              {/* Active indicator — pushed to the right */}
-              {activeStore?.id === store.id && (
-                <Check className="text-primary h-3.5 w-3.5 shrink-0" />
-              )}
             </DropdownMenuItem>
           ))}
         </div>
@@ -116,12 +110,10 @@ export default function StoreSwitcherDropdown() {
           <DropdownMenuItem asChild>
             <Link
               to="/stores"
-              className="group flex cursor-pointer items-center gap-2 rounded px-2.5 py-1.5"
+              className="text-muted-foreground flex cursor-pointer items-center gap-2 rounded-md px-2 py-1.5 text-xs"
             >
-              <Settings className="text-muted-foreground group-hover:text-foreground size-4 shrink-0 transition-colors" />
-              <span className="text-muted-foreground group-hover:text-foreground text-xs transition-colors">
-                Manage Stores
-              </span>
+              <Settings className="size-3.5" />
+              Manage Stores
             </Link>
           </DropdownMenuItem>
 
@@ -191,11 +183,11 @@ export default function StoreSwitcherDropdown() {
         {/* Header */}
         <DropdownMenuLabel className="px-3 py-2">
           <div className="flex items-center justify-between">
-            <h3 className="text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+            <h3 className="text-muted-foreground text-[10px] font-medium tracking-wider uppercase">
               Your Stores
             </h3>
             {hasStores && maxStoreLimit && (
-              <span className="text-muted-foreground text-xs">
+              <span className="text-muted-foreground text-[10px] tabular-nums">
                 {stores.length} / {maxStoreLimit}
               </span>
             )}
