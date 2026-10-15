@@ -118,8 +118,9 @@ export default function Checkout() {
           return toast.error(data?.message);
         }
 
-        if (payload?.payment_method === "stripe") {
+        if (data?.data?.payment_method === "stripe") {
           window.location.href = data?.checkout_url;
+          clearCart();
           return;
         }
 
