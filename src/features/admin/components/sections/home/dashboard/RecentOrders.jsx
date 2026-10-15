@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
 import { formatPrice } from "@/utils/formatPrice";
 import { Link } from "react-router";
-import { ShoppingBag } from "lucide-react";
+import { ShoppingCart } from "lucide-react";
 import { getCurrencySymbol } from "@/utils/currencyHelpers";
 
 const DELIVERY_STATUSES = {
@@ -48,9 +48,9 @@ export default function RecentOrders() {
   const hasOrders = orders?.data && orders.data.length > 0;
 
   return (
-    <div className="bg-card col-span-full rounded-lg border lg:col-span-8">
+    <div className="bg-card col-span-full rounded-lg border lg:col-span-12">
       <div className="flex items-center justify-between px-4 py-6">
-        <h3 className="text-lg font-semibold">Recent Orders</h3>
+        <h3 className="text-sm font-medium">Recent Orders</h3>
         {hasOrders && (
           <Link
             to="/orders"
@@ -62,12 +62,12 @@ export default function RecentOrders() {
       </div>
 
       {!hasOrders ? (
-        <div className="flex flex-col items-center justify-center py-12 text-center">
-          <div className="bg-muted/50 mb-4 rounded-full p-6">
-            <ShoppingBag className="text-muted-foreground h-12 w-12" />
+        <div className="flex flex-col items-center justify-center gap-1 py-16 text-center">
+          <div className="bg-muted text-muted-foreground mb-2 flex size-10 items-center justify-center rounded-full">
+            <ShoppingCart className="size-4" />
           </div>
-          <h3 className="mb-2 text-lg font-semibold">No orders yet</h3>
-          <p className="text-muted-foreground mb-6 text-sm">
+          <h3 className="text-sm">No orders yet</h3>
+          <p className="text-muted-foreground max-w-xs text-xs leading-relaxed">
             Your recent orders will appear here once customers start placing
             orders.
           </p>

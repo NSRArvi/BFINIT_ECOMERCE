@@ -1,9 +1,9 @@
-import { ChartColumn, DollarSign, ShoppingCart, Users } from "lucide-react";
+import { ChartColumn, ShoppingCart, Users } from "lucide-react";
 import StatCard from "./StatCard";
+import StatCardsSkeleton from "../../../skeletons/StatCardsSkeleton";
 import useGetStorePreference from "@/features/admin/hooks/store/useGetStorePreference";
-import { formatPrice } from "@/utils/formatPrice";
-import StatCardsSkeleton from "../../skeletons/StatCardsSkeleton";
 import { formatNumber } from "@/utils/formatNumber";
+import { formatPrice } from "@/utils/formatPrice";
 import { getCurrencySymbol } from "@/utils/currencyHelpers";
 
 export default function StatCards() {
@@ -24,40 +24,26 @@ export default function StatCards() {
       return accumulator + amount;
     }, 0) || 0;
 
-  const averageOrderValue = totalOrders > 0 ? totalSales / totalOrders : 0;
-
   if (isStorePreferenceLoading) {
     return <StatCardsSkeleton />;
   }
 
   return (
-    <div className="mt-6 grid grid-cols-1 gap-6 rounded md:grid-cols-2 lg:grid-cols-4">
-      {/* total sales */}
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       <StatCard
         icon={ChartColumn}
         label="Total Sales"
         value={formatPrice(totalSales, currencySymbol)}
       />
-
-      {/* total orders */}
       <StatCard
         icon={ShoppingCart}
         label="Total Orders"
         value={formatNumber(totalOrders)}
       />
-
-      {/* total customers */}
       <StatCard
         icon={Users}
         label="Total Customers"
         value={formatNumber(totalCustomers)}
-      />
-
-      {/* average orders */}
-      <StatCard
-        icon={DollarSign}
-        label="Average Order Value"
-        value={formatPrice(averageOrderValue, currencySymbol)}
       />
     </div>
   );
