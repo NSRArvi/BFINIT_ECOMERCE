@@ -112,7 +112,9 @@ const pricingSchema = z
       });
     }
 
-    if (!data.variants_enabled) return;
+    const hasVariants = (data.variants?.length ?? 0) > 0;
+
+    if (!data.variants_enabled && !hasVariants) return;
 
     if (!data.use_default_pricing) {
       data.variants?.forEach((variant, i) => {
@@ -140,7 +142,7 @@ const pricingSchema = z
       return;
     }
 
-    if (!data.variants || data.variants.length === 0) {
+    if (!hasVariants) {
       ctx.addIssue({
         code: "custom",
         message: "Generate variants before saving, or remove the option.",
@@ -149,13 +151,11 @@ const pricingSchema = z
       return;
     }
 
-    // Expected variant count if fully generated: product of each option's value count
     const expectedCount = completeOptions.reduce(
       (total, opt) => total * opt.values.length,
       1,
     );
 
-    // Every complete option's id must appear as a key in every variant's optionValues
     const everyVariantCoversAllOptions = data.variants.every((variant) =>
       completeOptions.every((opt) =>
         Object.prototype.hasOwnProperty.call(variant.optionValues, opt.id),

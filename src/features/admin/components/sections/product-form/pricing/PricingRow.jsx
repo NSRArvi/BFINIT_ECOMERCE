@@ -69,6 +69,7 @@ export default function PricingRow({
   const [generatedSnapshot, setGeneratedSnapshot] = useState(() =>
     createOptionSnapshot(form.getValues(`pricing.${index}.options`)),
   );
+  const [stockCarriedOver, setStockCarriedOver] = useState(false);
 
   const isVariantsEnabled = useWatch({
     control: form.control,
@@ -143,12 +144,13 @@ export default function PricingRow({
     });
   };
 
-  const handleRemoveOption = (index) => {
-    removeOption(index);
+  const handleRemoveOption = (optionIndex) => {
+    removeOption(optionIndex);
 
     if (optionFields.length <= 1) {
       replaceVariants([]);
       setGeneratedSnapshot([]);
+      setStockCarriedOver(false);
       form.clearErrors(`pricing.${index}.options`);
     }
   };
@@ -168,47 +170,101 @@ export default function PricingRow({
       );
     });
 
-  const handleGenerateVariants = () => {
-    if (!watchedOptions || watchedOptions.length === 0) return [];
+  const findChildren = (oldVariants, optionValues) => {
+    const entries = Object.entries(optionValues ?? {});
+    if (entries.length === 0) return [];
 
-    const validOptions = watchedOptions.filter(
+    return oldVariants.filter((old) =>
+      entries.every(([k, v]) => String(old.optionValues?.[k]) === String(v)),
+    );
+  };
+
+  const handleGenerateVariants = () => {
+    const validOptions = (watchedOptions ?? []).filter(
       (opt) => opt.name.trim() !== "" && opt.values.length > 0,
     );
-
-    if (validOptions.length === 0) return [];
+    if (validOptions.length === 0) return;
 
     const oldVariants = form.getValues(`pricing.${index}.variants`) ?? [];
-
     const oldByKey = new Map(
-      (form.getValues(`pricing.${index}.variants`) ?? []).map((v) => [
-        variantKey(v.optionValues),
-        v,
-      ]),
+      oldVariants.map((v) => [variantKey(v.optionValues), v]),
     );
+
+    const oldOptionIds = new Set(
+      oldVariants.flatMap((v) => Object.keys(v.optionValues ?? {})),
+    );
+    const newOptions = validOptions.filter(
+      (o) => !oldOptionIds.has(String(o.id)),
+    );
+
+    let carriedStock = false;
 
     const newVariants = combinations.map((combo) => {
       const labels = combo.labels.join(" / ");
       const exact = oldByKey.get(variantKey(combo.optionValues));
       if (exact) return { ...exact, optionValues: combo.optionValues, labels };
 
+      const sku = combo.labels.join("-").toUpperCase().replace(/\s+/g, "");
       const parent = findParent(oldVariants, combo.optionValues);
+
+      if (parent) {
+        const isFirstOfNew =
+          newOptions.length > 0 &&
+          newOptions.every((o) => combo.optionValues[o.id] === o.values[0].id);
+
+        const inheritStock = parent.stock != null && isFirstOfNew;
+        if (inheritStock) carriedStock = true;
+
+        return {
+          optionValues: combo.optionValues,
+          sku,
+          price: parent.price ?? null,
+          discount_value: parent.discount_value ?? null,
+          is_discount: parent.is_discount ?? false,
+          stock: inheritStock ? parent.stock : null,
+          image: parent.image ?? null,
+          is_active: parent.is_active ?? true,
+          labels,
+        };
+      }
+
+      const children = findChildren(oldVariants, combo.optionValues);
+
+      if (children.length > 0) {
+        const stocks = children.map((c) => c.stock).filter((s) => s != null);
+        const first = children[0];
+
+        return {
+          optionValues: combo.optionValues,
+          sku,
+          price: first.price ?? null,
+          discount_value: first.discount_value ?? null,
+          is_discount: first.is_discount ?? false,
+          stock: stocks.length > 0 ? stocks.reduce((a, b) => a + b, 0) : null,
+          image: children.find((c) => c.image)?.image ?? null,
+          is_active: children.some((c) => c.is_active),
+          labels,
+        };
+      }
 
       return {
         optionValues: combo.optionValues,
-        sku: combo.labels.join("-").toUpperCase().replace(/\s+/g, ""),
-        price: parent?.price,
-        discount_value: parent?.discount_value,
-        is_discount: parent?.is_discount ?? false,
-        stock: undefined,
-        image: parent?.image ?? null,
-        is_active: parent?.is_active ?? true,
+        sku,
+        price: null,
+        discount_value: null,
+        is_discount: false,
+        stock: null,
+        image: null,
+        is_active: true,
         labels,
       };
     });
 
     replaceVariants(newVariants);
-    setGeneratedSnapshot(createOptionSnapshot(watchedOptions));
+    form.clearErrors(`pricing.${index}.variants`);
     form.clearErrors(`pricing.${index}.options`);
+    setGeneratedSnapshot(createOptionSnapshot(watchedOptions));
+    setStockCarriedOver(carriedStock);
   };
 
   const handleInputChange = (e, field) => {
@@ -220,10 +276,13 @@ export default function PricingRow({
     field.onChange(checked);
 
     if (!checked) {
-      removeOption();
-      replaceVariants([]);
-      setGeneratedSnapshot([]);
+      const kept = (form.getValues(`pricing.${index}.options`) ?? []).filter(
+        (opt) => opt.name.trim() !== "" || opt.values.length > 0,
+      );
+
+      form.setValue(`pricing.${index}.options`, kept);
       form.clearErrors(`pricing.${index}.options`);
+      form.clearErrors(`pricing.${index}.variants`);
       return;
     }
 
@@ -438,6 +497,17 @@ export default function PricingRow({
                 <AlertDescription>
                   Generate variants to create all product combinations before
                   saving.
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {stockCarriedOver && !showRegenerateAlert && (
+              <Alert variant="warning" className="mb-5">
+                <AlertTriangle />
+                <AlertTitle>Review stock</AlertTitle>
+                <AlertDescription>
+                  Existing stock was assigned to the first value of the new
+                  option. Update the other variants before saving.
                 </AlertDescription>
               </Alert>
             )}

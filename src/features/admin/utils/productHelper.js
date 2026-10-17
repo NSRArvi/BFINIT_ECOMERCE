@@ -1,10 +1,23 @@
 import { getImgUrl } from "@/utils/getImgUrl";
 
-const transformVariantsForPayload = (variants, startIndex, defaultPricing) => {
-  const imageFields = [];
+const toRelativePath = (url) => {
+  try {
+    return new URL(url).pathname;
+  } catch {
+    return url;
+  }
+};
 
-  const transformedVariants = (variants ?? []).map((variant, i) => {
-    const variantIndex = startIndex + i;
+const transformVariantsForPayload = (
+  variants,
+  startIndex,
+  defaultPricing,
+  fileMap,
+) => {
+  const imageFields = [];
+  let nextIndex = startIndex;
+
+  const transformedVariants = (variants ?? []).map((variant) => {
     const { image, price, discount_value, is_discount, ...rest } = variant;
 
     const finalPrice = defaultPricing.use_default_pricing
@@ -23,33 +36,48 @@ const transformVariantsForPayload = (variants, startIndex, defaultPricing) => {
     };
 
     if (image instanceof File) {
-      imageFields.push({
-        key: `combinationImage_${variantIndex}`,
-        file: image,
-      });
+      if (!fileMap.has(image)) {
+        fileMap.set(image, nextIndex);
+        imageFields.push({
+          key: `combinationImage_${nextIndex}`,
+          file: image,
+        });
+        nextIndex++;
+      }
 
       return {
         ...variantPricing,
-        image_index: variantIndex,
+        image_index: fileMap.get(image),
+        image: null,
+      };
+    }
+
+    if (typeof image === "string" && image) {
+      return {
+        ...variantPricing,
+        image_index: null,
+        image: toRelativePath(image),
       };
     }
 
     return {
       ...variantPricing,
       image_index: null,
+      image: null,
     };
   });
 
   return {
     transformedVariants,
     imageFields,
-    nextIndex: startIndex + transformedVariants.length,
+    nextIndex,
   };
 };
 
 const transformPricing = (pricing, startIndex) => {
   let runningImageIndex = startIndex;
   const allImageFields = [];
+  const fileMap = new Map();
 
   const transformedPricing = pricing.map((item) => {
     const {
@@ -62,7 +90,7 @@ const transformPricing = (pricing, startIndex) => {
       ...rest
     } = item;
 
-    const hasVariants = variants_enabled && variants?.length > 0;
+    const hasVariants = variants?.length > 0;
 
     const defaultPricing = { price, discount_value, use_default_pricing };
 
@@ -71,6 +99,7 @@ const transformPricing = (pricing, startIndex) => {
         hasVariants ? variants : [],
         runningImageIndex,
         defaultPricing,
+        fileMap,
       );
 
     runningImageIndex = nextIndex;
@@ -78,9 +107,9 @@ const transformPricing = (pricing, startIndex) => {
 
     return {
       ...rest,
-      variants_enabled: hasVariants,
+      variants_enabled: Boolean(variants_enabled && hasVariants),
       use_default_pricing,
-      options: hasVariants ? options : [],
+      options: options ?? [],
       price,
       discount_value: discount_value || 0,
       is_discount: discount_value > 0,

@@ -61,6 +61,14 @@ export default function ProductForm() {
     isTokenRequired: true,
   });
 
+  const onInvalid = (errors) => {
+    errors.pricing?.forEach?.((err, i) => {
+      if (err?.options || err?.variants) {
+        form.setValue(`pricing.${i}.variants_enabled`, true);
+      }
+    });
+  };
+
   const onSubmit = (data) => {
     const payload = isEditMode
       ? buildProductUpdatePayload(data, activeStore?.id, productData?.data)
@@ -94,7 +102,7 @@ export default function ProductForm() {
       />
 
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)}>
+        <form noValidate onSubmit={form.handleSubmit(onSubmit, onInvalid)}>
           <fieldset
             disabled={isProductDetailsLoading || isPending}
             className="space-y-6"
