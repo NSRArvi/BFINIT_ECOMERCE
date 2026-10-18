@@ -97,11 +97,26 @@ export const breadcrubms = {
   ],
 
   // payment
+  paymentMethods: [
+    { label: "Home", href: Home_Url },
+    {
+      label: "Payments",
+      dropdown: [
+        { label: "Stripe", href: "/settings/payments/stripe" },
+        { label: "Bank", href: "/settings/payments/manage-bank" },
+      ],
+    },
+    { label: "Payment Methods" },
+  ],
+
   stripePayment: [
     { label: "Home", href: Home_Url },
     {
       label: "Payments",
-      dropdown: [{ label: "Bank", href: "/settings/payments/manage-bank" }],
+      dropdown: [
+        { label: "Payment Methods", href: "/settings/payments/methods" },
+        { label: "Bank", href: "/settings/payments/manage-bank" },
+      ],
     },
     { label: "Stripe" },
   ],
@@ -110,7 +125,10 @@ export const breadcrubms = {
     { label: "Home", href: Home_Url },
     {
       label: "Payments",
-      dropdown: [{ label: "Stripe", href: "/settings/payments/stripe" }],
+      dropdown: [
+        { label: "Payment Methods", href: "/settings/payments/methods" },
+        { label: "Stripe", href: "/settings/payments/stripe" },
+      ],
     },
     { label: "Bank" },
   ],

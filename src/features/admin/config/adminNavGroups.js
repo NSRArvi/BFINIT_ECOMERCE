@@ -120,6 +120,11 @@ export const adminSettingsNavGroups = [
         name: "Payments",
         subCategories: [
           {
+            name: "Methods",
+            url: "/settings/payments/methods",
+            icon: CornerDownRight,
+          },
+          {
             name: "Stripe",
             url: "/settings/payments/stripe",
             icon: CornerDownRight,

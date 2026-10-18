@@ -67,7 +67,7 @@ export default function BankForm() {
     const onSuccess = (data) => {
       if (!data?.success) return toast.error(data?.message);
       toast.success(data?.message);
-      navigate("/payments/manage-bank");
+      navigate("/settings/payments/manage-bank");
     };
 
     const onError = (error) => {

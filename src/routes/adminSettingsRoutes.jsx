@@ -18,6 +18,7 @@ import FAQ from "@/features/admin/pages/FAQ";
 import ShoppingGuide from "@/features/admin/pages/ShoppingGuide";
 import AboutUs from "@/features/admin/pages/AboutUs";
 import SeoMetaDescription from "@/features/admin/pages/SeoMetaDescription";
+import PaymentMethods from "@/features/admin/pages/PaymentMethods";
 
 export const adminSettingsRoutes = {
   path: "/settings",
@@ -40,6 +41,10 @@ export const adminSettingsRoutes = {
         {
           path: "subdomain",
           element: <Subdomain />,
+        },
+        {
+          path: "payments/methods",
+          element: <PaymentMethods />,
         },
         {
           path: "payments/stripe",

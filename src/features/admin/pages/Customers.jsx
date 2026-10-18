@@ -1,84 +1,89 @@
-import DynamicBreadcrumb from "../components/DynamicBreadcrumb";
+import { useEffect, useState } from "react";
 import { Users } from "lucide-react";
-import PageHeader from "../components/PageHeader";
 import CustomerTable from "../components/sections/customers/CustomerTable";
-import { useState } from "react";
-import EmptyState from "../components/EmptyState";
-import CustomersToolsSkeleton from "../components/skeletons/CustomersToolsSkeleton";
 import CustomersTableSkeleton from "../components/skeletons/CustomersTableSkeleton";
-import useDebounce from "@/hooks/useDebounce";
 import CustomerToolbar from "../components/sections/customers/CustomerToolbar";
+import DynamicBreadcrumb from "@/components/shared/DynamicBreadcrumb";
+import EmptyState from "@/components/shared/EmptyState";
+import PageHeader from "@/components/shared/PageHeader";
+import TablePagination from "@/components/shared/TablePagination";
+import useDebounce from "@/hooks/useDebounce";
+import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import useSearchParamState from "@/hooks/useSearchParamState";
+import useSelectedStore from "@/hooks/useSelectedStore";
 import { breadcrubms } from "../utils/constants/breadcrumbs";
 
 export default function Customers() {
-  const isLoading = false;
-  const customersData = [];
+  const { activeStore } = useSelectedStore();
+  const [page] = useSearchParamState("page", "1");
+  const [search, setSearch] = useSearchParamState("search");
 
-  const [search, setSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
+  const debouncedSearch = useDebounce(searchInput);
 
-  const debouncedSearch = useDebounce(search);
+  useEffect(() => {
+    if (debouncedSearch !== search) setSearch(debouncedSearch);
+  }, [debouncedSearch, search, setSearch]);
 
-  const filteredCustomers =
-    customersData?.filter((customer) => {
-      const searchTerm = debouncedSearch?.trim();
-      if (!searchTerm) return true;
+  const { data, isLoading, isFetching } = useGetQuery({
+    endpoint: `/api/v1/dashboard/stores/${activeStore?.id}/customers?page=${page}&limit=12${search ? `&search=${search}` : ""}`,
+    enabled: !!activeStore?.id,
+    isTokenRequired: true,
+    queryKey: ["customers", page, search],
+  });
 
-      return (
-        customer?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        customer?.email?.toLowerCase().includes(searchTerm?.toLowerCase())
-      );
-    }) ?? [];
-
-  const hasCustomers = filteredCustomers?.length > 0;
+  const hasCustomers = data?.data?.customers?.length > 0;
 
   let content = null;
 
   if (isLoading) {
-    content = (
-      <>
-        <CustomersToolsSkeleton />
-        <CustomersTableSkeleton />
-      </>
-    );
+    content = <CustomersTableSkeleton />;
   }
 
   if (!isLoading && hasCustomers) {
     content = (
       <>
-        <CustomerToolbar search={search} setSearch={setSearch} />
-        <CustomerTable customersData={filteredCustomers} />
+        <CustomerTable customers={data?.data?.customers} />
+        <TablePagination meta={data?.data?.meta} />
       </>
     );
   }
 
   if (!isLoading && !hasCustomers) {
     content = (
-      <>
-        <CustomerToolbar search={search} setSearch={setSearch} />
-        <EmptyState
-          icon={Users}
-          title={debouncedSearch ? "No customers found" : "No customers yet"}
-          description={
-            debouncedSearch
-              ? `No customers match "${debouncedSearch}"`
-              : "Customers will appear here when they sign up or make a purchase"
-          }
-        />
-      </>
+      <EmptyState
+        className="min-h-[calc(100dvh-300px)]"
+        icon={Users}
+        title={debouncedSearch ? "No customers found" : "No customers yet"}
+        description={
+          debouncedSearch
+            ? `No results for "${search}". Try a different search term.`
+            : "Customers will appear here when they sign up or make a purchase"
+        }
+        actionText="Clear search"
+        onAction={() => setSearchInput("")}
+      />
     );
   }
 
   return (
     <section className="space-y-6">
       <DynamicBreadcrumb items={breadcrubms.customers} />
-
       <PageHeader
         icon={Users}
         title="Customers"
         description="View customer accounts registered to your store"
       />
 
-      <div className="bg-card space-y-6 rounded-lg pt-5">{content}</div>
+      <div className="bg-card space-y-6 rounded-lg p-5">
+        <CustomerToolbar
+          isFetching={isFetching}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+        />
+
+        {content}
+      </div>
     </section>
   );
 }
