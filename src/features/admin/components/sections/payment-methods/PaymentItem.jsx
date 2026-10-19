@@ -75,11 +75,7 @@ export default function PaymentItem({ item }) {
       onSuccess: (data) => {
         if (!data?.success) return toast.error(data?.message);
         toast.success(data?.message);
-        queryClient.invalidateQueries([
-          "admin",
-          "payment-methods",
-          activeStore?.id,
-        ]);
+        queryClient.invalidateQueries(["payment-methods", activeStore?.id]);
       },
       onError: (error) => {
         console.log(error);

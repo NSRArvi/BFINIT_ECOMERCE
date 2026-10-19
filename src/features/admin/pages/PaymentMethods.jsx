@@ -16,7 +16,7 @@ export default function PaymentMethods() {
     endpoint: `/api/v1/dashboard/stores/${activeStore?.id}/payment-methods`,
     enabled: !!activeStore?.id,
     isTokenRequired: true,
-    queryKey: ["admin", "payment-methods", activeStore?.id],
+    queryKey: ["payment-methods", activeStore?.id],
   });
 
   let content = null;

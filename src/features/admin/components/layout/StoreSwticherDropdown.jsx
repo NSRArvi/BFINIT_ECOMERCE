@@ -121,9 +121,9 @@ export default function StoreSwitcherDropdown() {
             <DropdownMenuItem asChild>
               <Link
                 to="/stores/create"
-                className="group flex cursor-pointer items-center gap-2 rounded px-2.5 py-1.5"
+                className="group flex cursor-pointer items-center gap-2 rounded px-2 py-1.5"
               >
-                <Plus className="text-muted-foreground group-hover:text-foreground size-4 shrink-0" />
+                <Plus className="text-muted-foreground group-hover:text-foreground size-3.5 shrink-0" />
                 <span className="text-muted-foreground group-hover:text-foreground text-xs">
                   Create New Store
                 </span>

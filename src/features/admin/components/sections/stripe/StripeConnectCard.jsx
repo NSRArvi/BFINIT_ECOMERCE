@@ -33,10 +33,8 @@ const STEPS = [
   },
 ];
 
-export default function StripeConnectCard({ status = "new" }) {
+export default function StripeConnectCard({ config }) {
   const { activeStore } = useSelectedStore();
-
-  const isIncomplete = status === "incomplete";
 
   const { refetch, isFetching } = useGetQuery({
     endpoint: `/api/v1/stores/${activeStore?.id}/connect/authorize`,
@@ -56,46 +54,37 @@ export default function StripeConnectCard({ status = "new" }) {
     window.location.href = data?.data?.url;
   };
 
-  const heading = isIncomplete
-    ? "Finish setting up Stripe"
-    : "Accept payments with Stripe";
-
-  const description = isIncomplete
-    ? "You started connecting Stripe but didn't finish. Continue where you left off."
-    : "Connect your Stripe account to start accepting payments and receiving payouts.";
-
-  const buttonLabel = isIncomplete ? "Continue setup" : "Connect Stripe";
-  const connectingLabel = isIncomplete ? "Continuing..." : "Connecting...";
-
   return (
     <div className="grid rounded-lg border px-5 py-4 md:grid-cols-2">
       {/* left side content */}
       <div>
         <h2 className="flex items-center gap-2 text-sm font-medium">
-          {heading}
-          {isIncomplete && (
-            <Badge variant="warning" className="font-normal [&>svg]:size-3.5">
-              <TriangleAlert /> Action needed
+          {config.title}
+          {config.badge && (
+            <Badge
+              variant={config.variant}
+              className="font-normal [&>svg]:size-3.5"
+            >
+              <TriangleAlert /> {config.badge}
             </Badge>
           )}
         </h2>
         <p className="text-muted-foreground mt-1 max-w-sm text-xs leading-relaxed">
-          {description}
+          {config.description}
         </p>
-        <Button
-          disabled={isFetching}
-          onClick={handleConnectStripe}
-          size="sm"
-          className="mt-3 min-w-[120px]"
-        >
-          {isFetching ? (
-            <>
-              <Spinner /> {connectingLabel}
-            </>
-          ) : (
-            buttonLabel
-          )}
-        </Button>
+
+        {config.cta && (
+          <Button
+            disabled={isFetching}
+            onClick={handleConnectStripe}
+            size="sm"
+            className="mt-3"
+          >
+            {isFetching && <Spinner />}
+            {config.cta}
+          </Button>
+        )}
+
         <ul className="mt-6 space-y-2">
           {TRUST_POINTS.map(({ icon: Icon, text }) => (
             <li

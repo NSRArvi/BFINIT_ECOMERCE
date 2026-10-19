@@ -1,6 +1,7 @@
 import { Link } from "react-router";
 import { Controller } from "react-hook-form";
 import { ArrowLeft, Truck } from "lucide-react";
+import CheckoutEmptyState from "./CheckoutEmptyState";
 import { Field, FieldLabel, FieldError } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -15,6 +16,7 @@ export default function ShippingDetails({
   errors,
   isLoading,
   deliveryOptions = [],
+  setValue,
 }) {
   const { selectedCountry } = useCountry();
   const basePath = useBasePath();
@@ -193,44 +195,36 @@ export default function ShippingDetails({
                 )}
 
                 {!isLoading && deliveryOptions?.length === 0 && (
-                  <div className="border-border bg-background border py-8 text-center">
-                    <Truck className="text-muted-foreground mx-auto mb-3 h-5 w-5" />
-                    <h3 className="text-sm font-medium">
-                      No delivery methods available
-                    </h3>
-                    <p className="text-muted-foreground mx-auto mt-2 max-w-md text-xs leading-5">
-                      No delivery methods are available for your location. Try a
-                      different shipping address or contact the store for
-                      assistance.
-                    </p>
-                  </div>
+                  <CheckoutEmptyState
+                    icon={Truck}
+                    title="No delivery methods available"
+                    description="No delivery methods are available for your location. Try a different shipping address or contact the store for assistance."
+                  />
                 )}
+              </Field>
+            )}
+          />
+
+          <Controller
+            name="note"
+            control={control}
+            render={({ field }) => (
+              <Field>
+                <FieldLabel htmlFor="note">Order Notes (Optional)</FieldLabel>
+                <Textarea
+                  id="note"
+                  rows={4}
+                  placeholder="Add delivery instructions..."
+                  className="rounded-none"
+                  {...field}
+                />
               </Field>
             )}
           />
         </div>
       </div>
 
-      <PaymentMethod control={control} errors={errors} />
-
-      <div className="p-6 lg:p-8">
-        <Controller
-          name="note"
-          control={control}
-          render={({ field }) => (
-            <Field>
-              <FieldLabel htmlFor="note">Order Notes (Optional)</FieldLabel>
-              <Textarea
-                id="note"
-                rows={4}
-                placeholder="Add delivery instructions..."
-                className="rounded-none"
-                {...field}
-              />
-            </Field>
-          )}
-        />
-      </div>
+      <PaymentMethod control={control} errors={errors} setValue={setValue} />
 
       <div className="p-6 lg:p-8">
         <Link

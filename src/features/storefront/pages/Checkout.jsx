@@ -158,6 +158,7 @@ export default function Checkout() {
             errors={errors}
             isLoading={isLoading}
             deliveryOptions={data?.data?.options}
+            setValue={setValue}
           />
 
           {/* right: order summary */}

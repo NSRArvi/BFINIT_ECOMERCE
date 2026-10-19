@@ -1,12 +1,33 @@
+import toast from "react-hot-toast";
 import { ShieldCheck } from "lucide-react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
+import usePatchMutation from "@/hooks-v2/api/usePatchMutation";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
-export default function StripeConnectedCard({
-  isEnabled,
-  onToggle,
-  isToggling,
-}) {
+export default function StripeConnectedCard({ isEnabled }) {
+  const queryClient = useQueryClient();
+  const { activeStore } = useSelectedStore();
+
+  const { mutate: patch, isPending } = usePatchMutation({
+    endpoint: `/api/v1/stores/${activeStore?.id}/connect/activateinactive`,
+    isTokenRequired: true,
+  });
+
+  const handleToggle = () => {
+    patch(null, {
+      onSuccess: (data) => {
+        if (!data?.success) return toast.error(data?.message);
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["stripe", activeStore?.id]);
+      },
+      onError: (error) => {
+        console.log(error);
+      },
+    });
+  };
+
   return (
     <div className="bg-background rounded-lg border">
       <div className="flex items-center justify-between gap-4 p-5">
@@ -31,8 +52,8 @@ export default function StripeConnectedCard({
 
         <Switch
           checked={isEnabled}
-          onCheckedChange={onToggle}
-          disabled={isToggling}
+          onCheckedChange={handleToggle}
+          disabled={isPending}
         />
       </div>
 
