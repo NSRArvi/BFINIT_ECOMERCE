@@ -10,13 +10,16 @@ import useDebounce from "@/hooks/useDebounce";
 import OrdersToolsSkeleton from "../components/skeletons/OrdersToolsSkeleton";
 import EmptyState from "../components/EmptyState";
 import useGetQuery from "@/hooks-v2/api/useGetQuery";
+import useSelectedStore from "@/hooks/useSelectedStore";
 
 export default function Orders() {
+  const { activeStore } = useSelectedStore();
+
   const { data, isLoading } = useGetQuery({
-    endpoint: "/api/v1/order",
-    enabled: true,
+    endpoint: `/api/v1/order/store/${activeStore?.id}`,
+    enabled: !!activeStore?.id,
     isTokenRequired: true,
-    queryKey: ["orders"],
+    queryKey: ["orders", activeStore?.id],
   });
 
   const orders = data?.data ?? [];
