@@ -77,7 +77,7 @@ export default function Stores() {
 
             {isAtLimit ? (
               <Button size="sm" asChild className="text-xs">
-                <Link to="/settings/billing">Upgrade plan</Link>
+                <Link to="/account/billing/plans">Upgrade plan</Link>
               </Button>
             ) : (
               <Button size="sm" asChild className="text-xs">

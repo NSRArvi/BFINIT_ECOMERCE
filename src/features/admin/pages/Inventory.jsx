@@ -112,7 +112,7 @@ export default function Inventory() {
 
           {isAtLimit ? (
             <Button asChild size="sm" className="shrink-0">
-              <Link to="/settings/billing">Upgrade plan</Link>
+              <Link to="/account/billing/plans">Upgrade plan</Link>
             </Button>
           ) : (
             <Button asChild size="sm" className="shrink-0">

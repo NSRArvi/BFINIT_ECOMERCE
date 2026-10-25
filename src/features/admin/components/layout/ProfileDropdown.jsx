@@ -28,10 +28,10 @@ export default function ProfileDropdown() {
   const { clearStore } = useSelectedStore();
 
   const userData = user?.data?.user;
-  const nameShorthand = userData?.name
-    ?.split(" ")
-    ?.map((word) => word?.charAt(0))
-    ?.join("");
+  const words = (userData?.name ?? "").trim().split(/\s+/).filter(Boolean);
+  const nameShorthand = (
+    words.length > 1 ? words[0][0] + words[1][0] : (words[0] ?? "").slice(0, 2)
+  ).toUpperCase();
 
   const handleLogOut = () => {
     clearStore();

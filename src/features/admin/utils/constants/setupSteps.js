@@ -6,7 +6,7 @@ export const getSetupSteps = (progress = {}) => [
     icon: Store,
     title: "Create your store",
     description:
-      "Name it and set your currency and country. You can change these later.",
+      "Choose your store name, country, and currency. You can change these later.",
     cta: { label: "Create store", to: "/stores/create" },
     time: "~1 min",
     done: !!progress.hasStore,
@@ -16,7 +16,7 @@ export const getSetupSteps = (progress = {}) => [
     icon: Package,
     title: "Add your first product",
     description:
-      "Write a description, add photos, and set pricing for what you plan to sell.",
+      "Add photos, write a description, and set a price for your product.",
     cta: { label: "Add product", to: "/products/inventory/add" },
     time: "~5 min",
     done: !!progress.hasProduct,
@@ -26,8 +26,9 @@ export const getSetupSteps = (progress = {}) => [
     id: "payment",
     icon: CreditCard,
     title: "Set up payments",
-    description: "Connect Stripe or a bank account so you can get paid.",
-    cta: { label: "Connect payments", to: "/settings/payments" },
+    description:
+      "Choose how customers can pay, including Stripe or bank transfer.",
+    cta: { label: "Configure payments", to: "/settings/payments/methods" },
     time: "~2 min",
     done: !!progress.hasPayment,
     optional: true,
@@ -35,9 +36,10 @@ export const getSetupSteps = (progress = {}) => [
   {
     id: "domain",
     icon: Globe,
-    title: "Connect a custom domain",
-    description: "Optional. You can launch on your free subdomain first.",
-    cta: { label: "Connect domain", to: "/settings/domains" },
+    title: "Set up your domain",
+    description:
+      "Give your store a clean, memorable link with a custom domain or subdomain.",
+    cta: { label: "Set up domain", to: "/settings/domain" },
     time: "~5 min",
     done: !!progress.hasDomain,
     optional: true,

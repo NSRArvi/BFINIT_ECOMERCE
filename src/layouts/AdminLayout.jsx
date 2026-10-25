@@ -2,19 +2,27 @@ import { useEffect, useState } from "react";
 import { Outlet, ScrollRestoration, useNavigate } from "react-router";
 import DashboardNavbar from "@/components/shared/DashboardNavbar";
 import DashboardSidebar from "@/components/shared/DashboardSidebar";
-import { Spinner } from "@/components/ui/spinner";
+import OrbitLoader from "@/features/admin/components/shared/OrbitLoader";
 import StoreSelectionModal from "@/features/admin/components/modals/StoreSelectionModal";
 import SubscriptionExpired from "@/features/admin/components/SubscriptionExpired";
-import { adminNavGroups } from "@/features/admin/config/adminNavGroups";
 import useAuth from "@/hooks/auth/useAuth";
+import useSetupStatus from "@/features/admin/hooks/useSetupStatus";
 import useSubscription from "@/features/admin/hooks/useSubscription";
+import { adminNavGroups } from "@/features/admin/config/adminNavGroups";
 
 export default function AdminLayout() {
   const navigate = useNavigate();
   const { isSuperAdmin } = useAuth();
-  const { expiredAt, reason, isExpired, isLoading } = useSubscription();
+  const {
+    expiredAt,
+    reason,
+    isExpired,
+    isLoading: subscriptionLoading,
+  } = useSubscription();
+  const { isLoading: setupStatusLoading } = useSetupStatus();
 
   const [showSideNav, setShowSideNav] = useState(false);
+  const isLoading = subscriptionLoading || setupStatusLoading;
 
   useEffect(() => {
     document.documentElement.style.overflow = "hidden";
@@ -43,11 +51,7 @@ export default function AdminLayout() {
   let content = null;
 
   if (isLoading) {
-    content = (
-      <div className="flex min-h-[calc(100dvh-45px)] items-center justify-center">
-        <Spinner />
-      </div>
-    );
+    content = <OrbitLoader />;
   } else if (!isLoading && isExpired) {
     content = <SubscriptionExpired reason={reason} expiredAt={expiredAt} />;
   } else if (!isLoading && !isExpired) {
